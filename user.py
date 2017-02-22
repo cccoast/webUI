@@ -26,5 +26,11 @@ if __name__ == '__main__':
     user = User()
     user.create_table()
     indict = {'name':'xudi','password':myhash.generate_password_hash('123456')}
-    user.insert_dictlike(user.user_struct,indict)
+#     user.insert_dictlike(user.user_struct,indict)
+    ss = user.get_session()
+    re = ss.query(user.table_struct).filter_by(name = 'xudi')
+    for i in re:
+        print i
+    ss.commit()
+    ss.close()
     
