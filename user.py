@@ -43,5 +43,5 @@ if __name__ == '__main__':
     user.create_table()
     user.insert_user('lyx','123456')
     print user.check_user('lyx','123456')
-    
+
     
