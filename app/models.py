@@ -6,7 +6,8 @@ from app import db, login_manager
 
 class User(UserMixin, db.Model):
     __tablename__ = 'password'
-    username = db.Column(db.String(64), primary_key=True, index=True)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
 
     @property
@@ -25,7 +26,7 @@ class User(UserMixin, db.Model):
     
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.filter_by(username = user_id).first()
+    return User.query.get(int(user_id))
 
 if __name__ == '__main__':
     
@@ -43,7 +44,8 @@ if __name__ == '__main__':
             super(User,self).__init__(db_name)
             
             self.table_struct = Table(table_name,self.meta,
-                        Column('username',String(64),primary_key = True, index=True),
+                        Column('id',Integer,primary_key = True,autoincrement = False ),
+                        Column('username',String(64)),
                         Column('password_hash',String(128))
                         )
             
@@ -53,7 +55,7 @@ if __name__ == '__main__':
     user = User()
     user.create_table()
     
-    indict = {'username':'lyx','password_hash':generate_password_hash('123456')}
+    indict = {'id':1,'username':'xudi','password_hash':generate_password_hash('123456')}
     user.insert_dictlike(user.user_struct,indict)
     
     
