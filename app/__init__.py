@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import config
 
+import os
+
 bootstrap = Bootstrap()
 moment = Moment()
 db = SQLAlchemy()
@@ -31,3 +33,5 @@ def create_app(config_name):
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     return app
+
+xapp = create_app(os.getenv('FLASK_CONFIG') or 'default')
