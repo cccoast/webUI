@@ -37,6 +37,12 @@
 {% endblock %}
 
 {% block content %}
+
+<div data-spy="affix" data-offset-top="60" data-offset-bottom="200" data-offset-left="0">
+	{% block left_column %}
+	{% endblock %}
+</div>
+	
 <div class="container">
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
@@ -44,13 +50,14 @@
         {{ message }}
     </div>
     {% endfor %}
+    
     {% block page_content %}
 	{% endblock %}
+	
 </div>
-<div class="container">
-</div>
-{% endblock %}
 
+
+{% endblock %}
 
 {% block scripts %}
 {{ super() }}
