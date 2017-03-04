@@ -4,8 +4,38 @@
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}I am {{ current_user.username }}{% else %}Please Login!
-	<p><a href="{{ url_for('auth.login') }}">Click here to login</a>.</p>
-    {% endif %}</h1>
+    <h1>
+    {% if current_user.is_authenticated -%}
+    Welcome {{ current_user.username }}!
+    <p></p><p></p><p></p>
+    {% include "progress.html" -%}
+    {% else %}<a href="{{ url_for('auth.login') }}">Click here to login</a>
+    {% endif %}
+    </h1>
+</div>
+<div data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+<table data-toggle="table">
+    <thead>
+        <tr>
+            <th>Please Select</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Select Data</td>
+        </tr>
+        <tr>
+            <td>Global Setting</td>
+        </tr>
+        <tr>
+            <td>Entry Rule</td>
+        </tr>
+        <tr>
+            <td>Exit Rule</td>
+        </tr>
+    </tbody>
+</table>
 </div>
 {% endblock %}
+
+

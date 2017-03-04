@@ -44,10 +44,13 @@
         {{ message }}
     </div>
     {% endfor %}
-
-    {% block page_content %}{% endblock %}
+    {% block page_content %}
+	{% endblock %}
+</div>
+<div class="container">
 </div>
 {% endblock %}
+
 
 {% block scripts %}
 {{ super() }}
