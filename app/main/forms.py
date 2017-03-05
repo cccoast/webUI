@@ -7,5 +7,4 @@ class NameForm(FlaskForm):
     submit = SubmitField('Submit')
     
 class SubmitForm(FlaskForm):
-    verify = SubmitField('Verify')
-    submit = SubmitField('Run')
+    submit = SubmitField('Run',id='submit_backtest')

@@ -2,23 +2,29 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Platform{% endblock %}
-
 {% block page_content %}
+<style type="text/css">
+#submit_data{
+    float:right;
+}
+#submit_backtest{
+	width:12px;
+}
+</style>
 <div class="page-header">
     <h1>
     {% if current_user.is_authenticated -%}
     &nbsp;&nbsp;Welcome {{ current_user.username }}!
     <br><br>
     {% include "collapse.html" %}
-    
     {% if submit_form %}
-    <div class="col-md-2">
-    {{ wtf.quick_form(submit_form) }}
+    <div class="col-md-1" id = "submit_data">
+    {{ wtf.quick_form(submit_form,button_map={'submit':'success'},form_type = 'horizontal') }}
     <br>
 	</div>
 	{% endif %}
-	
-    {% else %}<a href="{{ url_for('auth.login') }}">Click here to login</a>
+    {% else %}
+    <a href="{{ url_for('auth.login') }}">Click here to login</a>
     {% endif %}
     </h1>
 </div>

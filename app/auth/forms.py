@@ -13,4 +13,3 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log In')
 
 
-
