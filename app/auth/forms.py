@@ -12,7 +12,5 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
 
-class SubmitForm(FlaskForm):
-    verify = SubmitField('Verify')
-    submit = SubmitField('Run')
+
 
