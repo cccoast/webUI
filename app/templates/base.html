@@ -4,8 +4,12 @@
 
 {% block head %}
 {{ super() }}
+<link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="static/bootstrap-table.css">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<script src="static/bootstrap-table.js"></script>
+<script src="static/bootstrap-table-zh-CN.js"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -38,11 +42,6 @@
 
 {% block content %}
 
-<div data-spy="affix" data-offset-top="60" data-offset-bottom="200" data-offset-left="0">
-	{% block left_column %}
-	{% endblock %}
-</div>
-	
 <div class="container">
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
@@ -55,7 +54,6 @@
 	{% endblock %}
 	
 </div>
-
 
 {% endblock %}
 

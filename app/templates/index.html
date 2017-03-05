@@ -7,17 +7,12 @@
     <h1>
     {% if current_user.is_authenticated -%}
     Welcome {{ current_user.username }}!
-    <p></p><p></p>
+    <br><br>
+    {% include "collapse.html" %}
     {% else %}<a href="{{ url_for('auth.login') }}">Click here to login</a>
     {% endif %}
     </h1>
 </div>
-
-{% block left_column %}
-{% if current_user.is_authenticated -%}
-{% include "left_column.html" -%}
-{% endif %}
-{% endblock %}
 
 {% endblock %}
 

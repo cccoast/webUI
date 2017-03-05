@@ -1,0 +1,87 @@
+
+<div class="panel-group" id="accordion">
+	<div class="panel panel-data">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseOne">
+					1.create data block
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOne" class="panel-collapse collapse in">
+			<div class="panel-body">
+				{% include "data.html" %}
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-setting">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseTwo">
+					2.set global config
+				</a>
+			</h4>
+		</div>
+		<div id="collapseTwo" class="panel-collapse collapse">
+			<div class="panel-body">
+				second
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-commodity_set">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseThree">
+					3.select commodity_set
+				</a>
+			</h4>
+		</div>
+		<div id="collapseThree" class="panel-collapse collapse">
+			<div class="panel-body">
+				third
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-entry">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseFour">
+					4.set entry rules
+				</a>
+			</h4>
+		</div>
+		<div id="collapseFour" class="panel-collapse collapse">
+			<div class="panel-body">
+				fourth
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-exit">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseFive">
+					5.set exit rules
+				</a>
+			</h4>
+		</div>
+		<div id="collapseFive" class="panel-collapse collapse">
+			<div class="panel-body">
+				fifth
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function () { $('#collapseFive').collapse({
+		toggle: false
+	})});
+	$(function () { $('#collapseFour').collapse('show')});
+	$(function () { $('#collapseTwo').collapse('show')});
+	$(function () { $('#collapseThree').collapse('toggle')});
+	$(function () { $('#collapseOne').collapse('hide')});
+</script>  
