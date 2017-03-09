@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, \
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm
+from .forms import LoginForm,SubmitForm
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -24,4 +24,13 @@ def logout():
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
+
+@login_required
+@auth.route('/fill',method = ['GET','POST'])
+def fill():
+    sub_form = SubmitForm()
+    if sub_form.validate_on_submit():
+        flash('Ready to back Testing')
+    return render_template('auth/fill.html',submit_form = sub_form)
+
 
