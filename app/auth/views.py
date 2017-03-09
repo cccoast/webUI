@@ -26,7 +26,7 @@ def logout():
     return redirect(url_for('main.index'))
 
 @login_required
-@auth.route('/fill',method = ['GET','POST'])
+@auth.route('/fill',methods = ['GET','POST'])
 def fill():
     sub_form = SubmitForm()
     if sub_form.validate_on_submit():
