@@ -11,29 +11,37 @@ h3.panel-title{
 </style>
 					
 <div class="panel-group" id="accordion">
+	
 	<div class="panel panel-data">
 		<div class="panel-heading">
 			<h2 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseOne" color="green">
-				   1.create data block
+				   1.create data block 
+				   {% if verify['data'] %} <img src='../../../static/right.gif'> 
+				   {% else %}  <img src='../../../static/wrong.gif'>
+				   {% endif %}
 				</a>
 			</h2>
 		</div>
 		<div id="collapseOne" class="panel-collapse collapse in">
 			<div class="panel-body">
-				<div class = "container">
+				<div>
 				{% include "auth/data.html" %}
 				</div>
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel panel-setting">
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseTwo">
 				   2.set global config
+				   {% if verify['global'] %} <img src='../../../static/right.gif'> 
+				   {% else %}  <img src='../../../static/wrong.gif'>
+				   {% endif %}
 				</a>
 			</h3>
 		</div>
@@ -43,12 +51,16 @@ h3.panel-title{
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel panel-commodity_set">
 		<div class="panel-heading">
 			<h2 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseThree">
 					3.select commodity_set
+					{% if verify['set'] %} <img src='../../../static/right.gif'> 
+					{% else %}  <img src='../../../static/wrong.gif'>
+				    {% endif %}
 				</a>
 			</h2>
 		</div>
@@ -58,12 +70,16 @@ h3.panel-title{
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel panel-entry">
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseFour">
 					4.set entry rules
+					{% if verify['entry'] %} <img src='../../../static/right.gif'> 
+					{% else %}  <img src='../../../static/wrong.gif'>
+				    {% endif %}
 				</a>
 			</h3>
 		</div>
@@ -73,12 +89,16 @@ h3.panel-title{
 			</div>
 		</div>
 	</div>
+	
 	<div class="panel panel-exit">
 		<div class="panel-heading">
 			<h2 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseFive">
 					5.set exit rules
+					{% if verify['exit'] %} <img src='../../../static/right.gif'> 
+					{% else %}  <img src='../../../static/wrong.gif'>
+				    {% endif %}
 				</a>
 			</h2>
 		</div>
@@ -88,6 +108,7 @@ h3.panel-title{
 			</div>
 		</div>
 	</div>
+	
 </div>
 <script type="text/javascript">
 	$(function () { $('#collapseFive').collapse({
@@ -95,6 +116,6 @@ h3.panel-title{
 	})});
 	$(function () { $('#collapseFour').collapse('show')});
 	$(function () { $('#collapseTwo').collapse('show')});
-	$(function () { $('#collapseThree').collapse('show')});
-	$(function () { $('#collapseOne').collapse('show')});
+	$(function () { $('#collapseThree').collapse('toggle')});
+	$(function () { $('#collapseOne').collapse('hide')});
 </script>  
