@@ -2,27 +2,36 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Platform{% endblock %}
-{% block page_content %}
-<style type="text/css">
-#submit_data{
-    float:right;
-}
-</style>
-<div class="page-header">
-    <h1>
-    {% if current_user.is_authenticated -%}    	
-	    {% include "auth/collapse.html" with context %}
-	    {% if submit_form %}
-	    <div class="col-md-1" id = "submit_data">
-	    {{ wtf.quick_form(submit_form,button_map={'submit':'success'},form_type = 'horizontal') }}
-	    <br>
-		</div>
-		{% endif %}
-    {% endif %}
-    </h1>
+
+<div class="container-fluid">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    
+    {% block page_content %}
+	<style type="text/css">
+	#submit_data{
+	    float:right;
+	}
+	</style>
+	<div class="page-header">
+	    <h1>
+	    {% if current_user.is_authenticated -%}    	
+		    {% include "auth/collapse.html" with context %}
+		    {% if submit_form %}
+		    <div class="col-md-1" id = "submit_data">
+		    {{ wtf.quick_form(submit_form,button_map={'submit':'success'},form_type = 'horizontal') }}
+		    <br>
+			</div>
+			{% endif %}
+	    {% endif %}
+	    </h1>
+	</div>
+	{% endblock %}
 </div>
 
-
-{% endblock %}
 
 
