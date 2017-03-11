@@ -1,12 +1,8 @@
 
 <style type="text/css">
-h2.panel-title{
+h1.panel-title{
     font-size:32px;
     background:#E6E6FA;
-}
-h3.panel-title{
-    font-size:32px;
-    background:#87CEFA;
 }
 </style>
 					
@@ -14,92 +10,100 @@ h3.panel-title{
 	
 	<div class="panel panel-data">
 		<div class="panel-heading">
-			<h2 class="panel-title">
+			<h1 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseOne" color="green">
 				   1.create data block 
 				   {% if verify['data'] %} <img src='../../../static/right.gif'> 
 				   {% endif %}
 				</a>
-			</h2>
+			</h1>
 		</div>
 		<div id="collapseOne" class="panel-collapse collapse in">
 			<div class="panel-body">
-				<div>
-				{% include "auth/data.html" %}
-				</div>
+				<h2>
+				{% include "auth/data.html" with context %}
+				</h2>
 			</div>
 		</div>
 	</div>
 	
 	<div class="panel panel-setting">
 		<div class="panel-heading">
-			<h3 class="panel-title">
+			<h1 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseTwo">
 				   2.set global config
 				   {% if verify['global'] %} <img src='../../../static/right.gif'> 
 				   {% endif %}
 				</a>
-			</h3>
+			</h1>
 		</div>
 		<div id="collapseTwo" class="panel-collapse collapse">
 			<div class="panel-body">
+				<h2>
 				second
+				</h2>
 			</div>
 		</div>
 	</div>
 	
 	<div class="panel panel-commodity_set">
 		<div class="panel-heading">
-			<h2 class="panel-title">
+			<h1 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseThree">
 					3.select commodity_set
 					{% if verify['set'] %} <img src='../../../static/right.gif'> 
 				    {% endif %}
 				</a>
-			</h2>
+			</h1>
 		</div>
 		<div id="collapseThree" class="panel-collapse collapse">
 			<div class="panel-body">
+				<h2>
 				third
+				</h2>
 			</div>
 		</div>
 	</div>
 	
 	<div class="panel panel-entry">
 		<div class="panel-heading">
-			<h3 class="panel-title">
+			<h1 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseFour">
 					4.set entry rules
 					{% if verify['entry'] %} <img src='../../../static/right.gif'> 
 				    {% endif %}
 				</a>
-			</h3>
+			</h1>
 		</div>
 		<div id="collapseFour" class="panel-collapse collapse">
 			<div class="panel-body">
-				{% include "auth/entry.html" %}
+				<h2>
+				fourth
+				</h2>
 			</div>
 		</div>
 	</div>
 	
 	<div class="panel panel-exit">
 		<div class="panel-heading">
-			<h2 class="panel-title">
+			<h1 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseFive">
 					5.set exit rules
 					{% if verify['exit'] %} <img src='../../../static/right.gif'> 
 				    {% endif %}
 				</a>
-			</h2>
+			</h1>
 		</div>
 		<div id="collapseFive" class="panel-collapse collapse">
 			<div class="panel-body">
+				<h2>
 				fifth
+				</h2>
 			</div>
 		</div>
 	</div>

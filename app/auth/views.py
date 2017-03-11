@@ -4,20 +4,26 @@ from flask_login import login_user, logout_user, login_required, \
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm
+from .forms import LoginForm,SubmitForm,DataForm
 
 @auth.context_processor
-def inject_user():
+def inject_var():
+    if session.has_key('verify') and session.has_key('data_blcok'):
+        return dict(verify = session['verify'],data_block = session['data_blcok'])
+    
     if session.has_key('verify'):
         return dict(verify = session['verify'])
-
+    
 def init_session(_session):
+    
     _session['verify'] = {}
     _session['verify']['data'] = True
     _session['verify']['global'] = False
     _session['verify']['entry'] = False
     _session['verify']['exit'] = False
     _session['verify']['set'] = False
+    
+    _session['data_blcok'] = ""
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -43,9 +49,11 @@ def logout():
 @auth.route('/fill',methods = ['GET','POST'])
 def fill():
     sub_form = SubmitForm()
+    data_form = DataForm()
     if sub_form.validate_on_submit():
         flash('Ready to back Testing')
-        print session['verify']
-    return render_template('auth/fill.html',submit_form = sub_form)
+    if data_form.validate_on_submit():
+        flash('generate data block')
+    return render_template('auth/fill.html',submit_form = sub_form, data_form = data_form)
 
 
