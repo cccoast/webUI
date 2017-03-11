@@ -22,7 +22,9 @@ h3.panel-title{
 		</div>
 		<div id="collapseOne" class="panel-collapse collapse in">
 			<div class="panel-body">
+				<div class = "container">
 				{% include "auth/data.html" %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -93,6 +95,6 @@ h3.panel-title{
 	})});
 	$(function () { $('#collapseFour').collapse('show')});
 	$(function () { $('#collapseTwo').collapse('show')});
-	$(function () { $('#collapseThree').collapse('toggle')});
-	$(function () { $('#collapseOne').collapse('hide')});
+	$(function () { $('#collapseThree').collapse('show')});
+	$(function () { $('#collapseOne').collapse('show')});
 </script>  
