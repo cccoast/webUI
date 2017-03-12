@@ -13,7 +13,7 @@
 	    <h1>
 	    {% if current_user.is_authenticated -%}    	
 		    {% include "auth/collapse.html" with context %}
-		    {% if config_ready %}
+		    {% if submit_form and config_ready %}
 		    <div class="col-md-1" id = "submit_data">
 		    {{ wtf.quick_form(submit_form,button_map={'submit1':'success'},form_type = 'horizontal') }}
 		    <br>

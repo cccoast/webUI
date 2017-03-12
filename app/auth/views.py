@@ -3,7 +3,10 @@ from flask_login import login_user, logout_user, login_required, current_user,fr
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm,DataForm
+from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm
+
+def generate_block():
+    return True
 
 @auth.context_processor
 def inject_var():
@@ -52,23 +55,41 @@ def logout():
 def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
- 
+    modify_form = ModifyDataForm()
+    
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
     
     print session['verify']
-    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form)
+    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form,modify_form = modify_form)
 
 @fresh_login_required
 @auth.route('/fill_data',methods = ['GET','POST'])
 def fill_data():
     sub_form = SubmitForm()
     data_form = DataForm()
+    modify_form = ModifyDataForm()
 
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
-        session['verify']['data'] = True
+        if generate_block():
+            session['verify']['data'] = True
+        else:
+            session['verify']['data'] = False
     
-    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form)
+    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form,modify_form = modify_form)
+    
+@fresh_login_required
+@auth.route('/modify_data',methods = ['GET','POST'])
+def modify_data():
+    modify_form = ModifyDataForm()
+    data_form = DataForm()
+    
+    if modify_form.submit3.data and modify_form.validate_on_submit():
+        flash('modify data block')
+        
+    session['verify']['data'] = False
+    return render_template('auth/fill.html',data_form = data_form,modify_form = ModifyDataForm())
+
 
 
