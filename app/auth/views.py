@@ -8,22 +8,26 @@ from .forms import LoginForm,SubmitForm,DataForm
 
 @auth.context_processor
 def inject_var():
-    if session.has_key('verify') and session.has_key('data_blcok'):
-        return dict(verify = session['verify'],data_block = session['data_blcok'])
     
+    ret = {}
     if session.has_key('verify'):
-        return dict(verify = session['verify'])
+        ret['verify'] = session['verify']
+    if session.has_key('data_block'):
+        ret['data_block'] = session['data_block']
+    return ret
     
 def init_session(_session):
     
-    _session['verify'] = {}
-    _session['verify']['data'] = True
-    _session['verify']['global'] = False
-    _session['verify']['entry'] = False
-    _session['verify']['exit'] = False
-    _session['verify']['set'] = False
+    if not _session.has_key('verify'):
+        _session['verify'] = {}
+        _session['verify']['data'] = True
+        _session['verify']['global'] = False
+        _session['verify']['entry'] = False
+        _session['verify']['exit'] = False
+        _session['verify']['set'] = False
     
-    _session['data_blcok'] = ""
+    if not _session.has_key('data_block'):
+        _session['data_blcok'] = {}
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -50,10 +54,12 @@ def logout():
 def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
-    if sub_form.validate_on_submit():
-        flash('Ready to back Testing')
-    if data_form.validate_on_submit():
+    if data_form.submit2.data and data_form.validate_on_submit():
         flash('generate data block')
+        
+    if sub_form.submit1.data and sub_form.validate_on_submit():
+        flash('Ready to back Testing')
+    
     return render_template('auth/fill.html',submit_form = sub_form, data_form = data_form)
 
 

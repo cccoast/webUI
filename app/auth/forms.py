@@ -13,8 +13,10 @@ class LoginForm(FlaskForm):
            
 class DataForm(FlaskForm):
     
-    start_date = DateField('start_date',id = 'start_date',validators=[Required()])
-    end_date   = DateField('end_date', id = 'end_date',validators=[Required()])
+    start_date = DateField('start_date',id = 'start_date', format='%Y%m%d',validators=[Required()],
+                           render_kw={'rows': 20, 'placeholder': 20160101})
+    end_date   = DateField('end_date', id = 'end_date',format='%Y%m%d',validators=[Required()],
+                           render_kw={'rows': 20, 'placeholder': 20160101})
     level      = RadioField('level', id = 'level',validators=[Required()],
                             choices = [('tick','tick'),
                                        ('1min','1min'),
@@ -40,10 +42,10 @@ class DataForm(FlaskForm):
                             choices = [('if0001','if0001'),
                                        ('if0002','if0002')],
                                       )
-    submit     =  SubmitField('generate',id='generate')
+    submit2     =  SubmitField('generate',id='generate')
     
 class SubmitForm(FlaskForm):
     
-    submit = SubmitField('Run',id='submit_backtest')
+    submit1 = SubmitField('Run',id='submit_backtest')
 
 
