@@ -8,7 +8,6 @@ class LoginForm(FlaskForm):
     
     username = StringField('UserName', validators=[Required(), Length(1, 64)])
     password = PasswordField('Password', validators=[Required(), Length(1, 64)])
-    remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
            
 class DataForm(FlaskForm):
@@ -44,8 +43,14 @@ class DataForm(FlaskForm):
                                       )
     submit2     =  SubmitField('generate',id='generate')
     
+class ModifyDataForm(FlaskForm):
+    
+    submit3 = SubmitField('ModifyData',id='modify_data')
+    
 class SubmitForm(FlaskForm):
     
     submit1 = SubmitField('Run',id='submit_backtest')
+    
+    
 
 
