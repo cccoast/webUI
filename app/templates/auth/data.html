@@ -1,5 +1,26 @@
 {% if data_form %}
-
-{{ wtf.quick_form(data_form,button_map={'submit2':'success'},form_type = 'horizontal') }}
-
+<form method="POST">
+	<style type="text/css">
+	#submit2_data{
+	    float:right;
+	}
+	</style>	
+    {{ data_form.hidden_tag() }}
+    <div class="row">
+	  <div class="col-md-6"><h2>{{ data_form.start_date.label }} {{ data_form.start_date }}</h2></div>
+	  <div class="col-md-6"><h2>{{ data_form.end_date.label }} {{ data_form.end_date }}</h2></div>
+	</div>
+	<div class="row">
+	<div class="col-md-4"><h3>{{ data_form.level.label }} {{ data_form.level }}</h3></div>
+	<div class="col-md-4"><h3>{{ data_form.adjust.label }} {{ data_form.adjust }}</h3></div>
+	<div class="col-md-4"><h3>{{ data_form.type.label }} {{ data_form.type }}</h3></div>
+	</div>
+	<div class="row">
+	<div class="col-md-6"><h3>{{ data_form.indicators.label }}<br>{{ data_form.indicators }}</h3></div>
+	<div class="col-md-6"><h3>{{ data_form.instruments.label }}<br> {{ data_form.instruments }}</h3></div>
+	</div>
+	<div class="col-md-1 success" id = "submit2_data">
+	<h3>{{ wtf.form_field(data_form.submit2, button_map={'submit2':'success'}) }}</h3>
+	</div>
+</form>
 {% endif %}

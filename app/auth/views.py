@@ -20,7 +20,7 @@ def init_session(_session):
     
     if not _session.has_key('verify'):
         _session['verify'] = {}
-        _session['verify']['data'] = True
+        _session['verify']['data'] = False
         _session['verify']['global'] = False
         _session['verify']['entry'] = False
         _session['verify']['exit'] = False
@@ -28,6 +28,9 @@ def init_session(_session):
     
     if not _session.has_key('data_block'):
         _session['data_blcok'] = {}
+        
+    if not _session.has_key('config_ready'):
+        _session['config_ready'] = True
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -54,12 +57,13 @@ def logout():
 def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
+
     if data_form.submit2.data and data_form.validate_on_submit():
-        flash('generate data block')
-        
+        flash('Ready to back Testing')
+       
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
     
-    return render_template('auth/fill.html',submit_form = sub_form, data_form = data_form)
+    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form)
 
 

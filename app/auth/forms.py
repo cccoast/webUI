@@ -14,10 +14,10 @@ class LoginForm(FlaskForm):
 class DataForm(FlaskForm):
     
     start_date = DateField('start_date',id = 'start_date', format='%Y%m%d',validators=[Required()],
-                           render_kw={'rows': 20, 'placeholder': 20160101})
+                           render_kw={'placeholder': 20160101})
     end_date   = DateField('end_date', id = 'end_date',format='%Y%m%d',validators=[Required()],
-                           render_kw={'rows': 20, 'placeholder': 20160101})
-    level      = RadioField('level', id = 'level',validators=[Required()],
+                           render_kw={'placeholder': 20160101})
+    level      = RadioField('level',  id = 'level',validators=[Required()],
                             choices = [('tick','tick'),
                                        ('1min','1min'),
                                        ('5min','5min'),

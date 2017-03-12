@@ -19,7 +19,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseOne" class="panel-collapse collapse">
+		<div id="collapseOne" class="panel-collapse collapse {%if not config_ready %}in{% endif %}">
 			<div class="panel-body">
 				<h2>
 				{% include "auth/data.html" with context %}
