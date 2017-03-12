@@ -60,7 +60,6 @@ def fill():
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
     
-    print session['verify']
     return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form,modify_form = modify_form)
 
 @fresh_login_required
@@ -76,6 +75,8 @@ def fill_data():
             session['verify']['data'] = True
         else:
             session['verify']['data'] = False
+            
+    #@to do, maintain a dict here,and render_template depend on wether data is true
     
     return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form,modify_form = modify_form)
     

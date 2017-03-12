@@ -32,33 +32,45 @@
 	#modify_data{
 	    float:right;
 	}
-	</style>
+	.key{
+	    background:#E6E6FA;
+	}
+	.value{
+	    background:#B0E0E6;
+	}
+</style>
+<table class = "table table-bordered table-condensed">
+<tr>
 <div class="row">
-  <div class="col-md-2">start_date:</div>
-  <div class="col-md-4"></div>
-  <div class="col-md-2">end_date:</div>
-  <div class="col-md-4"></div>
+  <div class="col-md-2 key">start_date:</div>
+  <div class="col-md-4 value">{{data_form.start_date.data}}</div>
+  <div class="col-md-2 key">end_date:</div>
+  <div class="col-md-4 value">{{data_form.end_date.data}}</div>
 </div>
-<br>
+</tr>
+<tr>
 <div class="row">
-  <div class="col-md-2">level:</div>
-  <div class="col-md-2"></div>
-  <div class="col-md-2">adjust</div>
-  <div class="col-md-2"></div>
-  <div class="col-md-2">type:</div>
-  <div class="col-md-2"></div>
+  <div class="col-md-2 key">level:</div>
+  <div class="col-md-2 value">{{data_form.level.data}}</div>
+  <div class="col-md-2 key">adjust</div>
+  <div class="col-md-2 value">{{data_form.adjust.data}}</div>
+  <div class="col-md-2 key">type:</div>
+  <div class="col-md-2 value">{{data_form.type.data}}</div>
 </div>
-<br>
+</tr>
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">indicators:</div>
+  <div class="col-md-10 value"> {% for i in data_form.indicators.data -%} {{ i | striptags}} &nbsp;{%- endfor %}</div>
+</div>
+</tr>
+<tr>
 <div class="row">
-  <div class="col-md-2">indicators:</div>
-  <div class="col-md-10"></div>
+  <div class="col-md-2 key">instruments:</div>
+  <div class="col-md-10 value">{% for i in data_form.instruments.data -%} {{ i | striptags}} &nbsp;{%- endfor %}</div>
 </div>
-<br>
-<div class="row">
-  <div class="col-md-2">indicators:</div>
-  <div class="col-md-10"></div>
-</div>
-<br>
+</tr>
+</tr>
 <div class="row">
   <form method="POST"  action="{{ url_for('auth.modify_data') }}">
   {{ modify_form.hidden_tag() }}
@@ -67,4 +79,6 @@
   </div>
   </form>
 </div>
+</tr>
+</table>
 {% endif %}
