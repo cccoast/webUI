@@ -4,9 +4,9 @@
 
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" href="static/mine.css">
-<link rel="stylesheet" href="static/bootstrap-table.min.css">
-<link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="{{ url_for('static', filename='mine.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-table.min.css') }}">
+<link rel="stylesheet" href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" media="screen">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 {% endblock %}
@@ -60,7 +60,7 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="static/bootstrap-table.min.js"></script>
-<script src="static/mine.js"></script>
+<script src="{{ url_for('static', filename='bootstrap-table.min.js') }}"></script>
+<script src="{{ url_for('static', filename='mine.js') }}"></script>
 {{ moment.include_moment() }}
 {% endblock %}

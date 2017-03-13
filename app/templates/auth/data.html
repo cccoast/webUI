@@ -43,31 +43,31 @@
 <tr>
 <div class="row">
   <div class="col-md-2 key">start_date:</div>
-  <div class="col-md-4 value">{{data_form.start_date.data}}</div>
+  <div class="col-md-4 value">{{data_block['start_date']}}</div>
   <div class="col-md-2 key">end_date:</div>
-  <div class="col-md-4 value">{{data_form.end_date.data}}</div>
+  <div class="col-md-4 value">{{data_block['end_date']}}</div>
 </div>
 </tr>
 <tr>
 <div class="row">
   <div class="col-md-2 key">level:</div>
-  <div class="col-md-2 value">{{data_form.level.data}}</div>
+  <div class="col-md-2 value">{{data_block['level']}}</div>
   <div class="col-md-2 key">adjust</div>
-  <div class="col-md-2 value">{{data_form.adjust.data}}</div>
+  <div class="col-md-2 value">{{data_block['adjust']}}</div>
   <div class="col-md-2 key">type:</div>
-  <div class="col-md-2 value">{{data_form.type.data}}</div>
+  <div class="col-md-2 value">{{data_block['type']}}</div>
 </div>
 </tr>
 <tr>
 <div class="row" >
   <div class="col-md-2 key">indicators:</div>
-  <div class="col-md-10 value"> {% for i in data_form.indicators.data -%} {{ i | striptags}} &nbsp;{%- endfor %}</div>
+  <div class="col-md-10 value">{{data_block['indicators']}}</div>
 </div>
 </tr>
 <tr>
 <div class="row">
   <div class="col-md-2 key">instruments:</div>
-  <div class="col-md-10 value">{% for i in data_form.instruments.data -%} {{ i | striptags}} &nbsp;{%- endfor %}</div>
+  <div class="col-md-10 value">{{data_block['instruments']}}</div>
 </div>
 </tr>
 </tr>
