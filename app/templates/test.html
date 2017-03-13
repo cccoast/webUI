@@ -1,0 +1,13 @@
+{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<title>Upload File</title>
+<h1>upload picture</h1>
+<form method="POST" enctype="multipart/form-data">
+	 {{ form.hidden_tag() }}
+     {{ wtf.form_field(form.upload_file) }}
+     {{ wtf.form_field(form.submit) }}
+</form>
+
+{% if file_url %}
+<br><a src="{{ file_url }}"></a>
+{% endif %}
