@@ -23,6 +23,13 @@
 	<div class="row">
 	<h2>{{ wtf.form_field(data_form.instruments,form_type = 'horizontal') }}</h3>
 	</div>
+	
+	<!--
+	<div class="row">
+	<h2>Or Upload File {{ wtf.form_field(data_form.instruments,form_type = 'horizontal') }}</h3>
+	</div>
+	-->
+	
 	<div class="col-md-1 success" id = "submit2_data">
 	<h3>{{ wtf.form_field(data_form.submit2, button_map={'submit2':'success'}) }}</h3>
 	</div>
@@ -46,7 +53,7 @@
 	    background:#E6E6FA;
 	}
 	.value{
-	    background:#B0E0E6;
+	    background:#E6E6FA;
 	}
 </style>
 <table class = "table table-bordered table-condensed">

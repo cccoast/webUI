@@ -11,7 +11,6 @@ def generate_block(cookie,data_form):
     adjust,type,level = data_form.adjust.data,data_form.type.data,data_form.level.data
     indicators = ','.join(data_form.indicators.data)
     instruments = ','.join(data_form.instruments.data)
-#     print start_date,end_date,adjust,type,level,indicators,instruments
     cookie['start_date'],cookie['end_date'],cookie['adjust'],cookie['type'],cookie['level'] = start_date,end_date,adjust,type,level
     cookie['indicators'],cookie['instruments'] = indicators,instruments
     return True
@@ -69,7 +68,6 @@ def login():
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
 
-
 @auth.route('/logout')
 @login_required
 def logout():
@@ -90,8 +88,7 @@ def fill():
     
     args = {}
     args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
-        = sub_form, data_form, modify_form, upload_instruments
-        
+        = sub_form, data_form, modify_form, upload_instruments    
     return render_template('auth/fill.html',**args)
 
 @fresh_login_required
@@ -101,14 +98,15 @@ def fill_data():
     data_form = DataForm()
     modify_form = ModifyDataForm()
     upload_instruments = UploadForm()
-
+    
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
         if generate_block(session['data_block'],data_form):
             session['verify']['data'] = True
+            check_backtest(session)
         else:
             session['verify']['data'] = False
-            
+
     args = {}
     args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
         = sub_form, data_form, modify_form,upload_instruments
