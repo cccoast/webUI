@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user,fr
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm
+from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,UploadForm()
 
 def generate_block(cookie,data_form):
     start_date,end_date = data_form.start_date.data,data_form.end_date.data
@@ -77,6 +77,7 @@ def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
+    upload_instruments = UploadForm()
     
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
@@ -89,18 +90,18 @@ def fill_data():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
+    upload_instruments = UploadForm()
 
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
         if generate_block(session['data_block'],data_form):
             session['verify']['data'] = True
+            check_backtest(session)
         else:
             session['verify']['data'] = False
             
     args = {}
-    args['submit_form'] = sub_form
-    args['data_form'] = data_form
-    args['modify_form'] = modify_form
+    args['submit_form'],args['data_form'],args['modify_form'] = sub_form, data_form, modify_form
     return render_template('auth/fill.html',**args)
     
 @fresh_login_required
@@ -115,8 +116,7 @@ def modify_data():
         flash('modify data block')
         
     args = {}
-    args['data_form'] = data_form
-    args['modify_form'] = modify_form
+    args['data_form'],args['modify_form'] = data_form,modify_form    
     return render_template('auth/fill.html',**args)
 
 

@@ -4,6 +4,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateF
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models import User
+from .. import ufile
 
 class LoginForm(FlaskForm):
     
@@ -39,7 +40,7 @@ class DataForm(FlaskForm):
                              choices = [('lastPrice','lastPrice'),
                                        ('culVolume','culVolume')],
                                      )
-    instruments = SelectMultipleField('instruments', id = 'instruments',validators=[Required()],
+    instruments = SelectMultipleField('instruments', id = 'instruments',
                             choices = [('if0001','if0001'),
                                        ('if0002','if0002')],
                                       )
@@ -52,6 +53,12 @@ class ModifyDataForm(FlaskForm):
 class SubmitForm(FlaskForm):
     
     submit1 = SubmitField('Run',id='submit_backtest')
+    
+class UploadForm(FlaskForm):
+    upload_file = FileField(validators=[
+        FileAllowed(ufile, 'IMG allowed'), 
+        FileRequired('not selected')])
+    submit4 = SubmitField('upload')
     
     
 
