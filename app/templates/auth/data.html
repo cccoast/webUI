@@ -27,6 +27,16 @@
 	<h3>{{ wtf.form_field(data_form.submit2, button_map={'submit2':'success'}) }}</h3>
 	</div>
 </form>
+
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('auth.upload_inss') }}">
+{{ upload_inss.hidden_tag() }}
+{% if upload_inss_name %}
+<h3>you have upload <u>{{ upload_inss_name }}</u></h3>
+{% endif %}
+<h3>Or Upload Instruments File {{ upload_inss.upload_file -}}</h3> 
+<h2>{{- wtf.form_field(upload_inss.submit4, button_map={'submit4':'success'}) }}</h2>
+</form>
+
 {% else %}
 <style type="text/css">
 	#modify_data{

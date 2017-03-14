@@ -3,7 +3,8 @@ from flask_login import login_user, logout_user, login_required, current_user,fr
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm
+from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,UploadForm
+from .. import ufile
 
 def generate_block(cookie,data_form):
     start_date,end_date = data_form.start_date.data,data_form.end_date.data
@@ -24,6 +25,8 @@ def inject_var():
         ret['data_block'] = session['data_block']
     if 'config_ready' in session:
         ret['config_ready'] = session['config_ready']
+    if 'upload_inss_name' in session:
+        ret['upload_inss_name'] = session['upload_inss_name']
     return ret
 
 def check_backtest(cookie):
@@ -50,6 +53,9 @@ def init_session(cookie):
     
     if 'config_ready' not in cookie:    
         cookie['config_ready'] = False
+    
+    if 'upload_inss_name' not in cookie:
+        cookie['upload_inss_name'] = None
         
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -77,18 +83,24 @@ def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
+    upload_instruments = UploadForm()
     
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
     
-    return render_template('auth/fill.html',submit_form = sub_form,data_form = data_form,modify_form = modify_form)
+    args = {}
+    args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
+        = sub_form, data_form, modify_form, upload_instruments
+        
+    return render_template('auth/fill.html',**args)
 
 @fresh_login_required
-@auth.route('/fill_data',methods = ['GET','POST'])
+@auth.route('/fill_data',methods = ['POST',])
 def fill_data():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
+    upload_instruments = UploadForm()
 
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
@@ -98,26 +110,30 @@ def fill_data():
             session['verify']['data'] = False
             
     args = {}
-    args['submit_form'] = sub_form
-    args['data_form'] = data_form
-    args['modify_form'] = modify_form
+    args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
+        = sub_form, data_form, modify_form,upload_instruments
     return render_template('auth/fill.html',**args)
     
 @fresh_login_required
-@auth.route('/modify_data',methods = ['GET','POST'])
+@auth.route('/modify_data',methods = ['POST',])
 def modify_data():
     modify_form = ModifyDataForm()
-    data_form = DataForm()
-    
     session['verify']['data'] = False
     session['config_ready'] = False
     if modify_form.submit3.data and modify_form.validate_on_submit():
         flash('modify data block')
         
-    args = {}
-    args['data_form'] = data_form
-    args['modify_form'] = modify_form
-    return render_template('auth/fill.html',**args)
+    return redirect(url_for('auth.fill'))
 
-
+@fresh_login_required
+@auth.route('/upload_inss',methods = ['POST',])
+def upload_inss():
+    form = UploadForm()
+    if form.validate_on_submit():
+        filename = ufile.save(form.upload_file.data)
+        session['upload_inss_name'] = filename
+        file_url = ufile.url(filename)
+    else:
+        file_url = None    
+    return redirect(url_for('auth.fill'))
 
