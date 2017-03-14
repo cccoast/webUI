@@ -56,7 +56,7 @@ class SubmitForm(FlaskForm):
     
 class UploadForm(FlaskForm):
     upload_file = FileField(validators=[
-        FileAllowed(ufile, 'IMG allowed'), 
+        FileAllowed(ufile, 'TXT allowed'), 
         FileRequired('not selected')])
     submit4 = SubmitField('upload')
     
