@@ -1,5 +1,0 @@
-1.漢字路徑問題
-2.導出文件夾合法性
-3.lastMinitute ( check lastSpot volume )
-4.導出文件夾加日期
-5.export default path ( solved )

@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user,fr
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,UploadForm
+from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm
 from .. import ufile
 
 def generate_block(cookie,data_form):
@@ -75,29 +75,27 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
 
-@fresh_login_required
+@login_required
 @auth.route('/fill',methods = ['GET','POST'])
 def fill():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
-    upload_instruments = UploadForm()
     
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Ready to back Testing')
     
     args = {}
-    args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
-        = sub_form, data_form, modify_form, upload_instruments    
+    args['submit_form'],args['data_form'],args['modify_form']\
+        = sub_form, data_form, modify_form  
     return render_template('auth/fill.html',**args)
 
-@fresh_login_required
+@login_required
 @auth.route('/fill_data',methods = ['POST',])
 def fill_data():
     sub_form = SubmitForm()
     data_form = DataForm()
     modify_form = ModifyDataForm()
-    upload_instruments = UploadForm()
     
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
@@ -106,13 +104,17 @@ def fill_data():
             check_backtest(session)
         else:
             session['verify']['data'] = False
+        if data_form.or_upload_file.data:   
+            filename = ufile.save(data_form.or_upload_file.data)
+            session['upload_inss_name'] = filename
+            file_url = ufile.url(filename)
 
     args = {}
-    args['submit_form'],args['data_form'],args['modify_form'],args['upload_inss'] \
-        = sub_form, data_form, modify_form,upload_instruments
+    args['submit_form'],args['data_form'],args['modify_form'] \
+        = sub_form, data_form, modify_form 
     return render_template('auth/fill.html',**args)
     
-@fresh_login_required
+@login_required
 @auth.route('/modify_data',methods = ['POST',])
 def modify_data():
     modify_form = ModifyDataForm()
@@ -123,15 +125,4 @@ def modify_data():
         
     return redirect(url_for('auth.fill'))
 
-@fresh_login_required
-@auth.route('/upload_inss',methods = ['POST',])
-def upload_inss():
-    form = UploadForm()
-    if form.validate_on_submit():
-        filename = ufile.save(form.upload_file.data)
-        session['upload_inss_name'] = filename
-        file_url = ufile.url(filename)
-    else:
-        file_url = None    
-    return redirect(url_for('auth.fill'))
 

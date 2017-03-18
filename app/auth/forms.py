@@ -44,6 +44,9 @@ class DataForm(FlaskForm):
                             choices = [('if0001','if0001'),
                                        ('if0002','if0002')],
                                       )
+    
+    or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
+    
     submit2     =  SubmitField('generate',id='generate')
     
 class ModifyDataForm(FlaskForm):
@@ -53,12 +56,7 @@ class ModifyDataForm(FlaskForm):
 class SubmitForm(FlaskForm):
     
     submit1 = SubmitField('Run',id='submit_backtest')
-    
-class UploadForm(FlaskForm):
-    upload_file = FileField(validators=[
-        FileAllowed(ufile, 'TXT allowed'), 
-        FileRequired('not selected')])
-    submit4 = SubmitField('upload now')    
+     
 
 
 
