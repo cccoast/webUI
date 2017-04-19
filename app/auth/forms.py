@@ -37,8 +37,8 @@ class DataForm(FlaskForm):
                             default = 'future'
                             )
     indicators = SelectMultipleField('indicators', id = 'indicators',validators=[Required()],
-                             choices = [('lastPrice','lastPrice'),
-                                       ('culVolume','culVolume')],
+                             choices = [('TR','TR'),
+                                       ('ATR','ATR')],
                                      )
     instruments = SelectMultipleField('instruments', id = 'instruments',
                             choices = [('if0001','if0001'),
