@@ -11,3 +11,7 @@ _mailinglist
 .tox
 .cache/
 .idea/
+
+*.csv
+*.png
+*.txt
