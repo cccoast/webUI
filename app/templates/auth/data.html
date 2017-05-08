@@ -1,10 +1,12 @@
 {% if not verify['data'] %}
 <form method="POST" enctype="multipart/form-data" action="{{ url_for('auth.fill_data') }}">
+	
 	<style type="text/css">
 	#submit2_data{
 	    float:right;
 	}
-	</style>	
+	</style>
+	
     {{ data_form.hidden_tag() }}
     
     <div class="row">
@@ -39,6 +41,7 @@
 	
 </form>
 {% else %}
+
 <style type="text/css">
 	#modify_data{
 	    float:right;
@@ -47,7 +50,9 @@
 	    background:#E6E6FA;
 	}
 </style>
+
 <table class = "table table-bordered table-condensed">
+
 <tr>
 <div class="row">
   <div class="col-md-2 key">start_date:</div>
@@ -56,6 +61,7 @@
   <div class="col-md-4 value">{{data_block['end_date']}}</div>
 </div>
 </tr>
+
 <tr>
 <div class="row">
   <div class="col-md-2 key">level:</div>
@@ -64,27 +70,31 @@
   <div class="col-md-4 value">{{data_block['adjust']}}</div>
 </div>
 </tr>
+
 <tr>
 <div class="row" >
   <div class="col-md-2 key">indicators:</div>
   <div class="col-md-10 value"><h4>{{data_block['indicators']}}</h4></div>
 </div>
 </tr>
+
 <tr>
 <div class="row">
   <div class="col-md-2 key">instruments:</div>
-  <div class="col-md-10 value">{{data_block['instruments']}}</div>
+  <div class="col-md-10 value"><h4>{{data_block['instruments']}}</h4></div>
 </div>
 </tr>
-</tr>
+
+<tr>
 <div class="row">
   <form method="POST"  action="{{ url_for('auth.modify_data') }}">
-  {{ modify_form.hidden_tag() }}
+  {{ modify_data_form.hidden_tag() }}
   <div class="col-md-1 success" id = "modify_data">
-  <h3>{{ wtf.form_field(modify_form.submit3, button_map={'submit3':'success'}) }}</h3>
+  <h3>{{ wtf.form_field(modify_data_form.submit3, button_map={'submit3':'success'}) }}</h3>
   </div>
   </form>
 </div>
 </tr>
+
 </table>
 {% endif %}

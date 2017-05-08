@@ -14,9 +14,11 @@ class LoginForm(FlaskForm):
     
     username = StringField('UserName', validators=[Required(), Length(1, 64)])
     password = PasswordField('Password', validators=[Required(), Length(1, 64)])
-    remember_me = BooleanField('Keep me logged in')
+#     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
-           
+
+'''create shm''' 
+
 class DataForm(FlaskForm):
     
     start_date = IntegerField('start_date',id = 'start_date',validators=[Required()],
@@ -45,11 +47,33 @@ class DataForm(FlaskForm):
                             default = ('if0001','if0002'))
     
     #or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
-    submit2     =  SubmitField('generate',id='generate')
+    submit2     =  SubmitField('generate',id='generate_data')
     
 class ModifyDataForm(FlaskForm):
     
     submit3 = SubmitField('ModifyData',id='modify_data')
+
+'''ComSet'''
+
+class ComsetForm(FlaskForm):
+    
+    comset_1 = StringField('No.1',id = 'comset_1',validators = [],
+                             render_kw={'placeholder':','.join(['if0001'])},
+                             default = ','.join(['if0001']) )
+                             
+    comset_2 = StringField('No.2',id = 'comset_2',validators = [],
+                             render_kw={'placeholder':','.join(['if0001','if0002'])},
+                             default = ','.join(['if0001','if0002']) )  
+    
+    comset_3 = StringField('No.3',id = 'comset_3',validators = [],
+                         render_kw={'placeholder':','.join(['if0002'])},
+                         default = ','.join(['if0002']) )
+    
+    submit4     =  SubmitField('submit',id='submit_comset')
+    
+class ModifyComsetForm(FlaskForm):  
+    
+    submit5 = SubmitField('ModifyComset',id='modify_comset')
     
 class SubmitForm(FlaskForm):
     

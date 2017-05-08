@@ -1,0 +1,64 @@
+{% if not verify['set'] %}
+<form method="POST" action="{{ url_for('auth.fill_data') }}">
+	<style type="text/css">
+	#submit4_data{
+	    float:right;
+	}
+	</style>	
+    {{ data_form.hidden_tag() }}
+    
+    <div class="row">
+	<h2>{{ wtf.form_field(data_form.start_date,form_type = 'horizontal') }}</h2>
+	</div>
+	<div class="row">
+	<h2>{{ wtf.form_field(data_form.end_date,form_type = 'horizontal') }}</h2>
+	</div>
+
+	<div class="col-md-1 success" id = "submit2_data">
+	<h3>{{ wtf.form_field(data_form.submit2, button_map={'submit2':'success'}) }}</h3>
+	</div>
+	
+</form>
+{% else %}
+
+<style type="text/css">
+	#modify_set{
+	    float:right;
+	}
+</style>
+
+<table class = "table table-bordered table-condensed">
+
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">Comset 0:</div>
+  <div class="col-md-10 value"><h4>include all instruments</h4></div>
+</div>
+
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">Comset 1:</div>
+  <div class="col-md-10 value"><h4>{{}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <div class="col-md-2 key">Comset 2:</div>
+  <div class="col-md-10 value"><h4>{{}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <form method="POST"  action="{{ url_for('auth.modify_comset_data') }}">
+  {{ modify_form.hidden_tag() }}
+  <div class="col-md-1 success" id = "modify_comset">
+  <h3>{{ wtf.form_field(modify_form.submit5, button_map={'submit5':'success'}) }}</h3>
+  </div>
+  </form>
+</div>
+</tr>
+
+</table>
+{% endif %}
