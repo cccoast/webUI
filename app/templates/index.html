@@ -7,10 +7,16 @@
 <div class="page-header">
     <h1>
     {% if current_user.is_authenticated -%}
-    &nbsp;&nbsp;Welcome {{ current_user.username }}!
-	<a href="{{ url_for('auth.fill') }}">Start to backTest</a>
+    Welcome {{ current_user.username }}!
+    <br><br>
+    <ol>
+	&nbsp;<li><a href="{{ url_for('auth.fill') }}">Index Futures HistRun</a></li>
+	&nbsp;<li>Commodity Futures HistRun</li>
+	&nbsp;<li>Stock HistRun</li>
+	&nbsp;<li>Stock Portfolio Run</li>
+	</ol>
     {% else %}
-    <a href="{{ url_for('auth.login') }}">Click here to login</a>
+    &nbsp;&nbsp;<a href="{{ url_for('auth.login') }}">Click here to login</a>
     {% endif %}
     </h1>
 </div>

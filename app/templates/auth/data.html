@@ -6,42 +6,44 @@
 	}
 	</style>	
     {{ data_form.hidden_tag() }}
+    
     <div class="row">
 	<h2>{{ wtf.form_field(data_form.start_date,form_type = 'horizontal') }}</h2>
 	</div>
 	<div class="row">
 	<h2>{{ wtf.form_field(data_form.end_date,form_type = 'horizontal') }}</h2>
 	</div>
+	
 	<div class="row">
-	<div class="col-md-4"><h3>{{ data_form.level.label }} {{ data_form.level }}</h3></div>
-	<div class="col-md-4"><h3>{{ data_form.adjust.label }} {{ data_form.adjust }}</h3></div>
-	<div class="col-md-4"><h3>{{ data_form.type.label }} {{ data_form.type }}</h3></div>
+	<div class="col-md-4"><h2>{{ data_form.level.label }} {{ data_form.level }}</h3></div>
+	<div class="col-md-4"><h2>{{ data_form.adjust.label }} {{ data_form.adjust }}</h3></div>
 	</div>
+	
 	<div class="row">
 	<h2>{{ wtf.form_field(data_form.indicators,form_type = 'horizontal') }}</h3>
 	</div>
 	<div class="row">
 	<h2>{{ wtf.form_field(data_form.instruments,form_type = 'horizontal') }}</h3>
 	</div>
+	
+	<!--- don't need upload instruments file now 
 	<div class="row">
 	<h2><div class="col-md-6">&nbsp;Or Upload Instruments File:</div></h2>
 	<h3><div class="col-md-2">{{ data_form.or_upload_file }}</div></h3>
 	</div>
+	--->
+	
 	<div class="col-md-1 success" id = "submit2_data">
 	<h3>{{ wtf.form_field(data_form.submit2, button_map={'submit2':'success'}) }}</h3>
 	</div>
+	
 </form>
-
-
 {% else %}
 <style type="text/css">
 	#modify_data{
 	    float:right;
 	}
 	.key{
-	    background:#E6E6FA;
-	}
-	.value{
 	    background:#E6E6FA;
 	}
 </style>
@@ -57,17 +59,15 @@
 <tr>
 <div class="row">
   <div class="col-md-2 key">level:</div>
-  <div class="col-md-2 value">{{data_block['level']}}</div>
-  <div class="col-md-2 key">adjust</div>
-  <div class="col-md-2 value">{{data_block['adjust']}}</div>
-  <div class="col-md-2 key">type:</div>
-  <div class="col-md-2 value">{{data_block['type']}}</div>
+  <div class="col-md-4 value">{{data_block['level']}}</div>
+  <div class="col-md-2 key">adjust:</div>
+  <div class="col-md-4 value">{{data_block['adjust']}}</div>
 </div>
 </tr>
 <tr>
 <div class="row" >
   <div class="col-md-2 key">indicators:</div>
-  <div class="col-md-10 value">{{data_block['indicators']}}</div>
+  <div class="col-md-10 value"><h4>{{data_block['indicators']}}</h4></div>
 </div>
 </tr>
 <tr>

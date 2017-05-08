@@ -5,6 +5,10 @@ from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models import User
 from .. import ufile
+from distutils.text_file import TextFile
+from openpyxl.drawing.text import TextField
+
+basic_indicators = ['LastPrice','Volume','BidPrice','BidVolume','AskPrice','AskVolume','OpenInterest']
 
 class LoginForm(FlaskForm):
     
@@ -16,37 +20,31 @@ class LoginForm(FlaskForm):
 class DataForm(FlaskForm):
     
     start_date = IntegerField('start_date',id = 'start_date',validators=[Required()],
-                           render_kw={'placeholder': '20160101'})
+                           render_kw={'placeholder': '20140101'},default = 20140101)
+    
     end_date   = IntegerField('end_date', id = 'end_date',validators=[Required()],
-                           render_kw={'placeholder': '20160101'})
+                           render_kw={'placeholder': '20141231'},default = 20141231)
+    
     level      = RadioField('level',  id = 'level',validators=[Required()],
-                            choices = [('tick','tick'),
-                                       ('1min','1min'),
-                                       ('5min','5min'),
-                                       ('day','day')],
+                            choices = [('tick','tick'),],
                             default = 'tick'
                             )
+    
     adjust     = RadioField('adjust', id = 'adjust',validators=[Required()],
-                            choices = [('yes','yes'),
-                                       ('no','no')],
-                            default = 'no'
-                            )
-    type       = RadioField('type', id = 'type',validators=[Required()],
-                            choices = [('stock','stock'),
-                                       ('future','future')],
-                            default = 'future'
-                            )
-    indicators = SelectMultipleField('indicators', id = 'indicators',validators=[Required()],
-                             choices = [('TR','TR'),
-                                       ('ATR','ATR')],
-                                     )
+                            choices = [#('yes','yes'),
+                                        ('no','no')],
+                            default = 'no')
+    
+    indicators = StringField('indicators',id = 'indicators',validators = [],
+                             render_kw={'readOnly': "true",'placeholder':','.join(basic_indicators)},
+                             default = ','.join(basic_indicators) )
+    
     instruments = SelectMultipleField('instruments', id = 'instruments',
                             choices = [('if0001','if0001'),
-                                       ('if0002','if0002')],
-                                      )
+                                       ('if0002','if0002'),],
+                            default = ('if0001','if0002'))
     
-    or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
-    
+    #or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
     submit2     =  SubmitField('generate',id='generate')
     
 class ModifyDataForm(FlaskForm):

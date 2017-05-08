@@ -8,12 +8,12 @@ from .. import ufile
 
 def generate_block(cookie,data_form):
     start_date,end_date = data_form.start_date.data,data_form.end_date.data
-    adjust,type,level = data_form.adjust.data,data_form.type.data,data_form.level.data
-    indicators = ','.join(data_form.indicators.data)
+    adjust,level = data_form.adjust.data,data_form.level.data
+    indicators = data_form.indicators.data
     instruments = ','.join(data_form.instruments.data)
-    cookie['start_date'],cookie['end_date'],cookie['adjust'],cookie['type'],cookie['level'] = start_date,end_date,adjust,type,level
+    cookie['start_date'],cookie['end_date'],cookie['adjust'],cookie['level'] = start_date,end_date,adjust,level
     cookie['indicators'],cookie['instruments'] = indicators,instruments
-    return True
+    return 0
 
 @auth.context_processor
 def inject_var():
@@ -22,10 +22,6 @@ def inject_var():
         ret['verify'] = session['verify']
     if 'data_block' in session:
         ret['data_block'] = session['data_block']
-    if 'config_ready' in session:
-        ret['config_ready'] = session['config_ready']
-    if 'upload_inss_name' in session:
-        ret['upload_inss_name'] = session['upload_inss_name']
     return ret
 
 def check_backtest(cookie):
@@ -33,12 +29,10 @@ def check_backtest(cookie):
         for k,v in cookie['verify'].iteritems():
             if not v:
                 return False
-        cookie['config_ready'] = True
         return True
     return False
 
 def init_session(cookie):
-    
     if 'verify' not in cookie:
         cookie['verify'] = {}
         cookie['verify']['data'] = False
@@ -48,13 +42,11 @@ def init_session(cookie):
         cookie['verify']['set'] = False
     
     if 'data_block' not in cookie:
-        cookie['data_block'] = {}
+        cookie['data_block'] = {}  
     
-    if 'config_ready' not in cookie:    
-        cookie['config_ready'] = False
-    
-    if 'upload_inss_name' not in cookie:
-        cookie['upload_inss_name'] = None
+    #for upload instruments files
+#     if 'upload_inss_name' not in cookie:
+#         cookie['upload_inss_name'] = None
         
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -64,7 +56,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next') or url_for('main.index'))
+            return redirect(url_for('main.index'))
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
 
@@ -99,15 +91,15 @@ def fill_data():
     
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Ready to Create Data Block')
-        if generate_block(session['data_block'],data_form):
+        if generate_block(session['data_block'],data_form) == 0:
             session['verify']['data'] = True
-            check_backtest(session)
         else:
             session['verify']['data'] = False
-        if data_form.or_upload_file.data:   
-            filename = ufile.save(data_form.or_upload_file.data)
-            session['upload_inss_name'] = filename
-            file_url = ufile.url(filename)
+            
+#         if data_form.or_upload_file.data:   
+#             filename = ufile.save(data_form.or_upload_file.data)
+#             session['upload_inss_name'] = filename
+#             file_url = ufile.url(filename)
 
     args = {}
     args['submit_form'],args['data_form'],args['modify_form'] \
@@ -119,10 +111,8 @@ def fill_data():
 def modify_data():
     modify_form = ModifyDataForm()
     session['verify']['data'] = False
-    session['config_ready'] = False
     if modify_form.submit3.data and modify_form.validate_on_submit():
         flash('modify data block')
-        
     return redirect(url_for('auth.fill'))
 
 

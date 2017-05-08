@@ -5,8 +5,8 @@
 {% block head %}
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='mine.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-table.min.css') }}">
 <link rel="stylesheet" href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" media="screen">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-table.min.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 {% endblock %}
