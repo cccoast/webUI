@@ -1,5 +1,5 @@
 {% if not verify['data'] %}
-<form method="POST" enctype="multipart/form-data" action="{{ url_for('auth.fill_data') }}">
+<form method="POST" action="{{ url_for('auth.fill_data') }}">
 	
 	<style type="text/css">
 	#submit2_data{
@@ -56,18 +56,18 @@
 <tr>
 <div class="row">
   <div class="col-md-2 key">start_date:</div>
-  <div class="col-md-4 value">{{data_block['start_date']}}</div>
+  <div class="col-md-4 value"><h4>{{data_block['start_date']}}</h4></div>
   <div class="col-md-2 key">end_date:</div>
-  <div class="col-md-4 value">{{data_block['end_date']}}</div>
+  <div class="col-md-4 value"><h4>{{data_block['end_date']}}</h4></div>
 </div>
 </tr>
 
 <tr>
 <div class="row">
   <div class="col-md-2 key">level:</div>
-  <div class="col-md-4 value">{{data_block['level']}}</div>
+  <div class="col-md-4 value"><h4>{{data_block['level']}}</h4></div>
   <div class="col-md-2 key">adjust:</div>
-  <div class="col-md-4 value">{{data_block['adjust']}}</div>
+  <div class="col-md-4 value"><h4>{{data_block['adjust']}}</h4></div>
 </div>
 </tr>
 

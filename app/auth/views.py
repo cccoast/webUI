@@ -11,7 +11,7 @@ def web_global_config_to_server_global_config(global_config_dict):
     server_dict = {}
     for k,v in global_config_dict.iteritems():
         if str(k) == 'exec_method':
-            server_dict['exec_algo'] = str(v)
+            server_dict['exec_algo'] = 'LAST' if str(v) == 'LastPrc' else 'SIDE'
         elif str(k) == 'entry_mode':
             server_dict['dual_mode'] = 1 if v == 'BothSide' else 0
         else:
@@ -40,7 +40,8 @@ def web_comset_data_to_server_data(web_dict):
             server_data[str(k)] = str(v).split()
     return server_data        
             
-def generate_block(cookie,data_form):
+def generate_block(data_form):
+    cookie = session['data_block']
     start_date,end_date = data_form.start_date.data,data_form.end_date.data
     adjust,level = data_form.adjust.data,data_form.level.data
     indicators = data_form.indicators.data
@@ -50,16 +51,19 @@ def generate_block(cookie,data_form):
     cookie['indicators'],cookie['instruments'] = indicators,instruments
     return 0
 
-def generate_comset(cookie,comset_form):
-    cookie[1] = comset_form.comset_1.data
-    cookie[2] = comset_form.comset_2.data
-    cookie[3] = comset_form.comset_3.data
+def generate_comset(comset_form):
+    print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
+    cookie = session['comset']
+    cookie['1'] = comset_form.comset_1.data
+    cookie['2'] = comset_form.comset_2.data
+    cookie['3'] = comset_form.comset_3.data
     return 0
 
-def generate_global_config(cookie,global_config_form):
+def generate_global_config(global_config_form):
+    cookie = session['global_config']
     cookie['start_spot'],cookie['end_spot'],cookie['spot_step'] = \
         global_config_form.start_spot.data,global_config_form.end_spot.data,global_config_form.spot_step.data
-    cookie['sipage'] =  global_config_form.slipage.data
+    cookie['slipage'] =  global_config_form.slipage.data
     cookie['exec_algo'] = global_config_form.exec_algo.data
     cookie['com_set'] =  global_config_form.com_set.data
     cookie['dual_mode'] = global_config_form.dual_mode.data
@@ -167,7 +171,7 @@ def fill_data():
     
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Set Data Block')
-        if generate_block(session['data_block'],data_form) == 0:
+        if generate_block(data_form) == 0:
             session['verify']['data'] = True
 #             web_datablock_to_server_datablock(session['data_block'])
         else:
@@ -181,6 +185,7 @@ def fill_data():
     args = get_main_page_arg_dict(sub_form, data_form, \
                                   modify_data_form,comset_form,modify_comset_form,\
                                   global_config_form,modify_global_config_form) 
+    print session['verify']
     return render_template('auth/fill.html',**args)
     
 @login_required
@@ -204,7 +209,7 @@ def fill_comset_data():
     
     if comset_form.submit4.data and comset_form.validate_on_submit():
         flash('Set commodity set')
-        if generate_comset(session['comset'],comset_form) == 0:
+        if generate_comset(comset_form) == 0:
             session['verify']['set'] = True
         else:
             session['verify']['set'] = False
@@ -212,6 +217,7 @@ def fill_comset_data():
     args = get_main_page_arg_dict(sub_form, data_form, \
                                   modify_data_form,comset_form,modify_comset_form,\
                                   global_config_form,modify_global_config_form)  
+    print session['verify']
     return render_template('auth/fill.html',**args)
 
 @login_required
@@ -233,16 +239,19 @@ def fill_global_config_data():
     comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
     global_config_form,modify_global_config_form = GlobalConfigForm(),ModifyGlobalConfigForm()
     
+#     print 'fuck! ',global_config_form.submit6.data,comset_form.submit4.data,data_form.submit2.data
+#     print 'You! ',global_config_form.is_submitted()
     if global_config_form.submit6.data and global_config_form.validate_on_submit():
         flash('Set Global Config')
-        if generate_global_config(session['global_config'],global_config_form) == 0:
+        if generate_global_config(global_config_form) == 0:
             session['verify']['global_config'] = True
         else:
             session['verify']['global_config'] = False
             
     args = get_main_page_arg_dict(sub_form, data_form, \
                                   modify_data_form,comset_form,modify_comset_form,\
-                                  global_config_form,modify_global_config_form)  
+                                  global_config_form,modify_global_config_form) 
+    print session['verify']
     return render_template('auth/fill.html',**args)
 
 @login_required
