@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}test form{% endblock %}
+
+{% block page_content %}
+
+<div class="page-header">
+    <form method="POST" action="{{ url_for('main.testForm') }}">
+    	{{ test_form.hidden_tag() }}
+        
+        <div class="row">
+			<div class="col-md-4"><h4>{{ test_form.start_spot.label }} {{ test_form.start_spot }}</h4></div>
+			<div class="col-md-4"><h4>{{ test_form.end_spot.label }} {{ test_form.end_spot }}</h4></div>
+			<div class="col-md-4"><h4>{{ test_form.spot_step.label }} {{ test_form.spot_step }}</h4></div>
+		</div>	
+		<div class ="row">
+			<div class="col-md-2 success" id = "submit_test_form">
+			<h3>{{ wtf.form_field(test_form.submit1, button_map={'submit1':'success'}) }}</h3>
+			</div>
+		</div>
+		
+		<!---
+		{{ wtf.quick_form(test_form) }}	
+		--->
+		
+    </form>
+</div>
+
+{% endblock %}

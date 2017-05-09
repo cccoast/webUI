@@ -1,7 +1,7 @@
 from flask import render_template,request,url_for,flash,redirect,jsonify
 from . import main
 from .. import ufile
-from .forms import UploadForm,TestForm
+from .forms import UploadForm,TestTableForm
 
 @main.route('/')
 def index():
@@ -28,7 +28,10 @@ def getValue():
     initV = initV + 5 if (initV <= 95) else 0
     return jsonify(result=initV)
 
-@main.route('/test_form',methods = ['GET','POST'])
+@main.route('/testForm',methods = ['GET','POST'])
 def testForm():
-    test_form = TestForm()
-    return render_template('test/form.html',data_form = test_form)
+    test_form = TestTableForm()
+    print test_form.submit1.data,test_form.is_submitted(),test_form.validate()
+    if test_form.validate_on_submit():
+        flash('hello world {0} {1} {2}'.format(test_form.start_spot.data,test_form.end_spot.data,test_form.spot_step.data) )
+    return render_template('test/test_form.html',test_form = test_form)

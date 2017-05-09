@@ -19,7 +19,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseOne" class="panel-collapse collapse {%if not config_ready %}in{% endif %}">
+		<div id="collapseOne" class="panel-collapse collapse {%if not False %}in{% endif %}">
 			<div class="panel-body">
 				<h2>
 				{% include "auth/data.html" with context %}
@@ -39,7 +39,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseTwo" class="panel-collapse collapse">
+		<div id="collapseTwo" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<h2>
 				{% include "auth/commodity_set.html" with context %}
@@ -59,7 +59,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseThree" class="panel-collapse collapse">
+		<div id="collapseThree" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<h2>
 				{% include "auth/global_config.html" with context %}
@@ -79,7 +79,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseFour" class="panel-collapse collapse">
+		<div id="collapseFour" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<h2>
 				{% include "auth/entry.html" with context %}
@@ -99,7 +99,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseFive" class="panel-collapse collapse">
+		<div id="collapseFive" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<h2>
 				fifth

@@ -46,7 +46,7 @@ class DataForm(FlaskForm):
     instruments = SelectMultipleField('instruments', id = 'instruments',
                             choices = [('if0001','if0001'),
                                        ('if0002','if0002'),],
-                            default = ('if0001','if0002')
+                            default = ['if0001','if0002']
                             )
     
     #or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
