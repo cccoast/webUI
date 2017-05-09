@@ -17,7 +17,7 @@ class LoginForm(FlaskForm):
 #     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
 
-'''create shm''' 
+'''Create shm''' 
 
 class DataForm(FlaskForm):
     
@@ -57,24 +57,32 @@ class ModifyDataForm(FlaskForm):
 
 class ComsetForm(FlaskForm):
     
-    comset_1 = StringField('No.1',id = 'comset_1',validators = [],
+    comset_1 = StringField('CommSet1:',id = 'comset_1',validators = [],
                              render_kw={'placeholder':','.join(['if0001'])},
                              default = ','.join(['if0001']) )
                              
-    comset_2 = StringField('No.2',id = 'comset_2',validators = [],
+    comset_2 = StringField('CommSet2:',id = 'comset_2',validators = [],
                              render_kw={'placeholder':','.join(['if0001','if0002'])},
                              default = ','.join(['if0001','if0002']) )  
     
-    comset_3 = StringField('No.3',id = 'comset_3',validators = [],
+    comset_3 = StringField('CommSet3:',id = 'comset_3',validators = [],
                          render_kw={'placeholder':','.join(['if0002'])},
                          default = ','.join(['if0002']) )
     
-    submit4     =  SubmitField('submit',id='submit_comset')
+    submit4  =  SubmitField('submit',id='submit_comset')
     
 class ModifyComsetForm(FlaskForm):  
     
-    submit5 = SubmitField('ModifyComset',id='modify_comset')
-    
+    submit5 = SubmitField('Modify',id='modify_comset')
+  
+'''Global Config '''   
+
+class GlobalConfigForm(FlaskForm):
+    pass
+
+class ModifyGlobalConfigForm(FlaskForm):
+    pass
+   
 class SubmitForm(FlaskForm):
     
     submit1 = SubmitField('Run',id='submit_backtest')

@@ -21,6 +21,13 @@ def web_datablock_to_server_datablock(block_dict):
     print 'server_dict = ',server_block
     return server_block
 
+def web_comset_data_to_server_data(web_dict):
+    server_data = {}
+    for k,v in web_dict.iteritems():
+        if len(v) > 0:
+            server_data[str(k)] = str(v).split()
+    return server_data        
+            
 def generate_block(cookie,data_form):
     start_date,end_date = data_form.start_date.data,data_form.end_date.data
     adjust,level = data_form.adjust.data,data_form.level.data
@@ -105,7 +112,7 @@ def fill():
     comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
     
     if sub_form.submit1.data and sub_form.validate_on_submit():
-        flash('Ready to back Testing')
+        flash('Start back Testing, please wait for a while...')
     
     args = {}
     args['submit_form'],args['data_form'],args['modify_data_form'],\
@@ -122,7 +129,7 @@ def fill_data():
     comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
     
     if data_form.submit2.data and data_form.validate_on_submit():
-        flash('Ready to Create Data Block')
+        flash('Set Data Block')
         if generate_block(session['data_block'],data_form) == 0:
             session['verify']['data'] = True
             web_datablock_to_server_datablock(session['data_block'])
@@ -146,7 +153,7 @@ def modify_data():
     modify_form = ModifyDataForm()
     session['verify']['data'] = False
     if modify_form.submit3.data and modify_form.validate_on_submit():
-        flash('modify data block')
+        flash('Modify data block')
     return redirect(url_for('auth.fill'))
 
 ''' For Comset Data'''
@@ -158,7 +165,7 @@ def fill_comset_data():
     comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
     
     if comset_form.submit4.data and comset_form.validate_on_submit():
-        flash('Ready to generata commodity set')
+        flash('Set commodity set')
         if generate_comset(session['comset'],comset_form) == 0:
             session['verify']['set'] = True
         else:
@@ -175,8 +182,8 @@ def fill_comset_data():
 def modify_comset_data():
     modify_form = ModifyComsetForm()
     session['verify']['set'] = False
-    if modify_form.submit3.data and modify_form.validate_on_submit():
-        flash('modify commodity set')
+    if modify_form.submit5.data and modify_form.validate_on_submit():
+        flash('Modify commodity set')
     return redirect(url_for('auth.fill'))
 
 
