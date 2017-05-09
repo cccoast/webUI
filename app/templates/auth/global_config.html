@@ -1,0 +1,85 @@
+{% if not verify['global_config'] %}
+
+<form method="POST" action="{{ url_for('auth.fill_global_config_data') }}">
+	
+	<style type="text/css">
+	#submit6_data{
+	    float:right;
+	}
+	</style>	
+    
+    {{ global_config_form.hidden_tag() }}
+    
+    <div class="row">
+	<div class="col-md-4"><h2>{{ global_config_form.start_spot.label }} {{ global_config_form.start_spot }}</h3></div>
+	<div class="col-md-4"><h2>{{ global_config_form.end_spot.label }} {{ global_config_form.end_spot }}</h3></div>
+	<div class="col-md-4"><h2>{{ global_config_form.spot_step.label }} {{ global_config_form.spot_step }}</h3></div>
+	</div>
+	
+	<div class="row">
+	<div class="col-md-6"><h2>{{ global_config_form.slipage.label }} {{ global_config_form.slipage }}</h3></div>
+	<div class="col-md-6"><h2>{{ global_config_form.com_set.label }} {{ global_config_form.com_set }}</h3></div>
+	</div>
+	
+	<div class="row">
+	<div class="col-md-6"><h2>{{ global_config_form.exec_algo.label }} {{ global_config_form.exec_algo }}</h3></div>
+	<div class="col-md-6"><h2>{{ global_config_form.dual_mode.label }} {{ global_config_form.dual_mode }}</h3></div>
+	</div>
+
+	<div class="col-md-1 success" id = "submit6_data">
+	<h3>{{ wtf.form_field(global_config_form.submit6, button_map={'submit6':'success'}) }}</h3>
+	</div>
+	
+</form>
+
+{% else %}
+
+<style type="text/css">
+	#modify_global_config_comset{
+	    float:right;
+	}
+</style>
+
+<table class = "table table-bordered table-condensed">
+
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">start_spot:</div>
+  <div class="col-md-2 value"><h4>{{global_config['start_spot']}}</h4></div>
+  <div class="col-md-2 key">end_spot:</div>
+  <div class="col-md-2 value"><h4>{{global_config['end_spot']}}</h4></div>
+  <div class="col-md-2 key">spot_step:</div>
+  <div class="col-md-2 value"><h4>{{global_config['spot_step']}}</h4></div>
+</div>
+
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">exec_algo:</div>
+  <div class="col-md-4 value"><h4>{{global_config['exec_algo']}}</h4></div>
+  <div class="col-md-2 key">slipage:</div>
+  <div class="col-md-4 value"><h4>{{global_config['slipage']}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <div class="col-md-2 key">comm_set:</div>
+  <div class="col-md-4 value"><h4>{{global_config['com_set']}}</h4></div>
+  <div class="col-md-2 key">entry_mode:</div>
+  <div class="col-md-4 value"><h4>{{global_config['dual_mode']}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <form method="POST"  action="{{ url_for('auth.modify_global_config_data') }}">
+  {{ modify_global_config_form.hidden_tag() }}
+  <div class="col-md-1 success" id = "modify_global_config_comset">
+  <h3>{{ wtf.form_field(modify_global_config_form.submit7, button_map={'submit7':'success'}) }}</h3>
+  </div>
+  </form>
+</div>
+</tr>
+
+</table>
+{% endif %}

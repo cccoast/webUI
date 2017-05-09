@@ -78,10 +78,37 @@ class ModifyComsetForm(FlaskForm):
 '''Global Config '''   
 
 class GlobalConfigForm(FlaskForm):
-    pass
-
+    
+    start_spot= IntegerField('start_spot',id = 'start_spot',validators=[Required()],
+                           render_kw={'placeholder': 0},default = 0)
+    
+    end_spot  = IntegerField('end_spot', id = 'end_spot',validators=[Required()],
+                           render_kw={'placeholder': 32000},default = 32000)
+    
+    spot_step = IntegerField('spot_step', id = 'spot_step',validators=[Required()],
+                           render_kw={'placeholder': 1},default = 1) 
+    
+    com_set    = IntegerField('comm_set', id = 'comset',validators=[Required()],
+                           render_kw={'placeholder': 1},default = 1) 
+    
+    slipage   = IntegerField('slipage', id = 'slipge',validators=[Required()],
+                           render_kw={'placeholder': 'N (base point)'},default = 0) 
+    
+    exec_algo = RadioField('exec_method',  id = 'exec_method',validators=[Required()],
+                        choices = [('SIDE','SIDE'),('LAST','LAST')],
+                        default = 'LAST'
+                        )
+    
+    dual_mode = RadioField('entry_mode',  id = 'entry_mode',validators=[Required()],
+                        choices = [('BothSide','BothSide'),('SingleSide','SingleSide')],
+                        default = 'SingleSide'
+                        )
+    
+    submit6   = SubmitField('submit',id='global_config_form')
+    
 class ModifyGlobalConfigForm(FlaskForm):
-    pass
+    
+    submit7   = SubmitField('Modify',id='modify_global_config_form')
    
 class SubmitForm(FlaskForm):
     
