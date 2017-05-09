@@ -38,13 +38,16 @@ class DataForm(FlaskForm):
                             default = 'no')
     
     indicators = StringField('indicators',id = 'indicators',validators = [],
-                             render_kw={'readOnly': "true",'placeholder':','.join(basic_indicators)},
-                             default = ','.join(basic_indicators) )
+                             render_kw={'readOnly': "true",\
+                                        'placeholder':','.join(basic_indicators),\
+                                        'value':','.join(basic_indicators)},
+                            )
     
     instruments = SelectMultipleField('instruments', id = 'instruments',
                             choices = [('if0001','if0001'),
                                        ('if0002','if0002'),],
-                            default = ('if0001','if0002'))
+                            default = ('if0001','if0002')
+                            )
     
     #or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
     submit2     =  SubmitField('generate',id='submit_data')
