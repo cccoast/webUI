@@ -23,8 +23,34 @@
     </form>
     --->
     
-   {% include "auth/entry.html" with context %}
-          
+   	<table data-toggle="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>logic</th>
+            <th>condID</th>
+            <th>flip</th>
+            <th>gap</th>
+            <th>offset</th>
+            <th>lowthrs</th>
+            <th>highthrs</th>
+            <th>para1</th>
+            <th>para2</th>
+            <th>para3</th>
+            <th>para4</th>
+            <th>para5</th>
+        </tr>
+    </thead>
+    <tbody>
+   	{% for row in conditions -%}
+   		<tr>
+   		{% for val in row -%}
+   			<td> {{ val }} </td>
+   		{%- endfor %}
+   		</tr>
+   	{%- endfor %}
+    </tbody>
+    </table>      
 </div>
 
 {% endblock %}
