@@ -11,13 +11,16 @@ class UploadForm(FlaskForm):
     submit = SubmitField('upload')
     
 class TestTableForm(FlaskForm):
-    start_spot = StringField('start_spot',id = 'test_start_spot',validators = [Required()],
-                           render_kw={'placeholder': '0'},
-                           default = '0')
-    end_spot   = StringField('end_spot', id = 'test_end_spot',validators = [Required()],
-                           render_kw={'placeholder': '32000'},
-                           default = '32000')
-    spot_step  = StringField('spot_step', id = 'test_spot_step',validators = [Required()],
-                           render_kw={'placeholder': '1'},
-                           default = '1')
-    submit1  = SubmitField('upload',id = 'submit_test_form')
+    logic  = StringField('logic',render_kw={'placeholder': 'AND','size':6},default = 'AND')
+    condID = StringField('1500',render_kw={'placeholder': '1500','size':6},default = '1500')
+    flip   = StringField('flip',render_kw={'placeholder': '0','size':6},default = '0')
+    gap    = StringField('gap',render_kw={'placeholder': '0','size':6},default = '0')
+    offset = StringField('offset',render_kw={'placeholder': '0','size':6},default = '0')
+    lowthrs = StringField('lowthrs',render_kw={'placeholder': '0.0','size':6},default = '0')
+    highthrs = StringField('highthrs',render_kw={'placeholder': '0.0','size':6},default = '0')
+    para1  = StringField('para1',render_kw={'placeholder': '0.0','size':6},default = '0')
+    para2  = StringField('para2',render_kw={'placeholder': '0.0','size':6},default = '0')
+    para3  = StringField('para3',render_kw={'placeholder': '0.0','size':6},default = '0')
+    para4  = StringField('para4',render_kw={'placeholder': '0.0','size':6},default = '0')
+    para5  = StringField('para5',render_kw={'placeholder': '0.0','size':6},default = '0')
+    submit_rule  = SubmitField('submit',id = 'submit_test_form')

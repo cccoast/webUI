@@ -32,10 +32,8 @@ def getValue():
 def testForm():
     test_form = TestTableForm()
     conditions = {}
-    conditions[0] = (0,'AND',11000,0,0,0,'-0.1','0.1',\
-                     120,0,0,0,0)
-    conditions[1] = (0,'AND',1500,0,0,0,0,98,\
-                     5,0,0,0,0)
+    conditions[0] = (0,'AND',11000,0,0,0,'-0.1','0.1',120,0,0,0,0)
+    conditions[1] = (0,'AND',1500,0,0,0,0,98,5,0,0,0,0)
 #     conditions[1] = {'ID':1,'logic':'AND','condID':1500,'flip':0,'gap':0,'offset':0,'lowthrs':0,'highthrs':98,\
 #                      'para1':5,'para2':0,'para3':0,'para4':0,'para5':0}
     #print test_form.submit1.data,test_form.is_submitted(),test_form.validate()
@@ -43,4 +41,7 @@ def testForm():
         flash('hello world {0} {1} {2}'.format(test_form.start_spot.data,test_form.end_spot.data,test_form.spot_step.data) )
     return render_template('test/test_form.html',test_form = test_form,conditions = conditions.values())
 
-
+@main.route('/testFormInTable',methods = ['GET','POST'])
+def testFormInTable():
+    return render_template('test/form_in_table.html')
+    

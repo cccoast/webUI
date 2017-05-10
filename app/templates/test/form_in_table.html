@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Platform{% endblock %}
+
+{% block page_content %}
+<form action="#" method="post">  
+        <table width="450" border="0" bgcolor="#000000" cellspacing="1" cellpadding="2"><!--cellspacing指相邻单元格之间的间距，cellpadding指控制单元格内部文字与边框的边距-->  
+        <tbody>  
+            <tr height="30">  
+                <td colspan="2" align="center" bgcolor="#CCCCCC"><font size="5">用户注册</font></td>  
+            </tr>  
+            <tr height="30">  
+                <td width="150" align="right" bgcolor="#E6E6E6">用户名</td>  
+                <td width="300" bgcolor="#E6E6E6">  
+                    <input type="text" name="UserName" maxlength="20" size="5" /></td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">密码</td>  
+                <td bgcolor="#E6E6E6">  
+                    <input name="UserPass" type="password" size="5" maxlength="20" /></td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">重复密码</td>  
+                <td bgcolor="#E6E6E6">  
+                    <input name="UserPass" type="password" size="15" maxlength="20" /></td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">性别</td>  
+                <td bgcolor="#E6E6E6">  
+                    <input name="sex" type="radio" value="男" checked="checked" />男  
+                    <input name="sex" type="radio" value="女" />女  
+                </td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">爱好</td>  
+                <td bgcolor="#E6E6E6">  
+                    <input name="like" type="checkbox" value="1" />足球  
+                    <input name="like" type="checkbox" value="2" />篮球  
+                    <input name="like" type="checkbox" value="3" />乒乓球  
+                </td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">省份</td>  
+                <td bgcolor="#E6E6E6">  
+                    <select name="province">  
+                        <option>陕西省</option>  
+                        <option>山东省</option>  
+                        <option>山西省</option>  
+                        <option>河北省</option>  
+                        <option>河南省</option>  
+                        <option>湖南省</option>  
+                        <option>湖北省</option>  
+                        <option>黑龙江省</option>  
+                        <option>其他</option>  
+                   </select>  
+                </td>  
+            </tr>  
+            <tr height="30">  
+                <td align="right" bgcolor="#E6E6E6">自我介绍</td>  
+                <td bgcolor="#E6E6E6">  
+                    <textarea name="Intro" cols="40" rows="5" id="Intro"></textarea></td>  
+            </tr>  
+            <tr height="30">  
+                <td align="center" colspan="2" bgcolor="#CCCCCC">  
+                    <input type="submit" name="send" value="提交" />  
+                    <input type="reset" name="reset" value="重置" />  
+                </td>  
+            </tr>  
+        </tbody>  
+        </table>  
+    </form>  
+{% endblock %}
