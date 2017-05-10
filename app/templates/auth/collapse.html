@@ -7,7 +7,7 @@ h1.panel-title{
 </style>
 					
 <div class="panel-group" id="accordion">
-	
+	<!--- first --->
 	<div class="panel panel-data">
 		<div class="panel-heading">
 			<h1 class="panel-title">
@@ -21,13 +21,13 @@ h1.panel-title{
 		</div>
 		<div id="collapseOne" class="panel-collapse collapse {%if not False %}in{% endif %}">
 			<div class="panel-body">
-				<h2>
+				<h3>
 				{% include "auth/data.html" with context %}
-				</h2>
+				</h3>
 			</div>
 		</div>
 	</div>
-	
+	<!--- second --->
 	<div class="panel panel-setting">
 		<div class="panel-heading">
 			<h1 class="panel-title">
@@ -39,15 +39,15 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseTwo" class="panel-collapse collapse in">
+		<div id="collapseTwo" class="panel-collapse collapse">
 			<div class="panel-body">
-				<h2>
+				<h3>
 				{% include "auth/commodity_set.html" with context %}
-				</h2>
+				</h3>
 			</div>
 		</div>
 	</div>
-	
+	<!--- third --->
 	<div class="panel panel-commodity_set">
 		<div class="panel-heading">
 			<h1 class="panel-title">
@@ -59,15 +59,15 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseThree" class="panel-collapse collapse in">
+		<div id="collapseThree" class="panel-collapse collapse">
 			<div class="panel-body">
-				<h2>
+				<h3>
 				{% include "auth/global_config.html" with context %}
-				</h2>
+				</h3>
 			</div>
 		</div>
 	</div>
-	
+	<!--- fourth --->
 	<div class="panel panel-entry">
 		<div class="panel-heading">
 			<h1 class="panel-title">
@@ -79,15 +79,15 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseFour" class="panel-collapse collapse in">
+		<div id="collapseFour" class="panel-collapse collapse">
 			<div class="panel-body">
-				<h2>
+				<h4>
 				{% include "auth/entry.html" with context %}
-				</h2>
+				</h4>
 			</div>
 		</div>
 	</div>
-	
+	<!--- fifth --->
 	<div class="panel panel-exit">
 		<div class="panel-heading">
 			<h1 class="panel-title">
@@ -99,16 +99,17 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseFive" class="panel-collapse collapse in">
+		<div id="collapseFive" class="panel-collapse collapse">
 			<div class="panel-body">
-				<h2>
-				fifth
-				</h2>
+				<h4>
+				{% include "auth/exit.html" with context %}
+				</h4>
 			</div>
 		</div>
 	</div>
 	
 </div>
+
 <script type="text/javascript">
 	$(function () { $('#collapseFive').collapse({
 		toggle: false

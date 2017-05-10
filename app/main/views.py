@@ -31,7 +31,7 @@ def getValue():
 @main.route('/testForm',methods = ['GET','POST'])
 def testForm():
     test_form = TestTableForm()
-    print test_form.submit1.data,test_form.is_submitted(),test_form.validate()
+    #print test_form.submit1.data,test_form.is_submitted(),test_form.validate()
     if test_form.validate_on_submit():
         flash('hello world {0} {1} {2}'.format(test_form.start_spot.data,test_form.end_spot.data,test_form.spot_step.data) )
     return render_template('test/test_form.html',test_form = test_form)
