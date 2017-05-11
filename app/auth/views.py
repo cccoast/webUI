@@ -8,6 +8,15 @@ from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,ComsetForm,Modif
                     ResetEntryRules, EntryRuleForm, ResetExitRules, ExitRuleForm
 from .. import ufile 
 
+def web_conditions_to_server_conditions(conditions):
+    server_dict = {}
+    keys = ('op','fid','flip','gap1','offset1','lothr','hithr','param0','param1','param2','param3','param4')
+    for row,icond in enumerate(conditions):
+        server_dict[row] = dict(zip(keys,icond))
+        server_dict[row]['gap2'] = 0
+        server_dict[row]['offset2'] = 0
+    return server_dict
+    
 def web_global_config_to_server_global_config(global_config_dict):
     server_dict = {}
     for k,v in global_config_dict.iteritems():
@@ -68,6 +77,11 @@ def generate_global_config(global_config_form):
     cookie['exec_algo'] = global_config_form.exec_algo.data
     cookie['com_set'] =  global_config_form.com_set.data
     cookie['dual_mode'] = global_config_form.dual_mode.data
+    cookie['direction'] = global_config_form.direction.data
+    cookie['quant'] = global_config_form.quant.data
+    cookie['minTTL'] = global_config_form.minTTL.data
+    cookie['maxTTL'] = global_config_form.maxTTL.data
+    
     return 0
 
 @auth.context_processor
@@ -83,9 +97,12 @@ def inject_var():
         ret['global_config'] = session['global_config']
     if 'entry_conditions' in session:
         ret['entry_conditions'] = session['entry_conditions']
+        ret['entry_condtion_values'] = [session['entry_conditions'][i] for i in range(session['entry_conditions']['entry_nconds'])]
     if 'exit_conditions' in session:
         ret['exit_conditions'] = session['exit_conditions']
-        
+        ret['exit_condtion_values'] = [session['exit_conditions'][i] for i in range(session['exit_conditions']['exit_nconds'])]
+    if 'show_tab' in session:
+        ret['show_tab'] = session['show_tab']   
     ret['backtest_ready'] = check_backtest(session)
     return ret
 
@@ -123,8 +140,11 @@ def init_session(cookie):
     if 'eixt_conditions' not in cookie:
         cookie['eixt_conditions'] = {}
         cookie['eixt_conditions']['eixt_nconds'] = 2
-        cookie['eixt_conditions'][0] = ('OR',1500,0,0,0,1.99,'inf',6,120,0,0,0,0)
+        cookie['eixt_conditions'][0] = ('OR',1500,0,0,0,1.99,'inf',6,0,0,0,0)
         cookie['eixt_conditions'][1] = ('OR',1500,0,0,0,-1.99,'inf',4,0,0,0,0)
+    
+    if 'show_tab' not in cookie:
+        cookie['show_tab'] = ('data',)
     
     #for upload instruments files
 #     if 'upload_inss_name' not in cookie:
@@ -178,6 +198,9 @@ def fill():
     main_page_forms = get_main_page_form_obj()
     sub_form = main_page_forms[0]
     
+    if check_backtest(session) is True:
+        session['show_tab'] = ()
+        
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Start back Testing, please wait for a while...')
     
@@ -191,11 +214,11 @@ def fill():
 def fill_data():
     main_page_forms = get_main_page_form_obj()
     data_form = main_page_forms[1]
+    session['show_tab'] = ('data',)
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Set Data Block')
         if generate_block(data_form) == 0:
             session['verify']['data'] = True
-#             web_datablock_to_server_datablock(session['data_block'])
         else:
             session['verify']['data'] = False
             
@@ -223,6 +246,7 @@ def modify_data():
 def fill_comset_data():
     main_page_forms = get_main_page_form_obj()
     comset_form = main_page_forms[3]
+    session['show_tab'] = ('com_set',)
     if comset_form.submit4.data and comset_form.validate_on_submit():
         flash('Set commodity set')
         if generate_comset(comset_form) == 0:
@@ -251,6 +275,7 @@ def fill_global_config_data():
     global_config_form = main_page_forms[5]
 #     print 'fuck! ',global_config_form.submit6.data,comset_form.submit4.data,data_form.submit2.data
 #     print 'You! ',global_config_form.is_submitted()
+    session['show_tab'] = ('global_config',)
     if global_config_form.submit6.data and global_config_form.validate_on_submit():
         flash('Set Global Config')
         if generate_global_config(global_config_form) == 0:
@@ -283,6 +308,7 @@ def fill_entry_rule_data():
     print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
     print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
     
+    session['show_tab'] = ('entry',)
     if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
         flash('reset all entry rules')
         conditions = {}
@@ -296,8 +322,7 @@ def fill_entry_rule_data():
         flash('add new entry rule')
     elif rule_form.is_submitted() and not rule_form.validate():
         flash('please check the new rule again')
-    show_conds = [conditions[i] for i in range(session['entry_conditions']['entry_nconds'])]
-    return render_template(url_for('auth.fill'),conditions = show_conds)
+    return render_template(url_for('auth.fill'))
 
 ###----------------------------------------------------------------------------
 '''for ExitRules'''
@@ -312,6 +337,7 @@ def fill_exit_rule_data():
     print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
     print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
     
+    session['show_tab'] = ('exit',)
     if reset_rules.reset_exit_rules.data and reset_rules.validate_on_submit():
         flash('reset_all_rules')
         conditions = {}
@@ -325,7 +351,6 @@ def fill_exit_rule_data():
         flash('add new exit rule')
     elif rule_form.is_submitted() and not rule_form.validate():
         flash('please check the new rule again')
-    show_conds = [conditions[i] for i in range(session['exit_conditions']['exit_nconds'])]
-    return render_template(url_for('auth.fill'),conditions = show_conds)
+    return render_template(url_for('auth.fill'))
 
 

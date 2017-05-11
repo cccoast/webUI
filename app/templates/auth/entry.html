@@ -1,7 +1,17 @@
+<style type="text/css">
+	#add_entry_rule_submit{
+	    float:right;
+	}
+	#reset_entry_rules_submit{
+		float:right;
+	}
+</style>
+
+
+<h2>saved rules:</h2>
 <table data-toggle="table">
     <thead>
         <tr>
-            <th>ID</th>
             <th>logic</th>
             <th>condID</th>
             <th>flip</th>
@@ -16,37 +26,70 @@
             <th>para5</th>
         </tr>
     </thead>
-    
-    <tbody>
-        <tr>
-            <td>0</td>
-            <td>AND</td>
-            <td>11000</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>-0.1</td>
-            <td>0.1</td>
-            <td>120</td>
-            <td>0.0</td>
-            <td>0.0</td>
-            <td>0.0</td>
-            <td>0.0</td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>AND</td>
-            <td>1500</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>98</td>
-            <td>5</td>
-            <td>0.0</td>
-            <td>0.0</td>
-            <td>0.0</td>
-            <td>0.0</td>
-        </tr>
     </tbody>
+	{% for row in entry_condtion_values -%}
+   		<tr>
+   		{% for val in row -%}
+   			<td> {{ val }} </td>
+   		{%- endfor %}
+   		</tr>
+   	{%- endfor %}
+	</tbody>
 </table>
+
+<form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
+	{{ reset_entry_rule_form.hidden_tag() }}  
+	<div class ="row">
+		<div class="col-md-1 success" id = "reset_entry_rules_submit">
+		<h3>{{ wtf.form_field(reset_entry_rule_form.reset_entry_rules, button_map={'reset_entry_rules':'success'}) }}</h3>
+		</div>
+	</div>
+</form>
+	
+<br>
+
+<h2>add a rule:</h2>
+<form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
+	{{ add_entry_rule_form.hidden_tag() }}
+    <table data-toggle="table">
+    <thead>
+        <tr>
+            <th>logic</th>
+            <th>condID</th>
+            <th>flip</th>
+            <th>gap</th>
+            <th>offset</th>
+            <th>lowthrs</th>
+            <th>highthrs</th>
+            <th>para1</th>
+            <th>para2</th>
+            <th>para3</th>
+            <th>para4</th>
+            <th>para5</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+    	<div class="row">
+        <td><div class="inline-block">{{ add_entry_rule_form.logic }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.condID }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.flip }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.gap }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.offset }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.lowthrs }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.highthrs }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.para1 }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.para2 }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.para3 }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.para4 }}</div></td>
+        <td><div class="inline-block">{{ add_entry_rule_form.para5 }}</div></td>
+        </div>
+    </tr>
+    </tbody>
+    </table>
+	<div class ="row">
+		<div class="col-md-1 success" id = "add_entry_rule_submit">
+		<h3>{{ wtf.form_field(add_entry_rule_form.add_entry_rule, button_map={'add_entry_rule':'success'}) }}</h3>
+		</div>
+	</div>
+</form>

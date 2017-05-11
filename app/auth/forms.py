@@ -79,30 +79,30 @@ class ModifyComsetForm(FlaskForm):
 
 class GlobalConfigForm(FlaskForm):
     
-    start_spot= IntegerField('start_spot',id = 'start_spot',validators=[],
-                           render_kw={'placeholder': 0},default = 0)
-    
-    end_spot  = IntegerField('end_spot', id = 'end_spot',validators=[],
-                           render_kw={'placeholder': 32000},default = 32000)
-    
-    spot_step = IntegerField('spot_step', id = 'spot_step',validators=[],
-                           render_kw={'placeholder': 1},default = 1) 
-    
-    com_set   = IntegerField('comm_set', id = 'comset',validators=[],
-                           render_kw={'placeholder': 1},default = 1) 
-    
-    slipage   = IntegerField('slipage', id = 'slipge',validators=[],
-                           render_kw={'placeholder': 'N (base point)'},default = 0) 
-    
-    exec_algo = RadioField('exec_method',  id = 'exec_method',validators=[],
+    start_spot= IntegerField('start_spot',id = 'start_spot',validators=[Required()],
+                           render_kw={'placeholder': 0,'value':0},default = 0)
+    end_spot  = IntegerField('end_spot', id = 'end_spot',validators=[Required()],
+                           render_kw={'placeholder': 32000,'value':0},default = 32000)
+    spot_step = IntegerField('spot_step', id = 'spot_step',validators=[Required()],
+                           render_kw={'placeholder': 1,'value':1},default = 1) 
+    com_set   = IntegerField('comm_set', id = 'comset',validators=[Required()],
+                           render_kw={'placeholder': 1,'value':1},default = 1) 
+    slipage   = IntegerField('slipage', id = 'slipge',validators=[Required()],
+                           render_kw={'placeholder': 'N (base point)','value':0},default = 0) 
+    exec_algo = RadioField('exec_method',  id = 'exec_method',validators=[Required()],
                         choices = [('OpponentPrc','OpponentPrc'),('LastPrc','LastPrc')],
-                        default = 'LastPrc'
-                        )
-    
-    dual_mode = RadioField('entry_mode',  id = 'entry_mode',validators=[],
+                        default = 'LastPrc')    
+    dual_mode = RadioField('entry_mode',  id = 'entry_mode',validators=[Required()],
                         choices = [('BothSide','BothSide'),('SingleSide','SingleSide')],
-                        default = 'SingleSide'
-                        )
+                        default = 'SingleSide')
+    direction = StringField('entry_direction',id = 'direction',validators = [Required()],
+                        render_kw={'placeholder':'BUY','value':'BUY'},default = 'BUY')
+    quant  = IntegerField('quant',id = 'quant',validators=[Required()],
+                        render_kw={'placeholder': 1,'value':1},default = 1)
+    minTTL = IntegerField('minTTL',id = 'minTTL',validators=[Required()],
+                        render_kw={'placeholder': 1,'value':1},default = 1)
+    maxTTL = IntegerField('maxTLL',id = 'maxTTL',validators=[Required()],
+                        render_kw={'placeholder': 34200,'value':34200},default = 34200)
     
     submit6   = SubmitField('submit',id='submit_global_config')
     

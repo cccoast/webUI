@@ -25,6 +25,16 @@
 	<div class="col-md-4"><h3>{{ global_config_form.exec_algo.label }} {{ global_config_form.exec_algo }}</h3></div>
 	<div class="col-md-8"><h3>{{ global_config_form.dual_mode.label }} {{ global_config_form.dual_mode }}</h3></div>
 	</div>
+	
+	<div class="row">
+	<div class="col-md-4"><h3>{{ global_config_form.direction.label }} {{ global_config_form.direction }}</h3></div>
+	<div class="col-md-8"><h3>{{ global_config_form.quant.label }} {{ global_config_form.quant }}</h3></div>
+	</div>
+	
+	<div class="row">
+	<div class="col-md-4"><h3>{{ global_config_form.minTTL.label }} {{ global_config_form.minTTL }}</h3></div>
+	<div class="col-md-8"><h3>{{ global_config_form.maxTTL.label }} {{ global_config_form.maxTTL }}</h3></div>
+	</div>
 
 	<div class="col-md-1 success" id = "submit6_data">
 	<h3>{{ wtf.form_field(global_config_form.submit6, button_map={'submit6':'success'}) }}</h3>
@@ -67,6 +77,24 @@
   <div class="col-md-2 value"><h4>{{global_config['com_set']}}</h4></div>
   <div class="col-md-2 key">entry_mode:</div>
   <div class="col-md-2 value"><h4>{{global_config['dual_mode']}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <div class="col-md-2 key">entry direction:</div>
+  <div class="col-md-2 value"><h4>{{global_config['direction']}}</h4></div>
+  <div class="col-md-2 key">entry quant:</div>
+  <div class="col-md-2 value"><h4>{{global_config['quant']}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row">
+  <div class="col-md-2 key">min Hold length:</div>
+  <div class="col-md-2 value"><h4>{{global_config['minTTL']}}</h4></div>
+  <div class="col-md-2 key">max Hold length:</div>
+  <div class="col-md-2 value"><h4>{{global_config['maxTTL']}}</h4></div>
 </div>
 </tr>
 
