@@ -4,8 +4,9 @@ from . import auth
 from .. import db
 from ..models import User
 from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,ComsetForm,ModifyComsetForm,\
-                    GlobalConfigForm,ModifyGlobalConfigForm
-from .. import ufile
+                    GlobalConfigForm,ModifyGlobalConfigForm,\
+                    ResetEntryRules, EntryRuleForm, ResetExitRules, ExitRuleForm
+from .. import ufile 
 
 def web_global_config_to_server_global_config(global_config_dict):
     server_dict = {}
@@ -80,6 +81,12 @@ def inject_var():
         ret['comset'] = session['comset']
     if 'global_config' in session:
         ret['global_config'] = session['global_config']
+    if 'entry_conditions' in session:
+        ret['entry_conditions'] = session['entry_conditions']
+    if 'exit_conditions' in session:
+        ret['exit_conditions'] = session['exit_conditions']
+        
+    ret['backtest_ready'] = check_backtest(session)
     return ret
 
 def check_backtest(cookie):
@@ -106,6 +113,18 @@ def init_session(cookie):
         cookie['comset'] = {}
     if 'global_config' not in cookie:
         cookie['global_config'] = {}
+        
+    if 'entry_conditions' not in cookie:
+        cookie['entry_conditions'] = {}
+        cookie['entry_conditions']['entry_nconds'] = 2
+        cookie['entry_conditions'][0] = ('AND',11000,0,0,0,-0.1,0.1,120,0,0,0,0)
+        cookie['entry_conditions'][1] = ('AND',1500,0,0,0,0,98,5,0,0,0,0)
+        
+    if 'eixt_conditions' not in cookie:
+        cookie['eixt_conditions'] = {}
+        cookie['eixt_conditions']['eixt_nconds'] = 2
+        cookie['eixt_conditions'][0] = ('OR',1500,0,0,0,1.99,'inf',6,120,0,0,0,0)
+        cookie['eixt_conditions'][1] = ('OR',1500,0,0,0,-1.99,'inf',4,0,0,0,0)
     
     #for upload instruments files
 #     if 'upload_inss_name' not in cookie:
@@ -115,10 +134,20 @@ def get_main_page_arg_dict(*forms):
     args = {}
     args['submit_form'],args['data_form'],args['modify_data_form'],\
             args['comset_form'],args['modify_comset_form'],\
-            args['global_config_form'],args['modify_global_config_form'] \
-        = forms[0],forms[1],forms[2],forms[3],forms[4],forms[5],forms[6]
+            args['global_config_form'],args['modify_global_config_form'],\
+            args['reset_entry_rule_form'],args['add_entry_rule_form'],\
+            args['reset_exit_rule_form'],args['add_exit_rule_form'] \
+        = forms[0],forms[1],forms[2],forms[3],forms[4],forms[5],forms[6],\
+            forms[7],forms[8],forms[9],forms[10]
     return args
 
+def get_main_page_form_obj():
+    return ( SubmitForm(),DataForm(),ModifyDataForm(),\
+                        ComsetForm(),ModifyComsetForm(),\
+                        GlobalConfigForm(),ModifyGlobalConfigForm(),\
+                        ResetEntryRules(),EntryRuleForm(),\
+                        ResetExitRules(),ExitRuleForm() )
+                        
 ###----------------------------------------------------------------------------
 ''' For log in '''       
 @auth.route('/login', methods=['GET', 'POST'])
@@ -146,17 +175,13 @@ def logout():
 @login_required
 @auth.route('/fill',methods = ['GET','POST'])
 def fill():
-    sub_form = SubmitForm()
-    data_form,modify_data_form = DataForm(),ModifyDataForm()
-    comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
-    global_config_form,modify_global_config_form = GlobalConfigForm(),ModifyGlobalConfigForm()
+    main_page_forms = get_main_page_form_obj()
+    sub_form = main_page_forms[0]
     
     if sub_form.submit1.data and sub_form.validate_on_submit():
         flash('Start back Testing, please wait for a while...')
     
-    args = get_main_page_arg_dict(sub_form, data_form, \
-                                  modify_data_form,comset_form,modify_comset_form,\
-                                  global_config_form,modify_global_config_form)
+    args = get_main_page_arg_dict(*main_page_forms)
     return render_template('auth/fill.html',**args)
 
 ###----------------------------------------------------------------------------
@@ -164,11 +189,8 @@ def fill():
 @login_required
 @auth.route('/fill_data',methods = ['POST',])
 def fill_data():
-    sub_form = SubmitForm()
-    data_form,modify_data_form = DataForm(),ModifyDataForm()
-    comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
-    global_config_form,modify_global_config_form = GlobalConfigForm(),ModifyGlobalConfigForm()
-    
+    main_page_forms = get_main_page_form_obj()
+    data_form = main_page_forms[1]
     if data_form.submit2.data and data_form.validate_on_submit():
         flash('Set Data Block')
         if generate_block(data_form) == 0:
@@ -182,10 +204,7 @@ def fill_data():
 #             session['upload_inss_name'] = filename
 #             file_url = ufile.url(filename)
 
-    args = get_main_page_arg_dict(sub_form, data_form, \
-                                  modify_data_form,comset_form,modify_comset_form,\
-                                  global_config_form,modify_global_config_form) 
-    print session['verify']
+    args = get_main_page_arg_dict(*main_page_forms) 
     return render_template('auth/fill.html',**args)
     
 @login_required
@@ -202,11 +221,8 @@ def modify_data():
 @login_required
 @auth.route('/fill_comset_data',methods = ['POST',])
 def fill_comset_data():
-    sub_form = SubmitForm()
-    data_form,modify_data_form = DataForm(),ModifyDataForm()
-    comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
-    global_config_form,modify_global_config_form = GlobalConfigForm(),ModifyGlobalConfigForm()
-    
+    main_page_forms = get_main_page_form_obj()
+    comset_form = main_page_forms[3]
     if comset_form.submit4.data and comset_form.validate_on_submit():
         flash('Set commodity set')
         if generate_comset(comset_form) == 0:
@@ -214,10 +230,7 @@ def fill_comset_data():
         else:
             session['verify']['set'] = False
             
-    args = get_main_page_arg_dict(sub_form, data_form, \
-                                  modify_data_form,comset_form,modify_comset_form,\
-                                  global_config_form,modify_global_config_form)  
-    print session['verify']
+    args = get_main_page_arg_dict(*main_page_forms)   
     return render_template('auth/fill.html',**args)
 
 @login_required
@@ -234,11 +247,8 @@ def modify_comset_data():
 @login_required
 @auth.route('/fill_global_config_data',methods = ['POST',])
 def fill_global_config_data():
-    sub_form = SubmitForm()
-    data_form,modify_data_form = DataForm(),ModifyDataForm()
-    comset_form,modify_comset_form = ComsetForm(),ModifyComsetForm()
-    global_config_form,modify_global_config_form = GlobalConfigForm(),ModifyGlobalConfigForm()
-    
+    main_page_forms = get_main_page_form_obj()
+    global_config_form = main_page_forms[5]
 #     print 'fuck! ',global_config_form.submit6.data,comset_form.submit4.data,data_form.submit2.data
 #     print 'You! ',global_config_form.is_submitted()
     if global_config_form.submit6.data and global_config_form.validate_on_submit():
@@ -248,10 +258,7 @@ def fill_global_config_data():
         else:
             session['verify']['global_config'] = False
             
-    args = get_main_page_arg_dict(sub_form, data_form, \
-                                  modify_data_form,comset_form,modify_comset_form,\
-                                  global_config_form,modify_global_config_form) 
-    print session['verify']
+    args = get_main_page_arg_dict(*main_page_forms) 
     return render_template('auth/fill.html',**args)
 
 @login_required
@@ -262,4 +269,63 @@ def modify_global_config_data():
     if modify_form.submit7.data and modify_form.validate_on_submit():
         flash('Modify global config')
     return redirect(url_for('auth.fill'))
+
+###----------------------------------------------------------------------------
+'''for EntryRules'''
+@login_required
+@auth.route('/fill_entry_rule_data',methods = ['POST',])
+def fill_entry_rule_data():
+    main_page_forms = get_main_page_form_obj()
+    reset_rules = main_page_forms[7]
+    rule_form = main_page_forms[8]
+    conditions = session['entry_conditions']
+    
+    print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
+    print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
+    
+    if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
+        flash('reset all entry rules')
+        conditions = {}
+        session['entry_conditions']['entry_nconds'] = 0
+    elif rule_form.add_entry_rule.data and rule_form.validate_on_submit():
+        values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
+                  rule_form.lowthrs.data,rule_form.highthrs.data,\
+                   rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
+        conditions[session['entry_conditions']['entry_nconds']] = values
+        session['entry_conditions']['entry_nconds'] += 1
+        flash('add new entry rule')
+    elif rule_form.is_submitted() and not rule_form.validate():
+        flash('please check the new rule again')
+    show_conds = [conditions[i] for i in range(session['entry_conditions']['entry_nconds'])]
+    return render_template(url_for('auth.fill'),conditions = show_conds)
+
+###----------------------------------------------------------------------------
+'''for ExitRules'''
+@login_required
+@auth.route('/fill_exit_rule_data',methods = ['POST',])
+def fill_exit_rule_data():
+    main_page_forms = get_main_page_form_obj()
+    reset_rules = main_page_forms[9]
+    rule_form = main_page_forms[10]
+    conditions = session['exit_conditions']
+    
+    print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
+    print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
+    
+    if reset_rules.reset_exit_rules.data and reset_rules.validate_on_submit():
+        flash('reset_all_rules')
+        conditions = {}
+        session['exit_conditions']['exit_nconds'] = 0
+    elif rule_form.add_exit_rule.data and rule_form.validate_on_submit():
+        values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
+                  rule_form.lowthrs.data,rule_form.highthrs.data,\
+                   rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
+        conditions[session['exit_conditions']['exit_nconds']] = values
+        session['exit_conditions']['exit_nconds'] += 1
+        flash('add new exit rule')
+    elif rule_form.is_submitted() and not rule_form.validate():
+        flash('please check the new rule again')
+    show_conds = [conditions[i] for i in range(session['exit_conditions']['exit_nconds'])]
+    return render_template(url_for('auth.fill'),conditions = show_conds)
+
 
