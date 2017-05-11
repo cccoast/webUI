@@ -1,7 +1,7 @@
 from flask import render_template,request,url_for,flash,redirect,jsonify
 from . import main
 from .. import ufile
-from .forms import UploadForm,TestTableForm
+from .forms import UploadForm,RuleForm,ResetRules
 
 @main.route('/')
 def index():
@@ -28,18 +28,36 @@ def getValue():
     initV = initV + 5 if (initV <= 95) else 0
     return jsonify(result=initV)
 
-@main.route('/testForm',methods = ['GET','POST'])
-def testForm():
-    test_form = TestTableForm()
-    conditions = {}
-    conditions[0] = (0,'AND',11000,0,0,0,'-0.1','0.1',120,0,0,0,0)
-    conditions[1] = (0,'AND',1500,0,0,0,0,98,5,0,0,0,0)
+conditions = {}
+nconds = 2
+conditions[0] = ('AND',11000,0,0,0,'-0.1','0.1',120,0,0,0,0)
+conditions[1] = ('AND',1500,0,0,0,0,98,5,0,0,0,0)
 #     conditions[1] = {'ID':1,'logic':'AND','condID':1500,'flip':0,'gap':0,'offset':0,'lowthrs':0,'highthrs':98,\
 #                      'para1':5,'para2':0,'para3':0,'para4':0,'para5':0}
-    #print test_form.submit1.data,test_form.is_submitted(),test_form.validate()
-    if test_form.validate_on_submit():
-        flash('hello world {0} {1} {2}'.format(test_form.start_spot.data,test_form.end_spot.data,test_form.spot_step.data) )
-    return render_template('test/test_form.html',test_form = test_form,conditions = conditions.values())
+    
+@main.route('/testForm',methods = ['GET','POST'])
+def testForm():
+    rule_form = RuleForm()
+    reset_rules = ResetRules()
+    global conditions,nconds
+    
+    print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
+    print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
+    if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
+        flash('reset_all_rules')
+        conditions = {}
+        nconds = 0
+    elif rule_form.add_rule.data and rule_form.validate_on_submit():
+        values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
+                  rule_form.lowthrs.data,rule_form.highthrs.data,\
+                   rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
+        conditions[nconds] = values
+        nconds += 1
+        flash('add new condition')
+    elif rule_form.is_submitted() and not rule_form.validate():
+        flash('please check the new rule again')
+        
+    return render_template('test/rule_form.html',rule_form = rule_form,conditions = conditions.values(),reset_rules = reset_rules)
 
 @main.route('/testFormInTable',methods = ['GET','POST'])
 def testFormInTable():

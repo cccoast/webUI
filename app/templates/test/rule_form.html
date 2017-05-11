@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}test form{% endblock %}
+
+{% block page_content %}
+
+<style type="text/css">
+	#add_rule{
+	    float:right;
+	}
+	#reset_rules{
+		float:right;
+	}
+</style>
+
+<div class="page-header">
+	<h2>saved rules:</h2>
+	<table data-toggle="table">
+	    <thead>
+	        <tr>
+	            <th>logic</th>
+	            <th>condID</th>
+	            <th>flip</th>
+	            <th>gap</th>
+	            <th>offset</th>
+	            <th>lowthrs</th>
+	            <th>highthrs</th>
+	            <th>para1</th>
+	            <th>para2</th>
+	            <th>para3</th>
+	            <th>para4</th>
+	            <th>para5</th>
+	        </tr>
+	    </thead>
+	    </tbody>
+		{% for row in conditions -%}
+	   		<tr>
+	   		{% for val in row -%}
+	   			<td> {{ val }} </td>
+	   		{%- endfor %}
+	   		</tr>
+	   	{%- endfor %}
+		</tbody>
+	</table>
+	
+	<form method="POST" action="{{ url_for('main.testForm') }}">
+		{{ reset_rules.hidden_tag() }}  
+		<div class ="row">
+			<div class="col-md-1 success" id = "reset_rules">
+			<h3>{{ wtf.form_field(reset_rules.reset_entry_rules, button_map={'reset_entry_rules':'success'}) }}</h3>
+			</div>
+		</div>
+	</form>
+		
+	<br>
+	
+	<h2>add a rule:</h2>
+    <form method="POST" action="{{ url_for('main.testForm') }}">
+    	{{ rule_form.hidden_tag() }}
+        <table data-toggle="table">
+	    <thead>
+	        <tr>
+	            <th>logic</th>
+	            <th>condID</th>
+	            <th>flip</th>
+	            <th>gap</th>
+	            <th>offset</th>
+	            <th>lowthrs</th>
+	            <th>highthrs</th>
+	            <th>para1</th>
+	            <th>para2</th>
+	            <th>para3</th>
+	            <th>para4</th>
+	            <th>para5</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	    <tr>
+	    	<div class="row">
+	        <td><div class="inline-block">{{ rule_form.logic }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.condID }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.flip }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.gap }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.offset }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.lowthrs }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.highthrs }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.para1 }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.para2 }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.para3 }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.para4 }}</div></td>
+	        <td><div class="inline-block">{{ rule_form.para5 }}</div></td>
+	        </div>
+	    </tr>
+	    </tbody>
+	    </table>
+		<div class ="row">
+			<div class="col-md-1 success" id = "add_rule">
+			<h3>{{ wtf.form_field(rule_form.add_rule, button_map={'add_rule':'success'}) }}</h3>
+			</div>
+		</div>
+    </form>
+     
+</div>
+
+{% endblock %}
