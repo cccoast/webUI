@@ -81,7 +81,6 @@ def generate_global_config(global_config_form):
     cookie['quant'] = global_config_form.quant.data
     cookie['minTTL'] = global_config_form.minTTL.data
     cookie['maxTTL'] = global_config_form.maxTTL.data
-    
     return 0
 
 @auth.context_processor
@@ -97,13 +96,24 @@ def inject_var():
         ret['global_config'] = session['global_config']
     if 'entry_conditions' in session:
         ret['entry_conditions'] = session['entry_conditions']
-        ret['entry_condtion_values'] = [session['entry_conditions'][i] for i in range(session['entry_conditions']['entry_nconds'])]
+        ret['entry_condtion_values'] = [session['entry_conditions'][str(i)] for i in range(session['entry_conditions']['entry_nconds'])]
     if 'exit_conditions' in session:
         ret['exit_conditions'] = session['exit_conditions']
-        ret['exit_condtion_values'] = [session['exit_conditions'][i] for i in range(session['exit_conditions']['exit_nconds'])]
-    if 'show_tab' in session:
-        ret['show_tab'] = session['show_tab']   
+        ret['exit_condtion_values'] = [session['exit_conditions'][str(i)] for i in range(session['exit_conditions']['exit_nconds'])]
+       
+    if session['entry_conditions']['entry_nconds'] > 0:
+        session['verify']['entry'] = True
+    else:
+        session['verify']['entry'] = False
+    if session['exit_conditions']['exit_nconds'] > 0:
+        session['verify']['exit'] = True
+    else:
+        session['verify']['exit'] = False
+        
     ret['backtest_ready'] = check_backtest(session)
+    if ret['backtest_ready']: session['show_tab'] = ()
+    if 'show_tab' in session:
+        ret['show_tab'] = session['show_tab']    
     return ret
 
 def check_backtest(cookie):
@@ -114,9 +124,9 @@ def check_backtest(cookie):
         return True
     return False
 
-def init_session(cookie):
+def init_session(cookie,force_reset = False):
     
-    if 'verify' not in cookie:
+    if 'verify' not in cookie or force_reset:
         cookie['verify'] = {}
         cookie['verify']['data'] = False
         cookie['verify']['global_config'] = False
@@ -124,26 +134,26 @@ def init_session(cookie):
         cookie['verify']['exit'] = False
         cookie['verify']['set'] = False
     
-    if 'data_block' not in cookie:
+    if 'data_block' not in cookie or force_reset:
         cookie['data_block'] = {}  
-    if 'comset' not in cookie:
+    if 'comset' not in cookie or force_reset:
         cookie['comset'] = {}
-    if 'global_config' not in cookie:
+    if 'global_config' not in cookie or force_reset:
         cookie['global_config'] = {}
         
-    if 'entry_conditions' not in cookie:
+    if 'entry_conditions' not in cookie or force_reset:
         cookie['entry_conditions'] = {}
         cookie['entry_conditions']['entry_nconds'] = 2
-        cookie['entry_conditions'][0] = ('AND',11000,0,0,0,-0.1,0.1,120,0,0,0,0)
-        cookie['entry_conditions'][1] = ('AND',1500,0,0,0,0,98,5,0,0,0,0)
+        cookie['entry_conditions']['0'] = ('AND',11000,0,0,0,-0.1,0.1,120,0,0,0,0)
+        cookie['entry_conditions']['1'] = ('AND',1500,0,0,0,0,98,5,0,0,0,0)
         
-    if 'eixt_conditions' not in cookie:
-        cookie['eixt_conditions'] = {}
-        cookie['eixt_conditions']['eixt_nconds'] = 2
-        cookie['eixt_conditions'][0] = ('OR',1500,0,0,0,1.99,'inf',6,0,0,0,0)
-        cookie['eixt_conditions'][1] = ('OR',1500,0,0,0,-1.99,'inf',4,0,0,0,0)
+    if 'exit_conditions' not in cookie or force_reset:
+        cookie['exit_conditions'] = {}
+        cookie['exit_conditions']['exit_nconds'] = 2
+        cookie['exit_conditions']['0'] = ('OR',1500,0,0,0,1.99,'inf',6,0,0,0,0)
+        cookie['exit_conditions']['1'] = ('OR',1500,0,0,0,-1.99,'inf',4,0,0,0,0)
     
-    if 'show_tab' not in cookie:
+    if 'show_tab' not in cookie or force_reset:
         cookie['show_tab'] = ('data',)
     
     #for upload instruments files
@@ -210,7 +220,7 @@ def fill():
 ###----------------------------------------------------------------------------
 ''' For Shm Block Data'''
 @login_required
-@auth.route('/fill_data',methods = ['POST',])
+@auth.route('/fill_data',methods = ['POST','GET'])
 def fill_data():
     main_page_forms = get_main_page_form_obj()
     data_form = main_page_forms[1]
@@ -221,6 +231,7 @@ def fill_data():
             session['verify']['data'] = True
         else:
             session['verify']['data'] = False
+            flash('Please Check Data Parameters Again')
             
 #         if data_form.or_upload_file.data:   
 #             filename = ufile.save(data_form.or_upload_file.data)
@@ -231,10 +242,11 @@ def fill_data():
     return render_template('auth/fill.html',**args)
     
 @login_required
-@auth.route('/modify_data',methods = ['POST',])
+@auth.route('/modify_data',methods = ['POST','GET'])
 def modify_data():
     modify_form = ModifyDataForm()
     session['verify']['data'] = False
+    session['show_tab'] = ('data',)
     if modify_form.submit3.data and modify_form.validate_on_submit():
         flash('Modify data block')
     return redirect(url_for('auth.fill'))
@@ -242,7 +254,7 @@ def modify_data():
 ###----------------------------------------------------------------------------
 ''' For Comset Data'''
 @login_required
-@auth.route('/fill_comset_data',methods = ['POST',])
+@auth.route('/fill_comset_data',methods = ['POST','GET'])
 def fill_comset_data():
     main_page_forms = get_main_page_form_obj()
     comset_form = main_page_forms[3]
@@ -253,15 +265,16 @@ def fill_comset_data():
             session['verify']['set'] = True
         else:
             session['verify']['set'] = False
-            
+            flash('Please Check Comset Parameters Again~')
     args = get_main_page_arg_dict(*main_page_forms)   
     return render_template('auth/fill.html',**args)
 
 @login_required
-@auth.route('/modify_comset_data',methods = ['POST',])
+@auth.route('/modify_comset_data',methods = ['POST','GET'])
 def modify_comset_data():
     modify_form = ModifyComsetForm()
     session['verify']['set'] = False
+    session['show_tab'] = ('com_set',)
     if modify_form.submit5.data and modify_form.validate_on_submit():
         flash('Modify commodity set')
     return redirect(url_for('auth.fill'))
@@ -269,12 +282,12 @@ def modify_comset_data():
 ###----------------------------------------------------------------------------
 ''' For Global Config '''
 @login_required
-@auth.route('/fill_global_config_data',methods = ['POST',])
+@auth.route('/fill_global_config_data',methods = ['POST','GET'])
 def fill_global_config_data():
     main_page_forms = get_main_page_form_obj()
     global_config_form = main_page_forms[5]
-#     print 'fuck! ',global_config_form.submit6.data,comset_form.submit4.data,data_form.submit2.data
-#     print 'You! ',global_config_form.is_submitted()
+    print 'fuck! ',global_config_form.submit6.data
+    print 'You! ',global_config_form.is_submitted(),global_config_form.validate()
     session['show_tab'] = ('global_config',)
     if global_config_form.submit6.data and global_config_form.validate_on_submit():
         flash('Set Global Config')
@@ -282,15 +295,19 @@ def fill_global_config_data():
             session['verify']['global_config'] = True
         else:
             session['verify']['global_config'] = False
+            flash('Please Check Config Parameters Again')
+    elif global_config_form.submit6.data and global_config_form.is_submitted() and not global_config_form.validate():
+            flash('Please Check Config Parameters Again')
             
     args = get_main_page_arg_dict(*main_page_forms) 
     return render_template('auth/fill.html',**args)
 
 @login_required
-@auth.route('/modify_global_config_data',methods = ['POST',])
+@auth.route('/modify_global_config_data',methods = ['POST','GET'])
 def modify_global_config_data():
     modify_form = ModifyGlobalConfigForm()
     session['verify']['global_config'] = False
+    session['show_tab'] = ('global_config',)
     if modify_form.submit7.data and modify_form.validate_on_submit():
         flash('Modify global config')
     return redirect(url_for('auth.fill'))
@@ -298,7 +315,7 @@ def modify_global_config_data():
 ###----------------------------------------------------------------------------
 '''for EntryRules'''
 @login_required
-@auth.route('/fill_entry_rule_data',methods = ['POST',])
+@auth.route('/fill_entry_rule_data',methods = ['POST','GET'])
 def fill_entry_rule_data():
     main_page_forms = get_main_page_form_obj()
     reset_rules = main_page_forms[7]
@@ -306,7 +323,7 @@ def fill_entry_rule_data():
     conditions = session['entry_conditions']
     
     print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
-    print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
+    print rule_form.add_entry_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('entry',)
     if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
@@ -317,17 +334,19 @@ def fill_entry_rule_data():
         values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
                   rule_form.lowthrs.data,rule_form.highthrs.data,\
                    rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
-        conditions[session['entry_conditions']['entry_nconds']] = values
+        conditions[str(session['entry_conditions']['entry_nconds'])] = values
         session['entry_conditions']['entry_nconds'] += 1
         flash('add new entry rule')
     elif rule_form.is_submitted() and not rule_form.validate():
-        flash('please check the new rule again')
-    return render_template(url_for('auth.fill'))
+        flash('please check the new entry rule again~')
+            
+    args = get_main_page_arg_dict(*main_page_forms) 
+    return render_template('auth/fill.html',**args)
 
 ###----------------------------------------------------------------------------
 '''for ExitRules'''
 @login_required
-@auth.route('/fill_exit_rule_data',methods = ['POST',])
+@auth.route('/fill_exit_rule_data',methods = ['POST','GET'])
 def fill_exit_rule_data():
     main_page_forms = get_main_page_form_obj()
     reset_rules = main_page_forms[9]
@@ -335,7 +354,7 @@ def fill_exit_rule_data():
     conditions = session['exit_conditions']
     
     print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
-    print rule_form.add_rule.data,rule_form.is_submitted(),rule_form.validate()
+    print rule_form.add_exit_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('exit',)
     if reset_rules.reset_exit_rules.data and reset_rules.validate_on_submit():
@@ -346,11 +365,22 @@ def fill_exit_rule_data():
         values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
                   rule_form.lowthrs.data,rule_form.highthrs.data,\
                    rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
-        conditions[session['exit_conditions']['exit_nconds']] = values
+        conditions[str(session['exit_conditions']['exit_nconds'])] = values
         session['exit_conditions']['exit_nconds'] += 1
         flash('add new exit rule')
     elif rule_form.is_submitted() and not rule_form.validate():
-        flash('please check the new rule again')
-    return render_template(url_for('auth.fill'))
+        flash('please check the new exit rule again~')
+            
+    args = get_main_page_arg_dict(*main_page_forms) 
+    return render_template('auth/fill.html',**args)
+
+###-------------------------------------------------------------------------------
+###clear all conditions
+@login_required
+@auth.route('/reset_all',methods = ['POST','GET'])
+def reset_all():
+    init_session(session,force_reset = True) 
+    flash('All parameters have been reset!')
+    return redirect(url_for('auth.fill'))
 
 

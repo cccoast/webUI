@@ -9,6 +9,7 @@
 
 
 <h2>saved rules:</h2>
+<h4>
 <table data-toggle="table">
     <thead>
         <tr>
@@ -36,8 +37,8 @@
    	{%- endfor %}
 	</tbody>
 </table>
-
-<form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
+</h4>
+<form method="POST" action="{{ url_for('auth.fill_exit_rule_data') }}">
 	{{ reset_exit_rule_form.hidden_tag() }}  
 	<div class ="row">
 		<div class="col-md-1 success" id = "reset_exit_rules_submit">
@@ -48,8 +49,9 @@
 	
 <br>
 
-<h2>add a rule:</h2>
-<form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
+<h2>add an exit rule:</h2>
+<h4>
+<form method="POST" action="{{ url_for('auth.fill_exit_rule_data') }}">
 	{{ add_exit_rule_form.hidden_tag() }}
     <table data-toggle="table">
     <thead>
@@ -93,3 +95,4 @@
 		</div>
 	</div>
 </form>
+</h4>

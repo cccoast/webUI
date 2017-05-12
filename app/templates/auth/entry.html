@@ -9,6 +9,7 @@
 
 
 <h2>saved rules:</h2>
+<h4>
 <table data-toggle="table">
     <thead>
         <tr>
@@ -36,6 +37,7 @@
    	{%- endfor %}
 	</tbody>
 </table>
+</h24>
 
 <form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
 	{{ reset_entry_rule_form.hidden_tag() }}  
@@ -48,7 +50,8 @@
 	
 <br>
 
-<h2>add a rule:</h2>
+<h2>add an entry rule:</h2>
+<h4>
 <form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
 	{{ add_entry_rule_form.hidden_tag() }}
     <table data-toggle="table">
@@ -93,3 +96,4 @@
 		</div>
 	</div>
 </form>
+</h4>

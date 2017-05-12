@@ -59,7 +59,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="collapseThree" class="panel-collapse collapse {%if "global_set" in show_tab %}in{% endif %}">
+		<div id="collapseThree" class="panel-collapse collapse {%if "global_config" in show_tab %}in{% endif %}">
 			<div class="panel-body">
 				<h3>
 				{% include "auth/global_config.html" with context %}
@@ -81,9 +81,7 @@ h1.panel-title{
 		</div>
 		<div id="collapseFour" class="panel-collapse collapse {%if "entry" in show_tab %}in{% endif %}">
 			<div class="panel-body">
-				<h4>
 				{% include "auth/entry.html" with context %}
-				</h4>
 			</div>
 		</div>
 	</div>
@@ -101,9 +99,7 @@ h1.panel-title{
 		</div>
 		<div id="collapseFive" class="panel-collapse collapse {%if "exit" in show_tab %}in{% endif %}">
 			<div class="panel-body">
-				<h4>
 				{% include "auth/exit.html" with context %}
-				</h4>
 			</div>
 		</div>
 	</div>
