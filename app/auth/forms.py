@@ -142,8 +142,13 @@ class ExitRuleForm(RuleForm):
 class ResetExitRules(FlaskForm):
     reset_exit_rules = SubmitField('reset_all',id = 'reset_exit_rules')
 
+# class CreateShmForm(FlaskForm):
+#     submit_create_shm = SubmitField('submit',id='submit_backtest')
+
 class SubmitForm(FlaskForm):
     submit1 = SubmitField('backTest',id='submit_backtest')
+    
+
      
 
 

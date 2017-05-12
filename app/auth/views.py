@@ -7,6 +7,16 @@ from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,ComsetForm,Modif
                     GlobalConfigForm,ModifyGlobalConfigForm,\
                     ResetEntryRules, EntryRuleForm, ResetExitRules, ExitRuleForm
 from .. import ufile 
+import os
+
+import sys
+upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)[:-1]))
+pkg_path = os.path.join(upper_abs_path,'generate_data_block')
+# print pkg_path
+if pkg_path not in sys.path:
+    sys.path.append(pkg_path)
+    
+from misc import get_today,get_hourminsec
 
 def web_conditions_to_server_conditions(conditions):
     server_dict = {}
