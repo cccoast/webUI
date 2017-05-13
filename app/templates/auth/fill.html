@@ -5,7 +5,7 @@
 
 {% block page_content %}
 <style type="text/css">
-#submit_data{
+#start_backtest{
     float:right;
 }
 </style>
@@ -14,10 +14,24 @@
     {% if current_user.is_authenticated -%}    	
 	    {% include "auth/collapse.html" with context %}
 	    {% if backtest_ready %}
+	    
+	    <!---
 	    <div class="col-bg-1" id = "submit_data">
 	    {{ wtf.quick_form(submit_form,button_map={'submit1':'success'},form_type = 'horizontal') }}
-	    <br>
 		</div>
+		--->
+		
+		<form method="POST" action="{{ url_for('auth.backtest') }}">
+			{{ submit_form.hidden_tag() }}  
+			<div class ="row">
+				<div class="col-md-2 success" id = "start_backtest">
+				<h3>
+				{{ wtf.form_field(submit_form.submit1, button_map={'submit1':'success'},form_type = 'horizontal') }}
+				</h3>
+				</div>
+			</div>
+		</form>
+		
 		{% endif %}
     {% endif %}
     </h1>

@@ -93,7 +93,7 @@ class GlobalConfigForm(FlaskForm):
     
     exec_algo = RadioField('exec_method',  id = 'exec_method',
                         choices = [('OpponentPrc','OpponentPrc'),('LastPrc','LastPrc')],
-                        render_kw = {'value':'LastPrc'},default = 'LastPrc')    
+                        render_kw = {'value':'LastPrc'},default = 'OpponentPrc')    
     dual_mode = RadioField('entry_mode',  id = 'entry_mode',
                         choices = [('SingleSide','SingleSide'),('BothSide','BothSide')],
                         render_kw = {'value':'SingleSide'},default = 'SingleSide')
@@ -101,7 +101,7 @@ class GlobalConfigForm(FlaskForm):
                         choices = [('BUY','BUY'),('SELL','SELL'),],
                         render_kw = {'value':'BUY'},default = 'BUY')
     
-    quant  = IntegerField('quant',id = 'quant',validators=[],
+    quant  = IntegerField('quantum',id = 'quantum',validators=[],
                         render_kw={'placeholder': 1,'value':1},default = 1)
     minTTL = IntegerField('minTTL',id = 'minTTL',validators=[],
                         render_kw={'placeholder': 1,'value':1},default = 1)
@@ -146,7 +146,7 @@ class ResetExitRules(FlaskForm):
 #     submit_create_shm = SubmitField('submit',id='submit_backtest')
 
 class SubmitForm(FlaskForm):
-    submit1 = SubmitField('backTest',id='submit_backtest')
+    submit1 = SubmitField('run backtest',id='submit_backtest')
     
 
      

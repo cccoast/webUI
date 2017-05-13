@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash, session, g 
+from flask import render_template, redirect, request, url_for, flash, session, g , current_app
 from flask_login import login_user, logout_user, login_required, current_user,fresh_login_required
 from . import auth
 from .. import db
@@ -17,22 +17,42 @@ if pkg_path not in sys.path:
     sys.path.append(pkg_path)
     
 from misc import get_today,get_hourminsec
+from ui_misc import diff_seconds
+from transfer import get_server_result_path
+from const_vars import Ticker
 
 def web_conditions_to_server_conditions(conditions):
     server_dict = {}
     keys = ('op','fid','flip','gap1','offset1','lothr','hithr','param0','param1','param2','param3','param4')
-    for row,icond in enumerate(conditions):
-        server_dict[row] = dict(zip(keys,icond))
-        server_dict[row]['gap2'] = 0
-        server_dict[row]['offset2'] = 0
+    row = 0
+    for key,icond in conditions.iteritems():
+        if not key.endswith('_nconds'):
+            server_dict[row] = dict(zip(keys,icond))
+            server_dict[row]['gap2'] = 0
+            server_dict[row]['offset2'] = 0
+            row += 1
     return server_dict
+
+def web_conditions_to_server_conditions_entry(conditions,direction,quant):
+    entry_dict = {}
+    entry_dict['conditions'] = web_conditions_to_server_conditions(conditions)
+    entry_dict['direction'] = direction
+    entry_dict['quant'] = quant
+    return entry_dict
+
+def web_conditions_to_server_conditions_exit(conditions,minTTL,maxTTL):
+    exit_dict = {}
+    exit_dict['conditions'] = web_conditions_to_server_conditions(conditions)
+    exit_dict['minTTL'] = minTTL
+    exit_dict['maxTTL'] = maxTTL
+    return exit_dict
     
 def web_global_config_to_server_global_config(global_config_dict):
     server_dict = {}
     for k,v in global_config_dict.iteritems():
-        if str(k) == 'exec_method':
+        if str(k) == 'exec_algo':
             server_dict['exec_algo'] = 'LAST' if str(v) == 'LastPrc' else 'SIDE'
-        elif str(k) == 'entry_mode':
+        elif str(k) == 'dual_mode':
             server_dict['dual_mode'] = 1 if v == 'BothSide' else 0
         else:
             server_dict[str(k)] = v
@@ -55,9 +75,10 @@ def web_datablock_to_server_datablock(block_dict):
 
 def web_comset_data_to_server_data(web_dict):
     server_data = {}
+    ticker = Ticker()
     for k,v in web_dict.iteritems():
         if len(v) > 0:
-            server_data[str(k)] = str(v).split()
+            server_data[str(k)] = map(ticker.get_id, str(v).split())
     return server_data        
             
 def generate_block(data_form):
@@ -72,7 +93,7 @@ def generate_block(data_form):
     return 0
 
 def generate_comset(comset_form):
-    print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
+#     print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
     cookie = session['comset']
     cookie['1'] = comset_form.comset_1.data
     cookie['2'] = comset_form.comset_2.data
@@ -161,11 +182,17 @@ def init_session(cookie,force_reset = False):
         cookie['exit_conditions'] = {}
         cookie['exit_conditions']['exit_nconds'] = 2
         cookie['exit_conditions']['0'] = ('OR',1500,0,0,0,1.99,'inf',6,0,0,0,0)
-        cookie['exit_conditions']['1'] = ('OR',1500,0,0,0,-1.99,'inf',4,0,0,0,0)
+        cookie['exit_conditions']['1'] = ('OR',1500,0,0,0,'-inf',119.0,4,0,0,0,0)
     
     if 'show_tab' not in cookie or force_reset:
         cookie['show_tab'] = ('data',)
     
+    if 'last_backtest_tstamp' not in cookie:
+        cookie['last_backtest_tstamp'] = (get_today(),0)
+        
+    if 'requestID' not in cookie:
+        cookie['requestID'] = 0
+        
     #for upload instruments files
 #     if 'upload_inss_name' not in cookie:
 #         cookie['upload_inss_name'] = None
@@ -210,19 +237,84 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
 
+###---------------------------------------------------------------------------
+''' for backTest'''
+@login_required
+@auth.route('/backtest',methods = ['GET','POST'])
+def backtest():
+    main_page_forms = get_main_page_form_obj()
+    sub_form = main_page_forms[0]
+    min_backtest_gap_seconds = 10
+    
+    session['show_tab'] = ()    
+    if sub_form.submit1.data and sub_form.validate_on_submit():
+        
+        now = (get_today(),get_hourminsec())
+        if diff_seconds(now, session['last_backtest_tstamp']) < min_backtest_gap_seconds:
+            flash('warning! Min backtest time interval is {0}, take a rest~~'.format(min_backtest_gap_seconds))
+        else:
+            session['last_backtest_tstamp'] = now
+            data_dict = web_datablock_to_server_datablock(session['data_block'])
+            comset_dict = web_comset_data_to_server_data(session['comset'])
+            global_config = web_global_config_to_server_global_config(session['global_config'])
+            entry_rules = web_conditions_to_server_conditions_entry(\
+                                session['entry_conditions'],session['global_config']['direction'],session['global_config']['quant'])
+            exit_rules  = web_conditions_to_server_conditions_exit(\
+                                session['exit_conditions'],session['global_config']['minTTL'],session['global_config']['maxTTL'])          
+            
+            print 'data_block = ',data_dict
+            print 'comset = ',comset_dict
+            print 'global_config = ',global_config
+            print 'entry_rules = ',entry_rules
+            print 'exit_rules = ',exit_rules    
+            
+            funcNames = ['config_data','create_shm','create_backtest_config',\
+                            'backtest','create_pta','upload_pta']
+            username = current_user.username
+
+            requestID = session['requestID']
+            session['requestID'] += 1
+            
+            today,tstamp = now
+            loginID = '{0}_{1}'.format( today,tstamp )
+            
+            argkws = {}
+            argkws['username'],argkws['date'],argkws['tstamp'] = username,today,tstamp
+            
+            backtest_pydict ={}
+            backtest_pydict['comset_data'] = comset_dict
+            backtest_pydict['config_data'] = global_config
+            backtest_pydict['entry_data'] = entry_rules
+            backtest_pydict['exit_data'] = exit_rules
+            
+            backtest_pydict.update(argkws)
+        
+            os.makedirs(get_server_result_path(argkws))
+            
+            paras = [data_dict,{},backtest_pydict,argkws,argkws,argkws]
+            pipeline = 1
+            paras_dict = dict(zip(map(lambda x: str(x), range(len(paras))),paras))
+            print paras_dict
+            
+            cmd = current_app.rpc_client.create_cmd(today, username, loginID, requestID, funcNames, \
+                                                        pipeline, **paras_dict)
+            print 'send cmd = ',cmd,'\n'
+            current_app.rpc_client.send_cmd(cmd)
+            
+            flash('Start back Testing, please wait for a while...')
+    
+    args = get_main_page_arg_dict(*main_page_forms)
+    return render_template('auth/fill.html',**args)
+
 ###----------------------------------------------------------------------------
 ''' For basic UI '''
 @login_required
 @auth.route('/fill',methods = ['GET','POST'])
 def fill():
     main_page_forms = get_main_page_form_obj()
-    sub_form = main_page_forms[0]
-    
+        
     if check_backtest(session) is True:
         session['show_tab'] = ()
-        
-    if sub_form.submit1.data and sub_form.validate_on_submit():
-        flash('Start back Testing, please wait for a while...')
     
     args = get_main_page_arg_dict(*main_page_forms)
     return render_template('auth/fill.html',**args)
@@ -296,8 +388,8 @@ def modify_comset_data():
 def fill_global_config_data():
     main_page_forms = get_main_page_form_obj()
     global_config_form = main_page_forms[5]
-    print 'fuck! ',global_config_form.submit6.data
-    print 'You! ',global_config_form.is_submitted(),global_config_form.validate()
+#     print 'fuck! ',global_config_form.submit6.data
+#     print 'You! ',global_config_form.is_submitted(),global_config_form.validate()
     session['show_tab'] = ('global_config',)
     if global_config_form.submit6.data and global_config_form.validate_on_submit():
         flash('Set Global Config')
@@ -332,8 +424,8 @@ def fill_entry_rule_data():
     rule_form = main_page_forms[8]
     conditions = session['entry_conditions']
     
-    print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
-    print rule_form.add_entry_rule.data,rule_form.is_submitted(),rule_form.validate()
+#     print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
+#     print rule_form.add_entry_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('entry',)
     if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
@@ -363,8 +455,8 @@ def fill_exit_rule_data():
     rule_form = main_page_forms[10]
     conditions = session['exit_conditions']
     
-    print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
-    print rule_form.add_exit_rule.data,rule_form.is_submitted(),rule_form.validate()
+#     print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
+#     print rule_form.add_exit_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('exit',)
     if reset_rules.reset_exit_rules.data and reset_rules.validate_on_submit():

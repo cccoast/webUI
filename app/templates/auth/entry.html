@@ -42,8 +42,8 @@
 <form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
 	{{ reset_entry_rule_form.hidden_tag() }}  
 	<div class ="row">
-		<div class="col-md-1 success" id = "reset_entry_rules_submit">
-		<h3>{{ wtf.form_field(reset_entry_rule_form.reset_entry_rules, button_map={'reset_entry_rules':'success'}) }}</h3>
+		<div class="col-md-2 success" id = "reset_entry_rules_submit">
+		<h3>{{ wtf.form_field(reset_entry_rule_form.reset_entry_rules, button_map={'reset_entry_rules':'success'},form_type = 'horizontal') }}</h3>
 		</div>
 	</div>
 </form>
@@ -89,8 +89,8 @@
     </tbody>
     </table>
 	<div class ="row">
-		<div class="col-md-1 success" id = "add_entry_rule_submit">
-		<h3>{{ wtf.form_field(add_entry_rule_form.add_entry_rule, button_map={'add_entry_rule':'success'}) }}</h3>
+		<div class="col-md-2 success" id = "add_entry_rule_submit">
+		<h3>{{ wtf.form_field(add_entry_rule_form.add_entry_rule, button_map={'add_entry_rule':'success'},form_type = 'horizontal') }}</h3>
 		</div>
 	</div>
 </form>
