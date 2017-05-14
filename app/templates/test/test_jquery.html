@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script>
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+		var ret = 0;
+		function queryBacktestReady(){
+		    $.ajax({
+			  url: $SCRIPT_ROOT + '/square',
+			  data: {'value':100},
+			  async: false,
+			  dataType: 'json',
+			  success: function (result) {
+			    ret = result.result;
+			  }
+			});
+		};
+		$(document).ready(function(){
+		    queryBacktestReady();
+		    var result = ret;
+		    $('#time').text(result);
+		    $("#test_js_button").click(function(){alert("fuck you");});
+		})
+	</script>
+</head>
+<body>
+	<button type="button" id="test_js_button">Click Me!</button>
+	<p id="time"></p>
+</body>
+</html>

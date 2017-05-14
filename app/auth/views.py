@@ -214,7 +214,13 @@ def get_main_page_form_obj():
                         GlobalConfigForm(),ModifyGlobalConfigForm(),\
                         ResetEntryRules(),EntryRuleForm(),\
                         ResetExitRules(),ExitRuleForm() )
-                        
+        
+###----------------------------------------------------------------------------
+'''Query BackTest Result ''' 
+@auth.route('/qeury_backtest_result', methods=['GET', 'POST'])
+def qeury_backtest_result():
+    pass
+               
 ###----------------------------------------------------------------------------
 ''' For log in '''       
 @auth.route('/login', methods=['GET', 'POST'])
@@ -262,11 +268,11 @@ def backtest():
             exit_rules  = web_conditions_to_server_conditions_exit(\
                                 session['exit_conditions'],session['global_config']['minTTL'],session['global_config']['maxTTL'])          
             
-            print 'data_block = ',data_dict
-            print 'comset = ',comset_dict
-            print 'global_config = ',global_config
-            print 'entry_rules = ',entry_rules
-            print 'exit_rules = ',exit_rules    
+#             print 'data_block = ',data_dict
+#             print 'comset = ',comset_dict
+#             print 'global_config = ',global_config
+#             print 'entry_rules = ',entry_rules
+#             print 'exit_rules = ',exit_rules    
             
             funcNames = ['config_data','create_shm','create_backtest_config',\
                             'backtest','create_pta','upload_pta']
@@ -294,7 +300,7 @@ def backtest():
             paras = [data_dict,{},backtest_pydict,argkws,argkws,argkws]
             pipeline = 1
             paras_dict = dict(zip(map(lambda x: str(x), range(len(paras))),paras))
-            print paras_dict
+#             print paras_dict
             
             cmd = current_app.rpc_client.create_cmd(today, username, loginID, requestID, funcNames, \
                                                         pipeline, **paras_dict)

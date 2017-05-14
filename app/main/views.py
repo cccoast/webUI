@@ -28,6 +28,16 @@ def getValue():
     initV = initV + 5 if (initV <= 95) else 0
     return jsonify(result=initV)
 
+@main.route('/square', methods=['GET', 'POST'])
+def square():
+    input = request.args.get('value', -1, type=int)
+    print 'request.args = ',request.args,' input = ',input
+    return jsonify(result=input + 100)
+
+@main.route('/testJquery', methods=['GET', 'POST'])
+def test_jquery():
+    return render_template('test/test_jquery.html')
+
 conditions = {}
 nconds = 2
 conditions[0] = ('AND',11000,0,0,0,'-0.1','0.1',120,0,0,0,0)

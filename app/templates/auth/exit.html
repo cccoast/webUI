@@ -41,8 +41,8 @@
 <form method="POST" action="{{ url_for('auth.fill_exit_rule_data') }}">
 	{{ reset_exit_rule_form.hidden_tag() }}  
 	<div class ="row">
-		<div class="col-md-2 success" id = "reset_exit_rules_submit">
-		<h3>{{ wtf.form_field(reset_exit_rule_form.reset_exit_rules, button_map={'reset_exit_rules':'success'},form_type = 'horizontal') }}</h3>
+		<div class="col-md-1 success" id = "reset_exit_rules_submit">
+		<h3>{{ wtf.form_field(reset_exit_rule_form.reset_exit_rules, button_map={'reset_exit_rules':'success'}) }}</h3>
 		</div>
 	</div>
 </form>
@@ -88,8 +88,8 @@
     </tbody>
     </table>
 	<div class ="row">
-		<div class="col-md-2 success" id = "add_exit_rule_submit">
-		<h3>{{ wtf.form_field(add_exit_rule_form.add_exit_rule, button_map={'add_exit_rule':'success'},form_type = 'horizontal') }}</h3>
+		<div class="col-md-1 success" id = "add_exit_rule_submit">
+		<h3>{{ wtf.form_field(add_exit_rule_form.add_exit_rule, button_map={'add_exit_rule':'success'}) }}</h3>
 		</div>
 	</div>
 </form>
