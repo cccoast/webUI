@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash, session, g , current_app
+from flask import render_template, redirect, request, url_for, flash, session, g , current_app, jsonify
 from flask_login import login_user, logout_user, login_required, current_user,fresh_login_required
 from . import auth
 from .. import db
@@ -144,7 +144,10 @@ def inject_var():
     ret['backtest_ready'] = check_backtest(session)
     if ret['backtest_ready']: session['show_tab'] = ()
     if 'show_tab' in session:
-        ret['show_tab'] = session['show_tab']    
+        ret['show_tab'] = session['show_tab'] 
+    if 'show_backtest' in session:
+        ret['show_backtest'] = session['show_backtest']
+        
     return ret
 
 def check_backtest(cookie):
@@ -186,12 +189,16 @@ def init_session(cookie,force_reset = False):
     
     if 'show_tab' not in cookie or force_reset:
         cookie['show_tab'] = ('data',)
+        cookie['show_backtest'] = 0
     
     if 'last_backtest_tstamp' not in cookie:
         cookie['last_backtest_tstamp'] = (get_today(),0)
         
     if 'requestID' not in cookie:
         cookie['requestID'] = 0
+        cookie['last_request_id'] = -1
+        cookie['last_func_name'] = ''
+        cookie['pipeline'] = 0
         
     #for upload instruments files
 #     if 'upload_inss_name' not in cookie:
@@ -214,13 +221,36 @@ def get_main_page_form_obj():
                         GlobalConfigForm(),ModifyGlobalConfigForm(),\
                         ResetEntryRules(),EntryRuleForm(),\
                         ResetExitRules(),ExitRuleForm() )
-        
+            
 ###----------------------------------------------------------------------------
 '''Query BackTest Result ''' 
+@login_required
 @auth.route('/qeury_backtest_result', methods=['GET', 'POST'])
 def qeury_backtest_result():
-    pass
-               
+    print 'get backtest result query!'
+    username = current_user.username
+    day,tstamp = session['last_backtest_tstamp']
+    loginID = '{0}_{1}'.format(day,tstamp)
+    pipeline = session['pipeline']
+    key = current_app.ipc_api.get_key(day, username, loginID, \
+                session['last_request_id'], session['last_func_name'], pipeline)
+    if not current_app.ipc_api.exists(key):
+        return jsonify(result = -1)
+    value = current_app.ipc_api.get_cmd_return_value(key)
+    if value is not None:
+        session['show_backtest'] = 1
+        if pipeline == 0:
+            if int(value['ret']) >= 0:
+                return jsonify(result = 0)
+            else:
+                return jsonify(result = -1)
+        else:
+            for k,v in value['ret'].iteritems():
+                if int(v) < 0:
+                    return jsonify(result = -1)
+            return jsonify(result = 0)
+    return jsonify(result = -1)
+    
 ###----------------------------------------------------------------------------
 ''' For log in '''       
 @auth.route('/login', methods=['GET', 'POST'])
@@ -301,6 +331,9 @@ def backtest():
             pipeline = 1
             paras_dict = dict(zip(map(lambda x: str(x), range(len(paras))),paras))
 #             print paras_dict
+            session['last_request_id'] = requestID
+            session['last_func_name'] = funcNames
+            session['pipeline'] = pipeline
             
             cmd = current_app.rpc_client.create_cmd(today, username, loginID, requestID, funcNames, \
                                                         pipeline, **paras_dict)

@@ -9,6 +9,7 @@
     float:right;
 }
 </style>
+<!--- <script src="{{ url_for('static', filename='mine.js') }}"></script> --->
 <div class="page-header">
     <h1>
     {% if current_user.is_authenticated -%}    	
@@ -21,7 +22,7 @@
 		</div>
 		--->
 		
-		<form method="POST" action="{{ url_for('auth.backtest') }}">
+		<form method="POST" action="{{ url_for('auth.backtest') }}" id = "start_backtest_form" enctype="multipart/form-data">
 			{{ submit_form.hidden_tag() }}  
 			<div class ="row">
 				<div class="col-md-2 success" id = "start_backtest">
@@ -36,6 +37,7 @@
     {% endif %}
     </h1>
 </div>
+
 {% endblock %}
 
 

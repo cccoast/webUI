@@ -27,3 +27,7 @@ class RuleForm(FlaskForm):
     para4  = StringField('para4',render_kw={'placeholder': '0.0','size':6,'value':0},default = '0')
     para5  = StringField('para5',render_kw={'placeholder': '0.0','size':6,'value':0},default = '0')
     add_rule  = SubmitField('add_rule',id = 'submit_test_form')
+    
+class JsBindBubmit(FlaskForm):
+    content = StringField('content')
+    submit_js = SubmitField('submit')

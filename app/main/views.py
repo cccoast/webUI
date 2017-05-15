@@ -1,7 +1,7 @@
 from flask import render_template,request,url_for,flash,redirect,jsonify
 from . import main
 from .. import ufile
-from .forms import UploadForm,RuleForm,ResetRules
+from .forms import UploadForm,RuleForm,ResetRules,JsBindBubmit
 
 @main.route('/')
 def index():
@@ -72,4 +72,15 @@ def testForm():
 @main.route('/testFormInTable',methods = ['GET','POST'])
 def testFormInTable():
     return render_template('test/form_in_table.html')
+
+@main.route('/test_js_bind',methods = ['GET','POST'])
+def test_js_bind():
+    iform = JsBindBubmit()
+    print iform.submit_js.data,iform.is_submitted(),iform.validate()
+    if iform.submit_js.data and iform.validate_on_submit():
+        print iform.content.data
+        flash("{}".format(iform.content.data))
+    else:
+        flash("please type in data")
+    return render_template('test/test_submit_jquery.html',test_form = iform)
     

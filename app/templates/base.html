@@ -54,7 +54,6 @@
         <h3>&nbsp;{{ message }}</h3>
     </div>
     {% endfor %}
-    
     {% block page_content %}
 	{% endblock %}
 	
@@ -65,6 +64,9 @@
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
+<script type="text/javascript">
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+</script>
 <script src="{{ url_for('static', filename='mine.js') }}"></script>
 <!--- {{ moment.include_moment() }} --->
 {% endblock %}

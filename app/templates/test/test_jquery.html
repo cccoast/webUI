@@ -18,16 +18,32 @@
 			  }
 			});
 		};
+		function startTimer(duration, display) {
+			alert("start timer " + duration);
+	        var timer = duration;
+	        var refresh = setInterval(function () {
+	            if (--timer < 0) {
+	                display.text("Time's Up!");
+	                clearInterval(refresh);
+	                alert("Time's Up!");
+	                window.location.reload();
+	            }
+	            console.log("tick");
+	            display.text(timer);
+	        }, 1000);
+    	}
 		$(document).ready(function(){
 		    queryBacktestReady();
 		    var result = ret;
-		    $('#time').text(result);
-		    $("#test_js_button").click(function(){alert("fuck you");});
+		    $('#json_result').text(result);
+		    var display = $('#time');
+		    $("#test_js_button").click(function(){startTimer(10,display);});
 		})
 	</script>
 </head>
 <body>
 	<button type="button" id="test_js_button">Click Me!</button>
+	<p id="json_result"></p>
 	<p id="time"></p>
 </body>
 </html>

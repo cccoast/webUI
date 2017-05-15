@@ -13,6 +13,7 @@ pkg_path = os.path.join(upper_abs_path,'generate_data_block')
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
 from ipc_util import PRC_Clinet,getUploadAddr_back,getDownloadAddr_front
+from redis_api import ipc_db_api
 
 bootstrap = Bootstrap()
 moment = Moment()
@@ -60,6 +61,9 @@ def create_app(config_name):
     
     rpc_client = create_rpc_client()
     setattr(app, 'rpc_client', rpc_client)
+    
+    ipc_api = ipc_db_api(db_addr = '127.0.0.1',db_port = 6379,db_name = 3)
+    setattr(app, 'ipc_api', ipc_api)
     
     return app
 
