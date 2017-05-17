@@ -30,4 +30,4 @@ class RuleForm(FlaskForm):
     
 class JsBindBubmit(FlaskForm):
     content = StringField('content')
-    submit_js = SubmitField('submit')
+    submit_js = SubmitField('submit_js')

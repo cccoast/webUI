@@ -4,28 +4,29 @@
 
 {% block title %}Platform - Login{% endblock %}
 {% block page_content %}
-<!---
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script>
-	$(document).ready(function(){
-	    $("#test_js_bind").submit(function(e){
-	   		alert("Submitted");
-	   		return true;
-	   		//e.preventDefault();
-	    	//window.location.reload();
-	  	});
-	});
-</script>
---->
-<script src="{{ url_for('static', filename='mine.js') }}"></script>
 <div class="page-header">
     <h1>form</h1>
 </div>
 <div class="col-md-4">
-	<form method="POST" action="{{ url_for('main.test_js_bind') }}" id = "test_js_bind" enctype="multipart/form-data">
+	<form method="POST" action="{{ url_for('main.test_js_bind') }}" id = "test_js_bind_form" enctype="multipart/form-data">
 	{{ test_form.hidden_tag() }}
 	{{ wtf.form_field(test_form.content) }}
 	{{ wtf.form_field(test_form.submit_js) }}
 	</form>
+	<div id="placebo">
+  		<h2>Trigger the handler</h2>
+	</div>
 </div>
+
 {% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+	$(document).ready(function(){
+       	$("#placebo").click(function(){
+	   		$("#test_js_bind_form").submit();
+		});
+	});
+</script>
+{% endblock %}
+
