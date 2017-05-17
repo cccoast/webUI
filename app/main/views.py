@@ -82,5 +82,6 @@ def test_js_bind():
         flash("{}".format(iform.content.data))
     else:
         flash("please type in data")
-    return render_template('test/test_submit_jquery.html',test_form = iform)
+    start_timer = 1
+    return render_template('test/test_submit_jquery.html',test_form = iform,start_timer = 1)
     

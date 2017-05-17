@@ -40,6 +40,18 @@
 
 {% endblock %}
 
-
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+	$(document).ready(function(){
+		{% if start_timer %}
+			startTimer(10);
+		{% else %}
+			alert('fuck');
+		{% endif %}
+	});
+</script>
+{% endblock %}
 
 

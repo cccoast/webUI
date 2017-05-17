@@ -228,6 +228,8 @@ def get_main_page_form_obj():
 @auth.route('/qeury_backtest_result', methods=['GET', 'POST'])
 def qeury_backtest_result():
     print 'get backtest result query!'
+    if not hasattr(current_user, 'username'):
+        return jsonify(result = -1)
     username = current_user.username
     day,tstamp = session['last_backtest_tstamp']
     loginID = '{0}_{1}'.format(day,tstamp)
@@ -343,6 +345,7 @@ def backtest():
             flash('Start back Testing, please wait for a while...')
     
     args = get_main_page_arg_dict(*main_page_forms)
+    args['start_timer'] = 1
     return render_template('auth/fill.html',**args)
 
 ###----------------------------------------------------------------------------
