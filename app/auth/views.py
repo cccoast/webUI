@@ -147,7 +147,9 @@ def inject_var():
         ret['show_tab'] = session['show_tab'] 
     if 'show_backtest' in session:
         ret['show_backtest'] = session['show_backtest']
-        
+    if 'show_result' or 'show_error' not in session:
+        ret['show_result'] = session['show_result'] 
+        ret['show_error'] = session['show_error'] 
     return ret
 
 def check_backtest(cookie):
@@ -199,7 +201,12 @@ def init_session(cookie,force_reset = False):
         cookie['last_request_id'] = -1
         cookie['last_func_name'] = ''
         cookie['pipeline'] = 0
-        
+    
+    if 'last_backtest_tstamp' or 'show_result' or 'show_error' not in cookie:
+        cookie['last_backtest_tstamp'] = (-1,-1)
+        cookie['show_result'] = 0
+        cookie['show_error'] = 0
+    
     #for upload instruments files
 #     if 'upload_inss_name' not in cookie:
 #         cookie['upload_inss_name'] = None
@@ -221,7 +228,19 @@ def get_main_page_form_obj():
                         GlobalConfigForm(),ModifyGlobalConfigForm(),\
                         ResetEntryRules(),EntryRuleForm(),\
                         ResetExitRules(),ExitRuleForm() )
-            
+    
+###----------------------------------------------------------------------------
+''' show backtest result'''     
+@auth.route('/show_backtest_result', methods=['GET', 'POST'])
+def show_backtest_result():
+    session['show_result'],session['show_error'] = 1,0
+    return redirect(url_for('auth.fill'))
+    
+@auth.route('/backtest_result_error', methods=['GET', 'POST'])
+def backtest_result_error():
+    session['show_error'],session['show_result'] = 1,0
+    return redirect(url_for('auth.fill'))
+          
 ###----------------------------------------------------------------------------
 '''Query BackTest Result ''' 
 @login_required

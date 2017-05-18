@@ -13,15 +13,10 @@
 <div class="page-header">
     <h1>
     {% if current_user.is_authenticated -%}    	
-	    {% include "auth/collapse.html" with context %}
-	    {% if backtest_ready %}
 	    
-	    <!---
-	    <div class="col-bg-1" id = "submit_data">
-	    {{ wtf.quick_form(submit_form,button_map={'submit1':'success'},form_type = 'horizontal') }}
-		</div>
-		--->
-		
+	    {% include "auth/collapse.html" with context %}
+	    
+	    {% if backtest_ready %}
 		<form method="POST" action="{{ url_for('auth.backtest') }}" id = "start_backtest_form" enctype="multipart/form-data">
 			{{ submit_form.hidden_tag() }}  
 			<div class ="row">
@@ -32,8 +27,14 @@
 				</div>
 			</div>
 		</form>
-		
 		{% endif %}
+		
+		{% if show_result == 1 %}
+			{% include "auth/backtest_result.html" with context %}
+		{% elif show_error == 1 %}
+			{% include "auth/backtest_error.html" with context %}
+		{% endif %}
+			
     {% endif %}
     </h1>
 </div>
@@ -46,9 +47,9 @@
 <script>
 	$(document).ready(function(){
 		{% if start_timer %}
-			startTimer(10);
+			startTimer(30,"/show_backtest_result","/backtest_result_error");
 		{% else %}
-			alert('fuck');
+			console.log("backtest has not been started");
 		{% endif %}
 	});
 </script>

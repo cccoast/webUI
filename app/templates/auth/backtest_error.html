@@ -1,0 +1,34 @@
+
+<style type="text/css">
+h1.panel-title{
+    font-size:32px;
+    background:#E6E6FA;
+}
+</style>
+					
+<div class="panel-group" id="accordion">
+
+	<!--- first --->
+	<div class="panel panel-summary">
+		<div class="panel-heading">
+			<h1 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#backtest_error_collapseOne" color="green">
+				   1.error information
+				</a>
+			</h1>
+		</div>
+		<div id="backtest_error_collapseOne" class="panel-collapse collapse ">
+			<div class="panel-body">
+				<h3>
+				   {% include "auth/backtest_error_details.html" with context %}
+				</h3>
+			</div>
+		</div>
+	</div>
+		
+</div>
+
+<script type="text/javascript">
+	$(function () { $('#backtest_error_collapseOne').collapse('hide')});
+</script>  

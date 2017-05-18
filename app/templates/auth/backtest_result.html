@@ -1,0 +1,92 @@
+
+<style type="text/css">
+h1.panel-title{
+    font-size:32px;
+    background:#E6E6FA;
+}
+</style>
+					
+<div class="panel-group" id="accordion">
+
+	<!--- first --->
+	<div class="panel panel-summary">
+		<div class="panel-heading">
+			<h1 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#backtest_collapseOne" color="green">
+				   1.Summary 
+				</a>
+			</h1>
+		</div>
+		<div id="backtest_collapseOne" class="panel-collapse collapse ">
+			<div class="panel-body">
+				<h3>
+				   {% include "auth/backtest_result.html" with context %}
+				</h3>
+			</div>
+		</div>
+	</div>
+	
+	<!--- second --->
+	<div class="panel panel-charts">
+		<div class="panel-heading">
+			<h1 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#backtest_collapseTwo">
+				   2.Charts
+				</a>
+			</h1>
+		</div>
+		<div id="backtest_collapseTwo" class="panel-collapse collapse in">
+			<div class="panel-body">
+				<h3>
+				   {% include "auth/backtest_charts.html" with context %}
+				</h3>
+			</div>
+		</div>
+	</div>
+	
+	<!--- third --->
+	<div class="panel panel-everyday">
+		<div class="panel-heading">
+			<h1 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#backtest_collapseThree">
+				   3.Everyday performance
+				</a>
+			</h1>
+		</div>
+		<div id="backtest_collapseThree" class="panel-collapse collapse in">
+			<div class="panel-body">
+				<h3>
+				   {% include "auth/backtest_everyday_performace.html" with context %}
+				</h3>
+			</div>
+		</div>
+	</div>
+	
+	<!--- fourth --->
+	<div class="panel panel-entry">
+		<div class="panel-heading">
+			<h1 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#backtest_collapseFour">
+					4.Signals & Summary Files
+				</a>
+			</h1>
+		</div>
+		<div id="backtest_collapseFour" class="panel-collapse collapse {%if "entry" in show_tab %}in{% endif %}">
+			<div class="panel-body">
+				    {% include "auth/backtest_signals_and_summary.html" with context %}
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+	$(function () { $('#backtest_collapseFour').collapse('show')});
+	$(function () { $('#backtest_collapseTwo').collapse('show')});
+	$(function () { $('#backtest_collapseThree').collapse('toggle')});
+	$(function () { $('#backtest_collapseOne').collapse('hide')});
+</script>  

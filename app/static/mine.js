@@ -13,7 +13,7 @@ function queryBacktestReady(){
 };
 
 function startTimer(duration, success_path, fail_path) {
-    var exp_timer = duration;
+    var exp_timer = duration * 2;
     var refresh = setInterval(function () {
 	    var ret = queryBacktestReady();
 	    console.log("exp_timer : " + exp_timer + " : " + ret);
@@ -27,14 +27,14 @@ function startTimer(duration, success_path, fail_path) {
             console.log("backtest Failed!");
             window.location.href = fail_path;
         }
-    }, 1000);
+    }, 500);
 };
 
 //submit_backtest submit_js test_js_bind
-$("#test_js_bind_form").submit(function(e){
-   		alert("hello");
+//$("#test_js_bind_form").submit(function(e){
+//   		alert("hello");
    		//e.preventDefault();
-});
+//});
 
 //$("#placebo").click(function(){
 //   	$("#test_js_bind_form").submit();
