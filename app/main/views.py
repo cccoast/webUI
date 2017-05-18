@@ -13,6 +13,7 @@ def upload_file():
     if form.validate_on_submit():
         filename = ufile.save(form.upload_file.data)
         file_url = ufile.url(filename)
+        print file_url
     else:
         file_url = None
     return render_template('test/upload.html', form=form, file_url=file_url)
@@ -87,6 +88,27 @@ def test_js_bind():
 
 @main.route('/show_charts_and_text',methods = ['GET','POST'])
 def show_charts_and_text():
-    return render_template('test/show_charts_and_text.html')
+    import os
+    base_path = r'/static/upload_results/xudi/20170515/114047/pta'
+    username,date,tstamp = 'xudi',str(20170515),str(114047)
+    pnl_path = os.path.join(base_path,"pnl.png")
+    position_path = os.path.join(base_path,"position.png")
+    volatility_path = os.path.join(base_path,"volatility.png")
+    print pnl_path,position_path,volatility_path
+    base_path = r'/static/upload_results'
+    base_path = os.path.join(base_path,username,date,tstamp)
+    exit_list = os.path.join(base_path,"{0}_exit_list.csv".format(username) )
+    summary   = os.path.join(base_path,"{0}_total_summary.csv".format(username) )
+    print exit_list,summary
+    errors = os.path.join(base_path,username,date,tstamp,'output.txt')
+    content = []
+    with open(errors,'r+') as fin:
+        for line in fin:
+            content.append(line)
+    error_html = '<br'.join(content)
+    print error_html
+    return render_template('test/show_charts_and_text.html',pnl_path = pnl_path,\
+                                        position_path = position_path,volatility_path = volatility_path,\
+                                        exit_list = exit_list,summary = summary,error_html = error_html)
 
     

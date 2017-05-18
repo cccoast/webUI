@@ -21,6 +21,7 @@ from ui_misc import diff_seconds
 from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
+from pta import parser as output_parser
 
 def web_conditions_to_server_conditions(conditions):
     server_dict = {}
@@ -377,26 +378,43 @@ def fill():
         
     if check_backtest(session) is True:
         session['show_tab'] = ()
-    
-    argkws = {}
-    argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,session['last_backtest_tstamp']
-    
+        
+    result_args = {}
     if session['show_result'] == 1:
+        argkws = {}
+        argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,session['last_backtest_tstamp']
         root_dir = get_server_result_path(argkws)
-        result_args = {}
-        #get summary values
+        #1.get summary values
         summary_path = os.path.join(root_dir,'output.txt')
         summary_values = get_summarys(summary_path)
         summary_values = map(lambda x: x.strip(),filter(lambda x: len(x.strip()) > 0 ,summary_values.strip().split('|')))
         summary_values.pop(1)
         result_args['summary_values'] = summary_values
-        #get everyday performace
-        everyday_performace_values = []
+        
+        #2.get everyday performace
+        all = output_parser(summary_path)
+        everyday = all[2][3:-1]
+        everyday_performace_values = map(lambda x: map(lambda z: z.strip(),filter(lambda y: len(y.strip())>0,x.split('|')) ),everyday)
+        result_args['everyday_performace_values'] = everyday_performace_values
+        
+        #3.get charts paths 
+        base_path = r'/static/upload_results'        
+        base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'],'pta')
+        result_args['pnl_path'] = os.path.join(base_path,"pnl.png")
+        result_args['position_path'] = os.path.join(base_path,"position.png")
+        result_args['volatility_path'] = os.path.join(base_path,"volatility.png")
+        
+        #4.get file addr
+        base_path = r'/static/upload_results'
+        base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'])
+        result_args['exit_list'] = "{0}_exit_list.csv".format(current_user.username)
+        result_args['summary']   = "{0}_total_summary.csv".format(current_user.username)
         
     elif session['show_error'] == 1:
-        pass
+        result_args['error'] 
     
     args = get_main_page_arg_dict(*main_page_forms)
+    args.update(result_args)
     return render_template('auth/fill.html',**args)
 
 ###----------------------------------------------------------------------------

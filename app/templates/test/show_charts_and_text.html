@@ -4,9 +4,30 @@
 
 {% block title %}Platform - Login{% endblock %}
 {% block page_content %}
+
 <div class="page-header">
     <h1>form</h1>
 </div>
 
+<img src= {{ pnl_path }} class="img-responsive"> 
+<img src= {{ position_path }} class="img-responsive"> 
+<img src= {{ volatility_path }} class="img-responsive">
 
+<div class="row ">
+<div class="col-md-2 success" id = "start_backtest"></div>
+
+<div class="col-md-4 success" id = "start_backtest">
+<h2><a href= {{ exit_list }} > exit signals list </a></h2>
+</div>
+
+<div class="col-md-4 success" id = "start_backtest">
+<h2><a href= {{ summary }} > summary </a></h2>
+</div>
+
+</div>
+
+<div>
+{{ error_html }}
+</div>
+ 
 {% endblock %}
