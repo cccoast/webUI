@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Platform - Login{% endblock %}
+{% block page_content %}
+
+{% if show_result == 1 %}
+	{% include "auth/backtest_result.html" with context %}
+{% elif show_error == 1 %}
+	{% include "auth/backtest_error.html" with context %}
+{% endif %}
+ 
+{% endblock %}

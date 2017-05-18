@@ -2,6 +2,18 @@ from flask import render_template,request,url_for,flash,redirect,jsonify
 from . import main
 from .. import ufile
 from .forms import UploadForm,RuleForm,ResetRules,JsBindBubmit
+import os
+
+import sys
+upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)[:-1]))
+pkg_path = os.path.join(upper_abs_path,'generate_data_block')
+# print pkg_path
+if pkg_path not in sys.path:
+    sys.path.append(pkg_path)
+    
+from transfer import get_server_result_path
+from pta import get_summarys
+from pta import parser as output_parser
 
 @main.route('/')
 def index():
@@ -88,7 +100,7 @@ def test_js_bind():
 
 @main.route('/show_charts_and_text',methods = ['GET','POST'])
 def show_charts_and_text():
-    import os
+
     base_path = r'/static/upload_results/xudi/20170515/114047/pta'
     username,date,tstamp = 'xudi',str(20170515),str(114047)
     pnl_path = os.path.join(base_path,"pnl.png")
@@ -100,15 +112,67 @@ def show_charts_and_text():
     exit_list = os.path.join(base_path,"{0}_exit_list.csv".format(username) )
     summary   = os.path.join(base_path,"{0}_total_summary.csv".format(username) )
     print exit_list,summary
-    errors = os.path.join(base_path,username,date,tstamp,'output.txt')
+    root_path = r'/media/xudi/coding/Users/user/workspace/webUI/app/static/upload_results'
+    errors = os.path.join(root_path,username,date,tstamp,'output.txt')
+    print errors
     content = []
     with open(errors,'r+') as fin:
         for line in fin:
             content.append(line)
-    error_html = '<br'.join(content)
-    print error_html
+    error_html = '<br>'.join(content)
     return render_template('test/show_charts_and_text.html',pnl_path = pnl_path,\
                                         position_path = position_path,volatility_path = volatility_path,\
                                         exit_list = exit_list,summary = summary,error_html = error_html)
 
+@main.route('/test_backtest_result',methods = ['GET','POST'])
+def test_backtest_result():
+    argkws = {}
+    result_args = {}
+    username = "xudi"
+    argkws['username'],argkws['date'],argkws['tstamp'] = username,str(20170515),str(114047)
+    root_dir = get_server_result_path(argkws)
+    #1.get summary values
+    summary_path = os.path.join(root_dir,'output.txt')
+    summary_values = get_summarys(summary_path)
+    summary_values = map(lambda x: x.strip(),filter(lambda x: len(x.strip()) > 0 ,summary_values.strip().split('|')))
+    summary_values.pop(1)
+    result_args['summary_values'] = summary_values
     
+    #2.get everyday performace
+    all = output_parser(summary_path)
+    everyday = all[2][3:-1]
+    everyday_performace_values = map(lambda x: map(lambda z: z.strip(),filter(lambda y: len(y.strip())>0,x.split('|')) ),everyday)
+    result_args['everyday_performace_values'] = everyday_performace_values
+
+    #3.get charts paths 
+    base_path = r'/static/upload_results'        
+    base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'],'pta')
+    result_args['pnl_path'] = os.path.join(base_path,"pnl.png")
+    result_args['position_path'] = os.path.join(base_path,"position.png")
+    result_args['volatility_path'] = os.path.join(base_path,"volatility.png")
+    
+    #4.get file addr
+    base_path = r'/static/upload_results'
+    base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'])
+    result_args['exit_list'] = os.path.join(base_path,"{0}_exit_list.csv".format(username))
+    result_args['summary']   = os.path.join(base_path,"{0}_total_summary.csv".format(username))
+    result_args['show_result'] = 1
+    return render_template('test/test_backtest_result.html',**result_args)
+
+@main.route('/test_error_result',methods = ['GET','POST'])
+def test_error_result():
+    argkws = {}
+    result_args = {}
+    username = "xudi"
+    argkws['username'],argkws['date'],argkws['tstamp'] = username,str(20170515),str(114047)
+    root_path = get_server_result_path(argkws)
+    errors = os.path.join(root_path,'output.txt')
+    print errors
+    content = []
+    with open(errors,'r+') as fin:
+        for line in fin:
+            content.append(line)
+    error_html = '<br>'.join(content)
+    result_args['error_html'] = error_html
+    result_args['show_error'] = 1
+    return render_template('test/test_backtest_result.html',**result_args)

@@ -232,12 +232,14 @@ def get_main_page_form_obj():
                         ResetExitRules(),ExitRuleForm() )
     
 ###----------------------------------------------------------------------------
-''' show backtest result'''     
+''' show backtest result'''    
+@login_required 
 @auth.route('/show_backtest_result', methods=['GET', 'POST'])
 def show_backtest_result():
     session['show_result'],session['show_error'] = 1,0
     return redirect(url_for('auth.fill'))
-    
+
+@login_required
 @auth.route('/backtest_result_error', methods=['GET', 'POST'])
 def backtest_result_error():
     session['show_error'],session['show_result'] = 1,0
@@ -248,7 +250,6 @@ def backtest_result_error():
 @login_required
 @auth.route('/qeury_backtest_result', methods=['GET', 'POST'])
 def qeury_backtest_result():
-    print 'get backtest result query!'
     if not hasattr(current_user, 'username'):
         return jsonify(result = -1)
     username = current_user.username
@@ -259,7 +260,8 @@ def qeury_backtest_result():
                 session['last_request_id'], session['last_func_name'], pipeline)
     if not current_app.ipc_api.exists(key):
         return jsonify(result = -1)
-    value = current_app.ipc_api.get_cmd_return_value(key)
+    value = current_app.ipc_api.get_value(key)
+    print 'get backtest result query! retValue = ',value
     if value is not None:
         session['show_backtest'] = 1
         if pipeline == 0:
@@ -309,7 +311,7 @@ def backtest():
     if sub_form.submit1.data and sub_form.validate_on_submit():
         
         now = (get_today(),get_hourminsec())
-        if diff_seconds(now, session['last_backtest_tstamp']) < min_backtest_gap_seconds:
+        if session['last_backtest_tstamp'][0] != -1 and diff_seconds(now, session['last_backtest_tstamp']) < min_backtest_gap_seconds:
             flash('warning! Min backtest time interval is {0}, take a rest~~'.format(min_backtest_gap_seconds))
         else:
             session['last_backtest_tstamp'] = now
@@ -378,11 +380,13 @@ def fill():
         
     if check_backtest(session) is True:
         session['show_tab'] = ()
-        
+    
+    print 'show session result & error = ',session['show_result'],session['show_error']
     result_args = {}
-    if session['show_result'] == 1:
+    if int(session['show_result']) == 1:
         argkws = {}
-        argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,session['last_backtest_tstamp']
+        argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
+            str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
         root_dir = get_server_result_path(argkws)
         #1.get summary values
         summary_path = os.path.join(root_dir,'output.txt')
@@ -407,11 +411,22 @@ def fill():
         #4.get file addr
         base_path = r'/static/upload_results'
         base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'])
-        result_args['exit_list'] = "{0}_exit_list.csv".format(current_user.username)
-        result_args['summary']   = "{0}_total_summary.csv".format(current_user.username)
+        result_args['exit_list'] = os.path.join(base_path,"{0}_exit_list.csv".format(current_user.username))
+        result_args['summary']   = os.path.join(base_path,"{0}_total_summary.csv".format(current_user.username))
         
-    elif session['show_error'] == 1:
-        result_args['error'] 
+    elif int(session['show_error']) == 1:
+        argkws = {}
+        argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
+            str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
+        root_path = get_server_result_path(argkws)
+        errors = os.path.join(root_path,'output.txt')
+#         print errors
+        content = []
+        with open(errors,'r+') as fin:
+            for line in fin:
+                content.append(line)
+        error_html = '<br>'.join(content)
+        result_args['error_html'] = error_html
     
     args = get_main_page_arg_dict(*main_page_forms)
     args.update(result_args)

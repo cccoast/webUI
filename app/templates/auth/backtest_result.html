@@ -5,9 +5,11 @@ h1.panel-title{
     background:#E6E6FA;
 }
 </style>
-					
-<div class="panel-group" id="accordion">
 
+<h2><p class = "text-success">&nbsp;&nbsp;Successed!</p></h2>
+
+<div class="panel-group" id="accordion">
+	
 	<!--- first --->
 	<div class="panel panel-summary">
 		<div class="panel-heading">
@@ -18,7 +20,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="backtest_collapseOne" class="panel-collapse collapse ">
+		<div id="backtest_collapseOne" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<h3>
 				   {% include "auth/backtest_summary.html" with context %}
@@ -37,7 +39,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="backtest_collapseTwo" class="panel-collapse collapse in">
+		<div id="backtest_collapseTwo" class="panel-collapse collapse">
 			<div class="panel-body">
 				<h3>
 				   {% include "auth/backtest_charts.html" with context %}
@@ -56,7 +58,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="backtest_collapseThree" class="panel-collapse collapse in">
+		<div id="backtest_collapseThree" class="panel-collapse collapse">
 			<div class="panel-body">
 				<h3>
 				   {% include "auth/backtest_everyday_performace.html" with context %}
@@ -75,7 +77,7 @@ h1.panel-title{
 				</a>
 			</h1>
 		</div>
-		<div id="backtest_collapseFour" class="panel-collapse collapse {%if "entry" in show_tab %}in{% endif %}">
+		<div id="backtest_collapseFour" class="panel-collapse collapse ">
 			<div class="panel-body">
 				    {% include "auth/backtest_signals_and_summary.html" with context %}
 			</div>

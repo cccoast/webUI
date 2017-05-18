@@ -11,13 +11,13 @@
         </tr>
     </thead>
     </tbody>
-		<tr>
 		{% for row in everyday_performace_values -%}
+		<tr>
 			{% for val in row -%}
 				<td> {{ val }} </td>
 			{%- endfor %}
-		{%- endfor %}
 		</tr>
+		{%- endfor %}
 	</tbody>
 </table>
 </h4>

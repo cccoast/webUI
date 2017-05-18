@@ -9,7 +9,7 @@
     float:right;
 }
 </style>
-<!--- <script src="{{ url_for('static', filename='mine.js') }}"></script> --->
+
 <div class="page-header">
     <h1>
     {% if current_user.is_authenticated -%}    	
@@ -41,13 +41,12 @@
 
 {% endblock %}
 
-{% endblock %}
 {% block scripts %}
 {{ super() }}
 <script>
 	$(document).ready(function(){
 		{% if start_timer %}
-			startTimer(30,"/show_backtest_result","/backtest_result_error");
+			startTimer(30,"/auth/show_backtest_result","/auth/backtest_result_error");
 		{% else %}
 			console.log("backtest has not been started");
 		{% endif %}
