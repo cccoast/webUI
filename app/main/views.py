@@ -84,4 +84,9 @@ def test_js_bind():
         flash("please type in data")
     start_timer = 1
     return render_template('test/test_submit_jquery.html',test_form = iform,start_timer = 1)
+
+@main.route('/show_charts_and_text',methods = ['GET','POST'])
+def show_charts_and_text():
+    return render_template('test/show_charts_and_text.html')
+
     

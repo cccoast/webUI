@@ -20,6 +20,7 @@ from misc import get_today,get_hourminsec
 from ui_misc import diff_seconds
 from transfer import get_server_result_path
 from const_vars import Ticker
+from pta import get_summarys
 
 def web_conditions_to_server_conditions(conditions):
     server_dict = {}
@@ -377,6 +378,24 @@ def fill():
     if check_backtest(session) is True:
         session['show_tab'] = ()
     
+    argkws = {}
+    argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,session['last_backtest_tstamp']
+    
+    if session['show_result'] == 1:
+        root_dir = get_server_result_path(argkws)
+        result_args = {}
+        #get summary values
+        summary_path = os.path.join(root_dir,'output.txt')
+        summary_values = get_summarys(summary_path)
+        summary_values = map(lambda x: x.strip(),filter(lambda x: len(x.strip()) > 0 ,summary_values.strip().split('|')))
+        summary_values.pop(1)
+        result_args['summary_values'] = summary_values
+        #get everyday performace
+        everyday_performace_values = []
+        
+    elif session['show_error'] == 1:
+        pass
+    
     args = get_main_page_arg_dict(*main_page_forms)
     return render_template('auth/fill.html',**args)
 
@@ -395,12 +414,7 @@ def fill_data():
         else:
             session['verify']['data'] = False
             flash('Please Check Data Parameters Again')
-            
-#         if data_form.or_upload_file.data:   
-#             filename = ufile.save(data_form.or_upload_file.data)
-#             session['upload_inss_name'] = filename
-#             file_url = ufile.url(filename)
-
+    
     args = get_main_page_arg_dict(*main_page_forms) 
     return render_template('auth/fill.html',**args)
     

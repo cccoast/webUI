@@ -1,0 +1,25 @@
+<h4>
+<table data-toggle="table">
+    <thead>
+        <tr>
+            <th>NDays</th>
+            <th>totalPnL</th>
+            <th>TrdsPerDay</th>
+            <th>WIN%%</th>
+            <th>$PerTrd</th>
+            <th>TrdLen</th>
+            <th>ShpRatio</th>
+            <th>200Shp</th>
+            <th>incShp</th>
+            <th>trdShp</th>
+        </tr>
+    </thead>
+    </tbody>
+		<tr>
+		{% for val in summary_values -%}
+			<td> {{ val }} </td>
+		{%- endfor %}
+		</tr>
+	</tbody>
+</table>
+</h4>

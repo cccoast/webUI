@@ -1,0 +1,23 @@
+<h4>
+<table data-toggle="table">
+    <thead>
+        <tr>
+            <th>date</th>
+            <th>PnL</th>
+            <th>incPnL</th>
+            <th>tradePnL</th>
+            <th>cumPnL</th>
+            <th>slipage</th>
+        </tr>
+    </thead>
+    </tbody>
+		<tr>
+		{% for row in everyday_performace_values -%}
+			{% for val in row -%}
+				<td> {{ val }} </td>
+			{%- endfor %}
+		{%- endfor %}
+		</tr>
+	</tbody>
+</table>
+</h4>
