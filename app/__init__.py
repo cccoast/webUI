@@ -12,7 +12,7 @@ upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)
 pkg_path = os.path.join(upper_abs_path,'generate_data_block')
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
-from ipc_util import PRC_Clinet,getUploadAddr_back,getDownloadAddr_front
+from ipc_util import PRC_Clinet,getUploadAddr_front,getDownloadAddr_back
 from redis_api import ipc_db_api
 
 bootstrap = Bootstrap()
@@ -27,8 +27,8 @@ ufile = UploadSet('CFG', TEXT)
 def create_rpc_client():
     rpc_client = PRC_Clinet()
     
-    recv_addr = getUploadAddr_back()
-    send_addr = getDownloadAddr_front()
+    recv_addr = getUploadAddr_front()
+    send_addr = getDownloadAddr_back()
     
     print 'recv_addr = ',recv_addr
     print 'send_addr = ',send_addr
