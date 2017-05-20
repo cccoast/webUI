@@ -31,7 +31,8 @@
 				
 		{% if start_timer%}
 		<div class="row" >
-			<div class="col-lg-2"><h3><p class = "text-info">&nbsp;&nbsp;&nbsp;Progress:</p></h3></div>
+			<div class="col-lg-2"><h3><p class = "text-info">&nbsp;&nbsp;&nbsp;Progress</p></h3></div>
+			<div class="col-lg-2"><h3 id = "timer_counter"></h3></div>
 		</div>
 		<div class="row" style="margin: 10px" >
 			&nbsp;&nbsp;&nbsp;
@@ -64,6 +65,7 @@
 <script>
 
 	function queryBacktestReady(){
+		var ret = -1;
 	    $.ajax({
 		  url: $SCRIPT_ROOT + '/auth/qeury_backtest_result',
 		  data: {},
@@ -82,14 +84,21 @@
 		$('#pbar').css('width', percent + '%');
 	}
 	
+	function setTimerCounter(seconds){
+		$("#timer_counter").text(seconds + "s");
+	}
+	
 	function startTimer(duration, success_path, fail_path, min_value = 0, max_value = 6) {
 	    var exp_timer = duration * 2;
 	    console.log(min_value + ' ' + max_value);
 	    var refresh = setInterval(function () {
 		    var ret = queryBacktestReady();
+		    if(exp_timer % 2 == 0)
+		    	setTimerCounter((parseInt(exp_timer))/2);
 		    console.log("exp_timer : " + exp_timer + " : " + ret);
 		    if (ret >= min_value && ret <= max_value){
-				var percent = parseint( parsedouble(ret) / max_value );
+				var percent = parseInt( parseFloat(ret) / max_value );
+				console.log(percent);
 				setProgressBarValue(percent);
 		    }
 		    if (ret == max_value){

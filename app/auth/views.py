@@ -133,15 +133,16 @@ def inject_var():
     if 'exit_conditions' in session:
         ret['exit_conditions'] = session['exit_conditions']
         ret['exit_condtion_values'] = [session['exit_conditions'][str(i)] for i in range(session['exit_conditions']['exit_nconds'])]
-       
-    if session['entry_conditions']['entry_nconds'] > 0:
-        session['verify']['entry'] = True
-    else:
-        session['verify']['entry'] = False
-    if session['exit_conditions']['exit_nconds'] > 0:
-        session['verify']['exit'] = True
-    else:
-        session['verify']['exit'] = False
+    
+    if 'entry_conditions' in session and 'exit_conditions' in session:
+        if session['entry_conditions']['entry_nconds'] > 0:
+            session['verify']['entry'] = True
+        else:
+            session['verify']['entry'] = False
+        if session['exit_conditions']['exit_nconds'] > 0:
+            session['verify']['exit'] = True
+        else:
+            session['verify']['exit'] = False
         
     ret['backtest_ready'] = check_backtest(session)
     if ret['backtest_ready']: session['show_tab'] = ()
@@ -149,7 +150,7 @@ def inject_var():
         ret['show_tab'] = session['show_tab'] 
     if 'show_backtest' in session:
         ret['show_backtest'] = session['show_backtest']
-    if 'show_result' or 'show_error' not in session:
+    if 'show_result' in session and 'show_error' in session:
         ret['show_result'] = session['show_result'] 
         ret['show_error'] = session['show_error'] 
     return ret
@@ -237,13 +238,13 @@ def get_main_page_form_obj():
 @auth.route('/show_backtest_result', methods=['GET', 'POST'])
 def show_backtest_result():
     session['show_result'],session['show_error'] = 1,0
-    return redirect(url_for('auth.fill'))
+    return fill()
 
 @login_required
 @auth.route('/backtest_result_error', methods=['GET', 'POST'])
 def backtest_result_error():
     session['show_error'],session['show_result'] = 1,0
-    return redirect(url_for('auth.fill'))
+    return fill()
           
 ###----------------------------------------------------------------------------
 '''Query BackTest Result ''' 
@@ -259,9 +260,9 @@ def qeury_backtest_result():
     key = current_app.ipc_api.get_key(day, username, loginID, \
                 session['last_request_id'], session['last_func_name'], pipeline)
     if not current_app.ipc_api.exists(key):
-        return jsonify(result = 0)
+        return jsonify(result = -1)
     value = current_app.ipc_api.get_value(key)
-    print 'get backtest result query! retValue = ',value
+    print 'get backtest result query! retValue = ',value['ret']
     if value is not None:
         session['show_backtest'] = 1
         if pipeline == 0:
@@ -275,7 +276,7 @@ def qeury_backtest_result():
                     return jsonify(result = -1)
             return jsonify(result = len(value['ret']))
     else:
-        return jsonify(result = 0)
+        return jsonify(result = -1)
     
 ###----------------------------------------------------------------------------
 ''' For log in '''       
@@ -370,6 +371,7 @@ def backtest():
     
     args = get_main_page_arg_dict(*main_page_forms)
     args['start_timer'] = 1
+    session['show_result'],session['show_error'] = 0,0
     return render_template('auth/fill.html',**args)
 
 ###----------------------------------------------------------------------------
