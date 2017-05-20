@@ -259,7 +259,7 @@ def qeury_backtest_result():
     key = current_app.ipc_api.get_key(day, username, loginID, \
                 session['last_request_id'], session['last_func_name'], pipeline)
     if not current_app.ipc_api.exists(key):
-        return jsonify(result = -1)
+        return jsonify(result = 0)
     value = current_app.ipc_api.get_value(key)
     print 'get backtest result query! retValue = ',value
     if value is not None:
@@ -273,8 +273,9 @@ def qeury_backtest_result():
             for k,v in value['ret'].iteritems():
                 if int(v) < 0:
                     return jsonify(result = -1)
-            return jsonify(result = 0)
-    return jsonify(result = -1)
+            return jsonify(result = len(value['ret']))
+    else:
+        return jsonify(result = 0)
     
 ###----------------------------------------------------------------------------
 ''' For log in '''       
@@ -381,40 +382,45 @@ def fill():
     if check_backtest(session) is True:
         session['show_tab'] = ()
     
-    print 'show session result & error = ',session['show_result'],session['show_error']
+#     print 'show session result & error = ',session['show_result'],session['show_error']
     result_args = {}
     if int(session['show_result']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
         root_dir = get_server_result_path(argkws)
-        #1.get summary values
-        summary_path = os.path.join(root_dir,'output.txt')
-        summary_values = get_summarys(summary_path)
-        summary_values = map(lambda x: x.strip(),filter(lambda x: len(x.strip()) > 0 ,summary_values.strip().split('|')))
-        summary_values.pop(1)
-        result_args['summary_values'] = summary_values
         
-        #2.get everyday performace
-        all = output_parser(summary_path)
-        everyday = all[2][3:-1]
-        everyday_performace_values = map(lambda x: map(lambda z: z.strip(),filter(lambda y: len(y.strip())>0,x.split('|')) ),everyday)
-        result_args['everyday_performace_values'] = everyday_performace_values
-        
-        #3.get charts paths 
-        base_path = r'/static/upload_results'        
-        base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'],'pta')
-        result_args['pnl_path'] = os.path.join(base_path,"pnl.png")
-        result_args['position_path'] = os.path.join(base_path,"position.png")
-        result_args['volatility_path'] = os.path.join(base_path,"volatility.png")
-        
-        #4.get file addr
-        base_path = r'/static/upload_results'
-        base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'])
-        result_args['exit_list'] = os.path.join(base_path,"{0}_exit_list.csv".format(current_user.username))
-        result_args['summary']   = os.path.join(base_path,"{0}_total_summary.csv".format(current_user.username))
-        
-    elif int(session['show_error']) == 1:
+        if os.path.exists(root_dir):
+            #1.get summary values
+            summary_path = os.path.join(root_dir,'output.txt')
+            summary_values = get_summarys(summary_path)
+            summary_values = map(lambda x: x.strip(),filter(lambda x: len(x.strip()) > 0 ,summary_values.strip().split('|')))
+            summary_values.pop(1)
+            result_args['summary_values'] = summary_values
+            
+            #2.get everyday performace
+            all = output_parser(summary_path)
+            everyday = all[2][3:-1]
+            everyday_performace_values = map(lambda x: map(lambda z: z.strip(),filter(lambda y: len(y.strip())>0,x.split('|')) ),everyday)
+            result_args['everyday_performace_values'] = everyday_performace_values
+            
+            #3.get charts paths 
+            base_path = r'/static/upload_results'        
+            base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'],'pta')
+            result_args['pnl_path'] = os.path.join(base_path,"pnl.png")
+            result_args['position_path'] = os.path.join(base_path,"position.png")
+            result_args['volatility_path'] = os.path.join(base_path,"volatility.png")
+            
+            #4.get file addr
+            base_path = r'/static/upload_results'
+            base_path = os.path.join(base_path,argkws['username'],argkws['date'],argkws['tstamp'])
+            result_args['exit_list'] = os.path.join(base_path,"{0}_exit_list.csv".format(current_user.username))
+            result_args['summary']   = os.path.join(base_path,"{0}_total_summary.csv".format(current_user.username))
+        else:
+            session['show_error'] = 1
+            session['show_result'] = 0
+            
+    if int(session['show_error']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
@@ -422,12 +428,15 @@ def fill():
         errors = os.path.join(root_path,'output.txt')
 #         print errors
         content = []
-        with open(errors,'r+') as fin:
-            for line in fin:
-                content.append(line)
-        error_html = '<br>'.join(content)
-        result_args['error_html'] = error_html
-    
+        if os.path.exists(errors):
+            with open(errors,'r+') as fin:
+                for line in fin:
+                    content.append(line)
+            error_html = '<br>'.join(content)
+        else:
+            error_html = '<h2>Cpp Server Closed!</h2>'
+            result_args['error_html'] = error_html
+            
     args = get_main_page_arg_dict(*main_page_forms)
     args.update(result_args)
     return render_template('auth/fill.html',**args)
