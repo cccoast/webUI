@@ -63,7 +63,8 @@
 {% block scripts %}
 {{ super() }}
 <script>
-
+	$(document).ready(function(){	
+	
 	function queryBacktestReady(){
 		var ret = -1;
 	    $.ajax({
@@ -97,7 +98,7 @@
 		    	setTimerCounter((parseInt(exp_timer))/2);
 		    console.log("exp_timer : " + exp_timer + " : " + ret);
 		    if (ret >= min_value && ret <= max_value){
-				var percent = parseInt( parseFloat(ret) / max_value );
+				var percent = parseInt( parseFloat(ret) * 100 / max_value );
 				console.log(percent);
 				setProgressBarValue(percent);
 		    }
@@ -114,12 +115,12 @@
 	    }, 500);
 	};
 	
-	$(document).ready(function(){
-		{% if start_timer %}
-			startTimer(30,"/auth/show_backtest_result","/auth/backtest_result_error");
-		{% else %}
-			console.log("backtest has not been started");
-		{% endif %}
+	{% if start_timer %}
+		startTimer(30,"/auth/show_backtest_result","/auth/backtest_result_error");
+	{% else %}
+		console.log("backtest has not been started");
+	{% endif %}
+		
 	});
 </script>
 {% endblock %}
