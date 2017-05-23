@@ -315,6 +315,7 @@ def backtest():
         now = (get_today(),get_hourminsec())
         if session['last_backtest_tstamp'][0] != -1 and diff_seconds(now, session['last_backtest_tstamp']) < min_backtest_gap_seconds:
             flash('warning! Min backtest time interval is {0}, take a rest~~'.format(min_backtest_gap_seconds))
+            return redirect(url_for('auth.fill'))
         else:
             session['last_backtest_tstamp'] = now
             data_dict = web_datablock_to_server_datablock(session['data_block'])
