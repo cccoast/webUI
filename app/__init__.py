@@ -30,6 +30,7 @@ def create_rpc_client():
     recv_addr = getUploadAddr_front()
     send_addr = getDownloadAddr_back()
     
+    print 'pid = ',os.getpid()
     print 'recv_addr = ',recv_addr
     print 'send_addr = ',send_addr
     
