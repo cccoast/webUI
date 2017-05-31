@@ -1,0 +1,88 @@
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Platform - Login{% endblock %}
+{% block page_content %}
+
+<div class="page-header">
+    <h1>Table</h1>
+</div>
+
+<h2> table1 </h2>
+<table data-toggle="table" id="table1">
+    <thead>
+        <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Item Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Item 1</td>
+            <td>$1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Item 2</td>
+            <td>$2</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2> table2 </h2>
+<table id="table2"></table>
+
+<h2> table3 </h2>
+<table id="table3"></table>
+ 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+	$(document).ready(function(){	
+		
+		$('#table2').bootstrapTable({
+		    columns: [{
+		        field: 'id',
+		        title: 'Item ID'
+		    }, {
+		        field: 'name',
+		        title: 'Item Name'
+		    }, {
+		        field: 'price',
+		        title: 'Item Price'
+		    }],
+		    data: [{
+		        id: 1,
+		        name: 'Item 1',
+		        price: '$1'
+		    }, {
+		        id: 2,
+		        name: 'Item 2',
+		        price: '$2'
+		    }]
+		});
+		
+		$('#table3').bootstrapTable({
+		    url: $SCRIPT_ROOT + '/edit_table_content',
+		    columns: [{
+		        field: 'id',
+		        title: 'Item ID'
+		    }, {
+		        field: 'name',
+		        title: 'Item Name'
+		    }, {
+		        field: 'price',
+		        title: 'Item Price'
+		    }, ]
+		});
+		
+	});
+</script>
+{% endblock %}
+
+

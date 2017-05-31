@@ -176,3 +176,24 @@ def test_error_result():
     result_args['error_html'] = error_html
     result_args['show_error'] = 1
     return render_template('test/test_backtest_result.html',**result_args)
+
+@main.route('/edit_table_content', methods=['GET', 'POST'])
+def edit_table_content():
+    content_dict =  [{'id': 1,
+                      'name': 'Item 1',
+                      'price': '$1'
+                    },{
+                        'id': 2,
+                        'name': 'Item 2',
+                        'price': '$2'
+                    },{
+                        'id': 3,
+                        'name': 'Item 3',
+                        'price': '$3'
+                    }]
+    return jsonify(data = content_dict)
+
+@main.route('/edit_table',methods = ['GET','POST'])
+def edit_table():
+    result_args = {}
+    return render_template('test/edit_table.html',**result_args)
