@@ -4,11 +4,9 @@
 
 {% block head %}
 {{ super() }}
-<!---
-<link rel="stylesheet" href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" media="screen">
---->
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-table.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-editable.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='mine.css') }}">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -64,6 +62,16 @@
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='bootstrap-table.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-table-editable.js') }}"></script>
+
+<!---
+<script src="{{ url_for('static', filename='bootstrap-editable.js') }}"></script>
+<script src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+--->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="{{ url_for('static', filename='bootstrap-table-export.js') }}"></script>
+<script src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
 <script type="text/javascript">
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 </script>

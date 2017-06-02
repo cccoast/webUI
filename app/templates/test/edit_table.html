@@ -3,6 +3,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Platform - Login{% endblock %}
+
 {% block page_content %}
 
 <div class="page-header">
@@ -37,7 +38,37 @@
 
 <h2> table3 </h2>
 <table id="table3"></table>
- 
+  
+<h2> table4 </h2>
+<table data-toggle="table" data-url= {{ url_for('main.edit_table_content') }} id="table4">
+    <thead>
+        <tr>
+            <th data-field="id">Item ID</th>
+            <th data-field="name">Item Name</th>
+            <th data-field="price">Item Price</th>
+        </tr>
+    </thead>
+</table>
+
+<h2>Editable</h2>
+<table id="table5"
+       data-toggle="table"
+       data-pagination="true"
+       data-show-export="true"
+       data-show-refresh="true"
+       data-url="{{ url_for('static', filename='data/data1.json') }}">
+    <thead>
+    <tr>
+        <th data-field="id" data-editable="true">ID</th>
+        <th data-field="name" data-editable="true">Item Name</th>
+        <th data-field="price" data-editable="true">Item Price</th>
+    </tr>
+    </thead>
+</table>
+<div id="toolbar">
+    <button id="refresh_button" class="btn btn-default">refresh</button>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -79,8 +110,38 @@
 		        field: 'price',
 		        title: 'Item Price'
 		    }, ]
-		});
+		});	
 		
+		var $refresh_table = $('#table5'),
+        	$refresh_button = $('#refresh_button');
+        	
+		$refresh_button.click(function () {
+            var data = $('#table5').bootstrapTable('getData');
+            for( i=0;i<1;i++)  
+			{  	
+				$row_obj = data[i];
+				$row_obj['index'] = i;
+				var row = JSON.stringify( $row_obj );
+				console.log(row);
+			  	$.ajax({
+			  		type:"POST",
+                    url: $SCRIPT_ROOT + '/update_table_content',
+                    data: { data : row },
+                    dataType: "json",
+                   	async: true,
+                    success: function (data, status) {
+                        if (status == "success") {
+                            console.log("Success");
+                        }
+                    },
+                    error: function () {
+                        console.log("error");
+                    },
+                    complete: function () {
+                    }
+            	});                         
+			}  
+        });      
 	});
 </script>
 {% endblock %}

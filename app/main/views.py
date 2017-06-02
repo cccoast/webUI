@@ -3,6 +3,7 @@ from . import main
 from .. import ufile
 from .forms import UploadForm,RuleForm,ResetRules,JsBindBubmit
 import os
+import json
 
 import sys
 upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)[:-1]))
@@ -14,6 +15,7 @@ if pkg_path not in sys.path:
 from transfer import get_server_result_path
 from pta import get_summarys
 from pta import parser as output_parser
+from misc import unicode2str
 
 @main.route('/')
 def index():
@@ -192,6 +194,17 @@ def edit_table_content():
                         'price': '$3'
                     }]
     return jsonify(data = content_dict)
+
+@main.route('/update_table_content', methods=['GET', 'POST'])
+def refresh_table_content():
+#     try:
+#         print request.get_json(), request.get_json(force=True)
+#     except:
+#         print 'fuck you'
+#     print zip(range(5),(request.form, request.args, request.values, request.data, request.json))
+    indata = unicode2str({key:dict(request.form)[key][0] for key in dict(request.form)})
+    print 'injson = ',indata
+    return jsonify(ret = 'success')
 
 @main.route('/edit_table',methods = ['GET','POST'])
 def edit_table():
