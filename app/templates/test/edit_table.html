@@ -51,23 +51,26 @@
 </table>
 
 <h2>Editable</h2>
+<div id="toolbar">
+    <button id="submit_button" class="btn btn-default">submit</button>
+    <button id="remove_row_button" class="btn btn-default">remove row</button>
+</div>
 <table id="table5"
        data-toggle="table"
        data-pagination="true"
        data-show-export="true"
        data-show-refresh="true"
+       data-toolbar="#toolbar"
        data-url="{{ url_for('static', filename='data/data1.json') }}">
     <thead>
     <tr>
+    	<th data-field="state" data-checkbox="true"></th>
         <th data-field="id" data-editable="true">ID</th>
         <th data-field="name" data-editable="true">Item Name</th>
         <th data-field="price" data-editable="true">Item Price</th>
     </tr>
     </thead>
 </table>
-<div id="toolbar">
-    <button id="refresh_button" class="btn btn-default">refresh</button>
-</div>
 
 {% endblock %}
 
@@ -112,10 +115,11 @@
 		    }, ]
 		});	
 		
-		var $refresh_table = $('#table5'),
-        	$refresh_button = $('#refresh_button');
+		var $test_table = $('#table5'),
+        	$submit_button = $('#submit_button'),
+        	$remove_row_button = $('#remove_row_button');
         	
-		$refresh_button.click(function () {
+		$submit_button.click(function () {
             var data = $('#table5').bootstrapTable('getData');
             for( i=0;i<1;i++)  
 			{  	
@@ -141,7 +145,17 @@
                     }
             	});                         
 			}  
-        });      
+        });     
+        
+        $remove_row_button.click(function () {
+            var ids = $.map($test_table.bootstrapTable('getSelections'), function (row) {
+                return row.id;
+            });
+            $test_table.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+        }); 
 	});
 </script>
 {% endblock %}
