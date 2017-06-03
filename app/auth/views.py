@@ -271,7 +271,29 @@ def update_entry_rule_data():
 @login_required
 @auth.route('/query_exit_rule_data', methods=['GET', 'POST'])
 def query_exit_rule_data():
-    pass
+    global keys
+    exit_table_data = []
+    nconds = session['exit_conditions']['exit_nconds']
+    for i in range(nconds):
+        new_condition = dict(zip(keys, session['exit_conditions'][str(i)]))
+        new_condition['id'] = i
+        exit_table_data.append( new_condition )
+    print 'query_entry_rule_data = ',exit_table_data
+    return jsonify(exit_table_data)
+
+'''Update Entry Rule Data'''
+@login_required
+@auth.route('/update_exit_rule_data', methods=['GET', 'POST'])
+def update_exit_rule_data():
+    global keys
+    indata_json = {key:dict(request.form)[key][0] for key in dict(request.form)}['data']
+    indata = unicode2str(json.loads(indata_json))
+    session['exit_conditions'] = {}
+    session['exit_conditions']['exit_nconds'] = len(indata)
+    for i,exit_obj in enumerate(indata):
+        print i,exit_obj
+        session['exit_conditions'][str(i)] = [exit_obj[_field] for _field in keys]
+    return jsonify(success = 1)
    
 ###----------------------------------------------------------------------------
 ''' show backtest result'''    
@@ -428,7 +450,7 @@ def fill():
     
 #     print 'show session result & error = ',session['show_result'],session['show_error']
     result_args = {}
-    if hasattr(session, 'show_result') and int(session['show_result']) == 1:
+    if int(session['show_result']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
@@ -464,7 +486,7 @@ def fill():
             session['show_error'] = 1
             session['show_result'] = 0
             
-    if hasattr(session, 'show_result') and int(session['show_error']) == 1:
+    if int(session['show_error']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])

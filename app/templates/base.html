@@ -76,5 +76,4 @@
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 </script>
 <script src="{{ url_for('static', filename='mine.js') }}"></script>
-<!--- {{ moment.include_moment() }} --->
 {% endblock %}
