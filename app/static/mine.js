@@ -133,3 +133,4 @@ exit_rule_clear_all_button.click(function () {
     exit_rule_table.bootstrapTable('removeAll');
     exit_rule_submit_button.click();
 });
+

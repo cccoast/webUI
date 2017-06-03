@@ -249,7 +249,7 @@ def query_entry_rule_data():
         new_condition = dict(zip(keys, session['entry_conditions'][str(i)]))
         new_condition['id'] = i
         entry_table_data.append( new_condition )
-    print 'query_entry_rule_data = ',entry_table_data
+#     print 'query_entry_rule_data = ',entry_table_data
     return jsonify(entry_table_data)
 
 '''Update Entry Rule Data'''
@@ -262,7 +262,7 @@ def update_entry_rule_data():
     session['entry_conditions'] = {}
     session['entry_conditions']['entry_nconds'] = len(indata)
     for i,entry_obj in enumerate(indata):
-        print i,entry_obj
+#         print i,entry_obj
         session['entry_conditions'][str(i)] = [entry_obj[_field] for _field in keys]
     return jsonify(success = 1)
     
@@ -278,7 +278,7 @@ def query_exit_rule_data():
         new_condition = dict(zip(keys, session['exit_conditions'][str(i)]))
         new_condition['id'] = i
         exit_table_data.append( new_condition )
-    print 'query_entry_rule_data = ',exit_table_data
+#     print 'query_entry_rule_data = ',exit_table_data
     return jsonify(exit_table_data)
 
 '''Update Entry Rule Data'''
@@ -291,7 +291,7 @@ def update_exit_rule_data():
     session['exit_conditions'] = {}
     session['exit_conditions']['exit_nconds'] = len(indata)
     for i,exit_obj in enumerate(indata):
-        print i,exit_obj
+#         print i,exit_obj
         session['exit_conditions'][str(i)] = [exit_obj[_field] for _field in keys]
     return jsonify(success = 1)
    

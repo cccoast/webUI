@@ -133,11 +133,11 @@ class RuleForm(FlaskForm):
     para5  = StringField('para5',render_kw={'placeholder': '0.0','size':5,'value':0},default = '0')
     
 class EntryRuleForm(RuleForm):
-    add_entry_rule  = SubmitField('add_entry',id = 'add_entry_rule')
+    add_entry_rule  = SubmitField('addRule',id = 'add_entry_rule')
     
 ''' ExitRules '''
 class ExitRuleForm(RuleForm):
-    add_exit_rule  = SubmitField('add_exit',id = 'add_exit_rule')
+    add_exit_rule  = SubmitField('addRule',id = 'add_exit_rule')
     
 class ResetExitRules(FlaskForm):
     reset_exit_rules = SubmitField('reset_all',id = 'reset_exit_rules')

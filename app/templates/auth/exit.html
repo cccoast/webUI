@@ -7,9 +7,9 @@
 
 <h2>saved rules:</h2>
 <div id="exit_toolbar">
-    <button id="exit_rule_submit_button" class="btn btn-default">submit</button>
-    <button id="exit_rule_remove_row_button" class="btn btn-default">remove rows</button>
-    <button id="exit_rule_clearAll" class="btn btn-default">clearAll</button>
+    <button id="exit_rule_submit_button" class="btn btn-success">submit</button>
+    <button id="exit_rule_remove_row_button" class="btn btn-danger">remove rows</button>
+    <button id="exit_rule_clearAll" class="btn btn-warning">clearAll</button>
 </div>
 
 <h4>
@@ -94,10 +94,10 @@
     </tr>
     </tbody>
     </table>
-	<div class ="row">
-		<div class="col-md-1 success" id = "add_exit_rule_submit">
-		<h3>{{ wtf.form_field(add_exit_rule_form.add_exit_rule, button_map={'add_exit_rule':'success'}) }}</h3>
-		</div>
+	
+	<div class="col-md-1 success" id = "add_exit_rule_submit">
+	<h3>{{ wtf.form_field(add_exit_rule_form.add_exit_rule, button_map={'add_exit_rule':'success'}) }}</h3>
 	</div>
+	
 </form>
 </h4>

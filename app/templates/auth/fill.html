@@ -64,7 +64,6 @@
 {{ super() }}
 <script>
 $(document).ready(function(){	
-
 	
 	{% if start_timer %}
 		startTimer(30,"/auth/show_backtest_result","/auth/backtest_result_error");
@@ -72,6 +71,11 @@ $(document).ready(function(){
 		console.log("backtest has not been started");
 	{% endif %}
 	
+	$("#start_backtest_form").submit(function(){
+	    entry_rule_submit_button.click();
+	    exit_rule_submit_button.click();
+	    return true;
+	});	
 });
 </script>
 {% endblock %}
