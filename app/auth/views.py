@@ -5,9 +5,10 @@ from .. import db
 from ..models import User
 from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,ComsetForm,ModifyComsetForm,\
                     GlobalConfigForm,ModifyGlobalConfigForm,\
-                    ResetEntryRules, EntryRuleForm, ResetExitRules, ExitRuleForm
+                    EntryRuleForm, ExitRuleForm
 from .. import ufile 
 import os
+import json
 
 import sys
 upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)[:-1]))
@@ -16,17 +17,19 @@ pkg_path = os.path.join(upper_abs_path,'generate_data_block')
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
     
-from misc import get_today,get_hourminsec
+from misc import get_today,get_hourminsec,unicode2str
 from ui_misc import diff_seconds
 from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
 from pta import parser as output_parser
 
+keys = ('op','fid','flip','gap1','offset1','lothr','hithr','param0','param1','param2','param3','param4')
+    
 def web_conditions_to_server_conditions(conditions):
     server_dict = {}
-    keys = ('op','fid','flip','gap1','offset1','lothr','hithr','param0','param1','param2','param3','param4')
     row = 0
+    global keys
     for key,icond in conditions.iteritems():
         if not key.endswith('_nconds'):
             server_dict[row] = dict(zip(keys,icond))
@@ -150,9 +153,11 @@ def inject_var():
         ret['show_tab'] = session['show_tab'] 
     if 'show_backtest' in session:
         ret['show_backtest'] = session['show_backtest']
-    if 'show_result' in session and 'show_error' in session:
+    if 'show_result' in session :
         ret['show_result'] = session['show_result'] 
+    if 'show_error' in session:
         ret['show_error'] = session['show_error'] 
+        
     return ret
 
 def check_backtest(cookie):
@@ -205,8 +210,10 @@ def init_session(cookie,force_reset = False):
         cookie['last_func_name'] = ''
         cookie['pipeline'] = 0
     
-    if 'last_backtest_tstamp' or 'show_result' or 'show_error' not in cookie:
+    if 'last_backtest_tstamp' not in cookie:
         cookie['last_backtest_tstamp'] = (-1,-1)
+        
+    if ( 'show_result' not in cookie ) or ('show_error' not in cookie):
         cookie['show_result'] = 0
         cookie['show_error'] = 0
     
@@ -219,19 +226,53 @@ def get_main_page_arg_dict(*forms):
     args['submit_form'],args['data_form'],args['modify_data_form'],\
             args['comset_form'],args['modify_comset_form'],\
             args['global_config_form'],args['modify_global_config_form'],\
-            args['reset_entry_rule_form'],args['add_entry_rule_form'],\
-            args['reset_exit_rule_form'],args['add_exit_rule_form'] \
+            args['add_entry_rule_form'],args['add_exit_rule_form'] \
         = forms[0],forms[1],forms[2],forms[3],forms[4],forms[5],forms[6],\
-            forms[7],forms[8],forms[9],forms[10]
+            forms[7],forms[8]
     return args
 
 def get_main_page_form_obj():
     return ( SubmitForm(),DataForm(),ModifyDataForm(),\
                         ComsetForm(),ModifyComsetForm(),\
                         GlobalConfigForm(),ModifyGlobalConfigForm(),\
-                        ResetEntryRules(),EntryRuleForm(),\
-                        ResetExitRules(),ExitRuleForm() )
+                        EntryRuleForm(),ExitRuleForm() )
+
+###---------------------------------------------------------------------------
+'''Query Entry Rule Data'''
+@login_required
+@auth.route('/query_entry_rule_data', methods=['GET', 'POST'])
+def query_entry_rule_data():
+    global keys
+    entry_table_data = []
+    nconds = session['entry_conditions']['entry_nconds']
+    for i in range(nconds):
+        new_condition = dict(zip(keys, session['entry_conditions'][str(i)]))
+        new_condition['id'] = i
+        entry_table_data.append( new_condition )
+    print 'query_entry_rule_data = ',entry_table_data
+    return jsonify(entry_table_data)
+
+'''Update Entry Rule Data'''
+@login_required
+@auth.route('/update_entry_rule_data', methods=['GET', 'POST'])
+def update_entry_rule_data():
+    global keys
+    indata_json = {key:dict(request.form)[key][0] for key in dict(request.form)}['data']
+    indata = unicode2str(json.loads(indata_json))
+    session['entry_conditions'] = {}
+    session['entry_conditions']['entry_nconds'] = len(indata)
+    for i,entry_obj in enumerate(indata):
+        print i,entry_obj
+        session['entry_conditions'][str(i)] = [entry_obj[_field] for _field in keys]
+    return jsonify(success = 1)
     
+###---------------------------------------------------------------------------
+'''Query Exit Rule Data'''
+@login_required
+@auth.route('/query_exit_rule_data', methods=['GET', 'POST'])
+def query_exit_rule_data():
+    pass
+   
 ###----------------------------------------------------------------------------
 ''' show backtest result'''    
 @login_required 
@@ -283,12 +324,12 @@ def qeury_backtest_result():
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    init_session(session)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.verify_password(form.password.data):
 #             login_user(user, form.remember_me.data)
             login_user(user, False)
+            init_session(session)
             return redirect(url_for('main.index'))
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
@@ -387,7 +428,7 @@ def fill():
     
 #     print 'show session result & error = ',session['show_result'],session['show_error']
     result_args = {}
-    if int(session['show_result']) == 1:
+    if hasattr(session, 'show_result') and int(session['show_result']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
@@ -423,7 +464,7 @@ def fill():
             session['show_error'] = 1
             session['show_result'] = 0
             
-    if int(session['show_error']) == 1:
+    if hasattr(session, 'show_result') and int(session['show_error']) == 1:
         argkws = {}
         argkws['username'],argkws['date'],argkws['tstamp'] = current_user.username,\
             str(session['last_backtest_tstamp'][0]),str(session['last_backtest_tstamp'][1])
@@ -540,19 +581,14 @@ def modify_global_config_data():
 @auth.route('/fill_entry_rule_data',methods = ['POST','GET'])
 def fill_entry_rule_data():
     main_page_forms = get_main_page_form_obj()
-    reset_rules = main_page_forms[7]
-    rule_form = main_page_forms[8]
+    rule_form = main_page_forms[7]
     conditions = session['entry_conditions']
     
 #     print reset_rules.reset_entry_rules.data,reset_rules.is_submitted(),reset_rules.validate()
 #     print rule_form.add_entry_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('entry',)
-    if reset_rules.reset_entry_rules.data and reset_rules.validate_on_submit():
-        flash('reset all entry rules')
-        conditions = {}
-        session['entry_conditions']['entry_nconds'] = 0
-    elif rule_form.add_entry_rule.data and rule_form.validate_on_submit():
+    if rule_form.add_entry_rule.data and rule_form.validate_on_submit():
         values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
                   rule_form.lowthrs.data,rule_form.highthrs.data,\
                    rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )
@@ -571,19 +607,14 @@ def fill_entry_rule_data():
 @auth.route('/fill_exit_rule_data',methods = ['POST','GET'])
 def fill_exit_rule_data():
     main_page_forms = get_main_page_form_obj()
-    reset_rules = main_page_forms[9]
-    rule_form = main_page_forms[10]
+    rule_form = main_page_forms[8]
     conditions = session['exit_conditions']
     
 #     print reset_rules.reset_exit_rules.data,reset_rules.is_submitted(),reset_rules.validate()
 #     print rule_form.add_exit_rule.data,rule_form.is_submitted(),rule_form.validate()
     
     session['show_tab'] = ('exit',)
-    if reset_rules.reset_exit_rules.data and reset_rules.validate_on_submit():
-        flash('reset_all_rules')
-        conditions = {}
-        session['exit_conditions']['exit_nconds'] = 0
-    elif rule_form.add_exit_rule.data and rule_form.validate_on_submit():
+    if rule_form.add_exit_rule.data and rule_form.validate_on_submit():
         values = ( rule_form.logic.data,rule_form.condID.data,rule_form.flip.data,rule_form.gap.data,rule_form.offset.data,\
                   rule_form.lowthrs.data,rule_form.highthrs.data,\
                    rule_form.para1.data,rule_form.para2.data,rule_form.para3.data,rule_form.para4.data,rule_form.para5.data )

@@ -53,7 +53,8 @@
 <h2>Editable</h2>
 <div id="toolbar">
     <button id="submit_button" class="btn btn-default">submit</button>
-    <button id="remove_row_button" class="btn btn-default">remove row</button>
+    <button id="remove_json_data_button" class="btn btn-default">remove rows</button>
+    <button id="clearAll" class="btn btn-default">clearAll</button>
 </div>
 <table id="table5"
        data-toggle="table"
@@ -117,45 +118,53 @@
 		
 		var $test_table = $('#table5'),
         	$submit_button = $('#submit_button'),
-        	$remove_row_button = $('#remove_row_button');
+        	$remove_json_data_button = $('#remove_json_data_button'),
+        	$clear_all_button = $('#clearAll');
         	
-		$submit_button.click(function () {
-            var data = $('#table5').bootstrapTable('getData');
-            for( i=0;i<1;i++)  
-			{  	
-				$row_obj = data[i];
-				$row_obj['index'] = i;
-				var row = JSON.stringify( $row_obj );
-				console.log(row);
-			  	$.ajax({
-			  		type:"POST",
-                    url: $SCRIPT_ROOT + '/update_table_content',
-                    data: { data : row },
-                    dataType: "json",
-                   	async: true,
-                    success: function (data, status) {
-                        if (status == "success") {
-                            console.log("Success");
-                        }
-                    },
-                    error: function () {
-                        console.log("error");
-                    },
-                    complete: function () {
+		function submit_table(to_be_submitted,tar_url){
+			var data = to_be_submitted.bootstrapTable('getData');
+			var json_data = JSON.stringify( data );
+			console.log(json_data);
+		  	$.ajax({
+		  		type:"POST",
+                url: tar_url,
+                data: { data : json_data },
+                dataType: "json",
+               	async: false,
+                success: function (data, status) {
+                    if (status == "success") {
+                        console.log("Success");
                     }
-            	});                         
-			}  
+                },
+                error: function () {
+                    console.log("error");
+                },
+                complete: function () {
+                }
+        	});                        	
+		}	
+		
+		$submit_button.click(function () {
+             var tar_table = $('#table5');
+             var url = $SCRIPT_ROOT + '/update_table_content';
+             submit_table(tar_table,url);
         });     
         
-        $remove_row_button.click(function () {
-            var ids = $.map($test_table.bootstrapTable('getSelections'), function (row) {
-                return row.id;
+        $remove_json_data_button.click(function () {
+            var ids = $.map($test_table.bootstrapTable('getSelections'), function (json_data) {
+                return json_data.id;
             });
             $test_table.bootstrapTable('remove', {
                 field: 'id',
                 values: ids
             });
+            submit_button.click();
         }); 
+        
+        $clear_all_button.click(function () {
+            $test_table.bootstrapTable('removeAll');
+            submit_button.click();
+        });
 	});
 </script>
 {% endblock %}

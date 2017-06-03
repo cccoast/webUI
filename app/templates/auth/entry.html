@@ -2,31 +2,46 @@
 	#add_entry_rule_submit{
 	    float:right;
 	}
-	#reset_entry_rules_submit{
-		float:right;
-	}
 </style>
 
 
 <h2>saved rules:</h2>
+
+<div id="entry_toolbar">
+    <button id="entry_rule_submit_button" class="btn btn-default">submit</button>
+    <button id="entry_rule_remove_row_button" class="btn btn-default">remove rows</button>
+    <button id="entry_rule_clearAll" class="btn btn-default">clearAll</button>
+</div>
+
 <h4>
-<table data-toggle="table">
+<table data-toggle="table" 
+	   id="entry_rule_table"
+	   data-toggle="table"
+       data-pagination="true"
+       data-show-export="true"
+       data-show-refresh="true"
+       data-toolbar="#entry_toolbar"
+       data-url="{{ url_for('auth.query_entry_rule_data') }}"
+>
     <thead>
         <tr>
-            <th>logic</th>
-            <th>condID</th>
-            <th>flip</th>
-            <th>gap</th>
-            <th>offset</th>
-            <th>lowthrs</th>
-            <th>highthrs</th>
-            <th>para1</th>
-            <th>para2</th>
-            <th>para3</th>
-            <th>para4</th>
-            <th>para5</th>
+        	<th data-field="state" data-checkbox="true"></th>
+        	<th data-field="id" data-checkbox="true" class="hidden">id</th>
+            <th data-field="op" data-editable="true">logic</th>
+            <th data-field="fid" data-editable="true">condID</th>
+            <th data-field="flip" data-editable="true">flip</th>
+            <th data-field="gap1" data-editable="true">gap</th>
+            <th data-field="offset1" data-editable="true">offset</th>
+            <th data-field="lothr" data-editable="true">lowthrs</th>
+            <th data-field="hithr" data-editable="true">highthrs</th>
+            <th data-field="param0" data-editable="true">para0</th>
+            <th data-field="param1" data-editable="true">para1</th>
+            <th data-field="param2" data-editable="true">para2</th>
+            <th data-field="param3" data-editable="true">para3</th>
+            <th data-field="param4" data-editable="true">para4</th>
         </tr>
     </thead>
+    <!---
     </tbody>
 	{% for row in entry_condtion_values -%}
    		<tr>
@@ -36,17 +51,9 @@
    		</tr>
    	{%- endfor %}
 	</tbody>
+	--->
 </table>
-</h24>
-
-<form method="POST" action="{{ url_for('auth.fill_entry_rule_data') }}">
-	{{ reset_entry_rule_form.hidden_tag() }}  
-	<div class ="row">
-		<div class="col-md-1 success" id = "reset_entry_rules_submit">
-		<h3>{{ wtf.form_field(reset_entry_rule_form.reset_entry_rules, button_map={'reset_entry_rules':'success'}) }}</h3>
-		</div>
-	</div>
-</form>
+</h4>
 
 <h2>add an entry rule:</h2>
 <h4>
@@ -95,3 +102,4 @@
 	</div>
 </form>
 </h4>
+

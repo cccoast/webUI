@@ -203,7 +203,7 @@ def refresh_table_content():
 #         print 'fuck you'
 #     print zip(range(5),(request.form, request.args, request.values, request.data, request.json))
     indata = unicode2str({key:dict(request.form)[key][0] for key in dict(request.form)})
-    print 'injson = ',indata
+    print 'injson = ',indata['data']
     return jsonify(ret = 'success')
 
 @main.route('/edit_table',methods = ['GET','POST'])

@@ -2,15 +2,12 @@
 	#add_exit_rule_submit{
 	    float:right;
 	}
-	#reset_exit_rules_submit{
-		float:right;
-	}
 </style>
 
 
 <h2>saved rules:</h2>
 <h4>
-<table data-toggle="table">
+<table data-toggle="table" id="exit_rule_table">
     <thead>
         <tr>
             <th>logic</th>
@@ -38,14 +35,6 @@
 	</tbody>
 </table>
 </h4>
-<form method="POST" action="{{ url_for('auth.fill_exit_rule_data') }}">
-	{{ reset_exit_rule_form.hidden_tag() }}  
-	<div class ="row">
-		<div class="col-md-1 success" id = "reset_exit_rules_submit">
-		<h3>{{ wtf.form_field(reset_exit_rule_form.reset_exit_rules, button_map={'reset_exit_rules':'success'}) }}</h3>
-		</div>
-	</div>
-</form>
 
 <h2>add an exit rule:</h2>
 <h4>

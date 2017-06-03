@@ -63,8 +63,8 @@
 {% block scripts %}
 {{ super() }}
 <script>
-	$(document).ready(function(){	
-	
+$(document).ready(function(){	
+
 	function queryBacktestReady(){
 		var ret = -1;
 	    $.ajax({
@@ -120,8 +120,63 @@
 	{% else %}
 		console.log("backtest has not been started");
 	{% endif %}
+	
+	var entry_rule_table = $('#entry_rule_table'),
+    	entry_rule_submit_button = $('#entry_rule_submit_button'),
+    	entry_rule_remove_row_button = $('#entry_rule_remove_row_button'),
+    	entry_rule_clear_all_button = $('#entry_rule_clearAll');
+        	
+	function submit_table(to_be_submitted,tar_url){
+		var data = to_be_submitted.bootstrapTable('getData');
+		var json_data = JSON.stringify( data );
+		console.log('submit data');
+		for(i=0;i<data.length;i++)
+			console.log(JSON.stringify( data[i] ));
+	  	$.ajax({
+	  		type:"POST",
+            url: tar_url,
+            data: { data : json_data },
+            dataType: "json",
+           	async: true,
+            success: function (data, status) {
+                if (status == "success") {
+                    console.log("Success");
+                }
+            },
+            error: function () {
+                console.log("error");
+            },
+            complete: function () {
+            }
+    	});                        	
+	};	
+	
+	entry_rule_submit_button.click(function () {
+		 console.log('click submit button');
+         var tar_table = entry_rule_table;
+         var url = $SCRIPT_ROOT + '/auth/update_entry_rule_data';
+         submit_table(tar_table,url);
+    });     
+    
+    entry_rule_remove_row_button.click(function () {
+        var ids = $.map(entry_rule_table.bootstrapTable('getSelections'), function (json_data) {
+            return json_data.id;
+        });
+        console.log('remove row ' + ids);
+        entry_rule_table.bootstrapTable('remove', {
+            field: 'id',
+            values: ids
+        });
+        entry_rule_submit_button.click();
+    }); 
+    
+    entry_rule_clear_all_button.click(function () {
+    	console.log('remove all');
+        entry_rule_table.bootstrapTable('removeAll');
+        entry_rule_submit_button.click();
+    });
 		
-	});
+});
 </script>
 {% endblock %}
 
