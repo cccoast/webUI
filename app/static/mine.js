@@ -23,7 +23,7 @@ function setTimerCounter(seconds){
 	$("#timer_counter").text(seconds + "s");
 }
 
-function startTimer(duration, success_path, fail_path, min_value = 0, max_value = 6) {
+function startTimer(duration, success_path, fail_path, min_value , max_value) {
     var exp_timer = duration * 2;
     console.log(min_value + ' ' + max_value);
     var refresh = setInterval(function () {
