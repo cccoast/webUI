@@ -66,7 +66,7 @@
 $(document).ready(function(){	
 	
 	{% if start_timer %}
-		startTimer(30,"/auth/show_backtest_result","/auth/backtest_result_error");
+		startTimer(60,"/auth/show_backtest_result","/auth/backtest_result_error",0,6);
 	{% else %}
 		console.log("backtest has not been started");
 	{% endif %}
