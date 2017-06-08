@@ -117,6 +117,9 @@ def generate_global_config(global_config_form):
     cookie['quant'] = global_config_form.quant.data
     cookie['minTTL'] = global_config_form.minTTL.data
     cookie['maxTTL'] = global_config_form.maxTTL.data
+    cookie['skip_days'] = global_config_form.skip_days.data
+    cookie['day_step'] = global_config_form.day_step.data
+    
     return 0
 
 @auth.context_processor

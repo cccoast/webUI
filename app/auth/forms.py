@@ -85,7 +85,12 @@ class GlobalConfigForm(FlaskForm):
                            render_kw={'placeholder': 32000,'value':32000},default = 32000)
     spot_step = IntegerField('spot_step', id = 'spot_step',validators=[],
                            render_kw={'placeholder': 1,'value':1},default = 1)
-
+    
+    skip_days = IntegerField('skip_days', id = 'skip_days',validators=[],
+                           render_kw={'placeholder': 1,'value':1},default = 1)
+    day_step = IntegerField('day_step', id = 'day_step',validators=[],
+                           render_kw={'placeholder': 1,'value':1},default = 1)
+    
     com_set   = IntegerField('comm_set', id = 'comset',validators=[],
                            render_kw={'placeholder': 1,'value':1},default = 1) 
     slipage   = IntegerField('slipage', id = 'slipge',validators=[],

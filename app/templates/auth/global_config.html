@@ -17,8 +17,13 @@
 	</div>
 	
 	<div class="row">
-	<div class="col-md-4"><h3>{{ global_config_form.com_set.label }} {{ global_config_form.com_set }}</h3></div>
+	<div class="col-md-4"><h3>{{ global_config_form.skip_days.label }} {{ global_config_form.skip_days }}</h3></div>
+	<div class="col-md-4"><h3>{{ global_config_form.day_step.label }} {{ global_config_form.day_step }}</h3></div>
+	</div>
+	
+	<div class="row">
 	<div class="col-md-4"><h3>{{ global_config_form.quant.label }} {{ global_config_form.quant }}</h3></div>
+	<div class="col-md-4"><h3>{{ global_config_form.com_set.label }} {{ global_config_form.com_set }}</h3></div>
 	<div class="col-md-4"><h3>{{ global_config_form.slipage.label }} {{ global_config_form.slipage }}</h3></div>
 	</div>
 	
@@ -57,6 +62,15 @@
   <div class="col-md-2 value"><h4>{{global_config['end_spot']}}</h4></div>
   <div class="col-md-2 key">spot_step:</div>
   <div class="col-md-2 value"><h4>{{global_config['spot_step']}}</h4></div>
+</div>
+</tr>
+
+<tr>
+<div class="row" >
+  <div class="col-md-2 key">skip days:</div>
+  <div class="col-md-2 value"><h4>{{global_config['skip_days']}}</h4></div>
+  <div class="col-md-2 key">day_step:</div>
+  <div class="col-md-2 value"><h4>{{global_config['day_step']}}</h4></div>
 </div>
 </tr>
 
