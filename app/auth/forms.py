@@ -8,7 +8,18 @@ from .. import ufile
 from distutils.text_file import TextFile
 from openpyxl.drawing.text import TextField
 
-basic_indicators = ['LastPrice','Volume','BidPrice','BidVolume','AskPrice','AskVolume','OpenInterest']
+import sys
+import os
+upper_abs_path = os.path.sep.join((os.path.abspath(os.curdir).split(os.path.sep)[:-1]))
+pkg_path = os.path.join(upper_abs_path,'generate_data_block')
+# print pkg_path
+if pkg_path not in sys.path:
+    sys.path.append(pkg_path)
+
+from data_center_config import basic_indicators_tick,basic_indicators_min
+
+# print basic_indicators_tick
+# print basic_indicators_min
 
 class LoginForm(FlaskForm):
     
@@ -28,19 +39,20 @@ class DataForm(FlaskForm):
                            render_kw={'placeholder': '20141231'},default = 20141231)
     
     level      = RadioField('level',  id = 'level',validators=[Required()],
-                            choices = [('tick','tick'),],
+                            choices = [('tick','tick'),
+                                       ('1min','1min')],
                             default = 'tick'
                             )
     
     adjust     = RadioField('adjust', id = 'adjust',validators=[Required()],
-                            choices = [#('yes','yes'),
+                            choices = [('forward','forward'),
                                         ('no','no')],
                             default = 'no')
     
     indicators = StringField('indicators',id = 'indicators',validators = [],
                              render_kw={'readOnly': "true",\
-                                        'placeholder':','.join(basic_indicators),\
-                                        'value':','.join(basic_indicators)},
+                                        'placeholder':','.join(basic_indicators_tick),\
+                                        'value':','.join(basic_indicators_tick)},
                             )
     
     instruments = SelectMultipleField('instruments', id = 'instruments',
@@ -153,8 +165,6 @@ class ResetExitRules(FlaskForm):
 class SubmitForm(FlaskForm):
     submit1 = SubmitField('run backtest',id='submit_backtest')
     
-
-     
-
+    
 
 
