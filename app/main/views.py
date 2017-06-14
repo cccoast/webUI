@@ -217,7 +217,7 @@ def edit_table():
 @main.route('/set_radio_box',methods = ['GET','POST'])
 def set_radio_box():
     radio_form = RadioBoxForm()
-    result_args = {'basic_indicators_tick':basic_indicators_tick,\
-                   'basic_indicators_min':basic_indicators_min,\
+    result_args = {'basic_indicators_tick':','.join(basic_indicators_tick),\
+                   'basic_indicators_min':','.join(basic_indicators_min),\
                    'radio_form':radio_form}
     return render_template('test/jquery_radio_button_set_value.html',**result_args)

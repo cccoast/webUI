@@ -19,12 +19,13 @@
 {% block scripts %}
 {{ super() }}
 <script>
-	$(document).ready(function(){	
-	
+	var $basic_indicators_tick  = '{{ basic_indicators_tick }}';
+	var $basic_indicators_min = '{{ basic_indicators_min  }}';
+	//alert([$basic_indicators_tick,$basic_indicators_min])
+	$(document).ready(function(){
 		set_input_selected_checked('level','radio','tick');
 		set_radio_selected_checked('level','1min');
-		
-		level_event_bind(['1min','tick']);
+		level_event_bind([$basic_indicators_tick,$basic_indicators_min]);
 	});
 </script>
 {% endblock %}

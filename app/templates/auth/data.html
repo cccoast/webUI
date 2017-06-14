@@ -22,7 +22,8 @@
 	</div>
 	
 	<div class="row">
-	<h2>{{ wtf.form_field(data_form.indicators,form_type = 'horizontal') }}</h2>
+	<div class="col-md-2"><h2>{{ data_form.indicators.label }}</h2></div>
+	<div class="col-md-10"><h3>{{ data_form.indicators }}</h3></div>
 	</div>
 	<div class="row">
 	<h2>{{ wtf.form_field(data_form.instruments,form_type = 'horizontal') }}</h2>

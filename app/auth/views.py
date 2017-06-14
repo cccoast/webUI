@@ -23,7 +23,7 @@ from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
 from pta import parser as output_parser
-from data_center_config import basic_indicators_tick,basic_indicators_min
+from data_center_config import indicators_tick,indicators_min
 
 keys = ('op','fid','flip','gap1','offset1','lothr','hithr','param0','param1','param2','param3','param4')
     
@@ -68,7 +68,7 @@ def web_datablock_to_server_datablock(block_dict):
     server_block = {}
     for k,v in block_dict.iteritems():
         if str(k) == 'indicators' or str(k) == 'instruments':
-            server_block[str(k)] = str(v).split(',')[:]
+            server_block[str(k)] = map(lambda x:str.lower(x),str(v).split(',')[:])
         elif str(k) == 'adjust': 
             server_block[str(k)] = 0 if v == 'no' else 1
         else:
@@ -162,8 +162,8 @@ def inject_var():
     if 'show_error' in session:
         ret['show_error'] = session['show_error'] 
     
-    ret['basic_indicators_tick'] = basic_indicators_tick
-    ret['basic_indicators_min'] = basic_indicators_min
+    ret['basic_indicators_tick'] = ','.join(indicators_tick)
+    ret['basic_indicators_min'] = ','.join(indicators_min)
         
     return ret
 

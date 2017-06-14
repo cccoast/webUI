@@ -16,7 +16,7 @@ pkg_path = os.path.join(upper_abs_path,'generate_data_block')
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
 
-from data_center_config import basic_indicators_tick,basic_indicators_min
+from data_center_config import indicators_tick,indicators_min
 
 # print basic_indicators_tick
 # print basic_indicators_min
@@ -45,14 +45,15 @@ class DataForm(FlaskForm):
                             )
     
     adjust     = RadioField('adjust', id = 'adjust',validators=[Required()],
-                            choices = [('forward','forward'),
-                                        ('no','no')],
+                            choices = [('no','no'),('forward','forward')],
                             default = 'no')
     
     indicators = StringField('indicators',id = 'indicators',validators = [],
                              render_kw={'readOnly': "true",\
-                                        'placeholder':','.join(basic_indicators_tick),\
-                                        'value':','.join(basic_indicators_tick)},
+                                        'placeholder':','.join(indicators_tick),\
+                                        'value':','.join(indicators_tick),
+                                        'size':68
+                                        },
                             )
     
     instruments = SelectMultipleField('instruments', id = 'instruments',
