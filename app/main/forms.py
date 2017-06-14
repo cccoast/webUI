@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField,IntegerField
+from wtforms import StringField, SubmitField,IntegerField,RadioField
 from wtforms.validators import Required
 from flask_wtf.file import FileField,FileAllowed,FileRequired
 from .. import ufile
@@ -31,3 +31,17 @@ class RuleForm(FlaskForm):
 class JsBindBubmit(FlaskForm):
     content = StringField('content')
     submit_js = SubmitField('submit_js')
+    
+class RadioBoxForm(FlaskForm):
+
+    level     = RadioField('level',  id = 'level',validators=[Required()],
+                            choices = [('tick','tick'),
+                                       ('1min','1min')],
+                            default = 'tick'
+                            )
+    indicators = StringField('indicators',id = 'indicators',validators = [],
+                             render_kw={'readOnly': "true",\
+                                        'placeholder':'closePrice',\
+                                        'value':'closePrice'}
+                            )
+    

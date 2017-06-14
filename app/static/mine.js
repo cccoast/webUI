@@ -134,3 +134,38 @@ exit_rule_clear_all_button.click(function () {
     exit_rule_submit_button.click();
 });
 
+//for radio button checked
+function set_input_selected_checked(nameStr, type, value){
+	var selector = "input[name="+nameStr+"]";
+	if(type != null) {
+		if(type == "radio" || type == "checkbox"){
+			var obj = $(selector);
+			for(var i=0; i<obj.length;i++)
+				if(obj[i].value == value)
+					obj[i].checked = "checked";
+		}
+	}
+	else{
+		$(selector).val(value);
+	}
+}
+
+function set_radio_selected_checked(name, selectdValue) {
+    $('input[name="' + name+ '"][value="' + selectdValue + '"]').prop('checked', true);
+};
+
+function set_input_field_value(name,value) {
+	var selector = "input[name="+name+"]";
+	$(selector).val(value);
+};
+		
+function level_event_bind(set_values){
+	$('input[name="level"][value="tick"]').click(function (){
+		alert("tick clicked!");
+		set_input_field_value('indicators',set_values[0]);
+	});
+	$('input[name="level"][value="1min"]').click(function (){
+		alert("min clicked!");
+		set_input_field_value('indicators',set_values[1]);
+	});
+};

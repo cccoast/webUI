@@ -1,7 +1,7 @@
 from flask import render_template,request,url_for,flash,redirect,jsonify
 from . import main
 from .. import ufile
-from .forms import UploadForm,RuleForm,ResetRules,JsBindBubmit
+from .forms import UploadForm,RuleForm,ResetRules,JsBindBubmit,RadioBoxForm
 import os
 import json
 
@@ -16,11 +16,14 @@ from transfer import get_server_result_path
 from pta import get_summarys
 from pta import parser as output_parser
 from misc import unicode2str
+from data_center_config import basic_indicators_tick,basic_indicators_min
 
 @main.route('/')
 def index():
     return render_template('index.html')
 
+#----------------------------------------------------------------
+#@The below code are all testing code
 @main.route('/test', methods=['GET', 'POST'])
 def upload_file():
     form = UploadForm()
@@ -210,3 +213,11 @@ def refresh_table_content():
 def edit_table():
     result_args = {}
     return render_template('test/edit_table.html',**result_args)
+
+@main.route('/set_radio_box',methods = ['GET','POST'])
+def set_radio_box():
+    radio_form = RadioBoxForm()
+    result_args = {'basic_indicators_tick':basic_indicators_tick,\
+                   'basic_indicators_min':basic_indicators_min,\
+                   'radio_form':radio_form}
+    return render_template('test/jquery_radio_button_set_value.html',**result_args)
