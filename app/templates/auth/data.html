@@ -16,7 +16,7 @@
 	<h2>{{ wtf.form_field(data_form.end_date,form_type = 'horizontal') }}</h2>
 	</div>
 	
-	<div class="row">
+	<div class="row" >
 	<div class="col-md-4"><h2>{{ data_form.level.label }} {{ data_form.level }}</h2></div>
 	<div class="col-md-4"><h2>{{ data_form.adjust.label }} {{ data_form.adjust }}</h2></div>
 	</div>
@@ -52,8 +52,6 @@
 	}
 </style>
 
-<table class = "table table-bordered table-condensed">
-
 <tr>
 <div class="row">
   <div class="col-md-2 key">start_date:</div>
@@ -66,7 +64,7 @@
 <tr>
 <div class="row">
   <div class="col-md-2 key">level:</div>
-  <div class="col-md-4 value"><h4>{{data_block['level']}}</h4></div>
+  <div id="show_data_config_html" class="col-md-4 value"><h4>{{data_block['level']}}</h4></div>
   <div class="col-md-2 key">adjust:</div>
   <div class="col-md-4 value"><h4>{{data_block['adjust']}}</h4></div>
 </div>
@@ -97,5 +95,4 @@
 </div>
 </tr>
 
-</table>
 {% endif %}

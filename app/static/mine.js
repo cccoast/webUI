@@ -172,4 +172,26 @@ function level_event_bind(set_values){
 		set_input_field_value('end_spot','270');
 		set_input_field_value('maxTTL','2700');
 	});
+	
+	//console.log($('input[name="level"][value="tick"]').attr('checked'));
+	//console.log($('input[name="level"][value="1min"]').attr('checked'));
+	//console.log($('#show_data_config_html h4').html());
+	
+	if( $('input[name="level"][value="tick"]').attr('checked') == true ){
+		set_input_field_value('end_spot','32000');
+		set_input_field_value('maxTTL','32000');
+	}
+	if( $('input[name="level"][value="1min"]').attr('checked') == true ){
+		set_input_field_value('end_spot','270');
+		set_input_field_value('maxTTL','2700');
+	}
+	if($('#show_data_config_html h4').html() == 'tick'){
+		set_input_field_value('end_spot','32000');
+		set_input_field_value('maxTTL','32000');
+	}
+	if($('#show_data_config_html h4').html() == '1min'){
+		set_input_field_value('end_spot','270');
+		set_input_field_value('maxTTL','2700');
+	}
+	
 };
