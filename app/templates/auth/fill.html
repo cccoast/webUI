@@ -63,8 +63,8 @@
 {% block scripts %}
 {{ super() }}
 <script>
-var $basic_indicators_tick  = '{{ basic_indicators_tick }}';
-var $basic_indicators_min = '{{ basic_indicators_min  }}';
+var $future_indicators_tick  = '{{ future_indicators_tick }}';
+var $future_indicators_min = '{{ future_indicators_min  }}';
 $(document).ready(function(){	
 	
 	{% if start_timer %}
@@ -79,7 +79,7 @@ $(document).ready(function(){
 	    return true;
 	});
 	
-	level_event_bind([$basic_indicators_tick,$basic_indicators_min]);	
+	level_event_bind([$future_indicators_tick,$future_indicators_min]);	
 });
 </script>
 {% endblock %}

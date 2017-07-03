@@ -160,6 +160,7 @@ function set_input_field_value(name,value) {
 };
 		
 function level_event_bind(set_values){
+	console.log(set_values);
 	$('input[name="level"][value="tick"]').click(function (){
 		//alert("tick clicked!");
 		set_input_field_value('indicators',set_values[0]);

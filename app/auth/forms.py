@@ -17,10 +17,10 @@ pkg_path = os.path.join(upper_abs_path, 'generate_data_block')
 if pkg_path not in sys.path:
     sys.path.append(pkg_path)
 
-from data_center_config import indicators_tick, indicators_min
+from data_center_config import future_indicators_tick, future_indicators_min
 
-# print basic_indicators_tick
-# print basic_indicators_min
+# print future_indicators_tick
+# print future_indicators_min
 
 
 class LoginForm(FlaskForm):
@@ -66,8 +66,8 @@ class DataForm(FlaskForm):
 
     indicators = StringField('indicators',id = 'indicators',validators = [],
                              render_kw={'readOnly': "true",\
-                                        'placeholder':','.join(indicators_tick),\
-                                        'value':','.join(indicators_tick),
+                                        'placeholder':','.join(future_indicators_tick),\
+                                        'value':','.join(future_indicators_tick),
                                         'size':68
                                         },
                             )

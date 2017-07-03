@@ -24,7 +24,7 @@ from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
 from pta import parser as output_parser
-from data_center_config import indicators_tick, indicators_min
+from data_center_config import future_indicators_tick, future_indicators_min
 
 keys = ('op', 'fid', 'flip', 'gap1', 'offset1', 'lothr', 'hithr', 'param0',
         'param1', 'param2', 'param3', 'param4')
@@ -182,8 +182,8 @@ def inject_var():
     if 'show_error' in session:
         ret['show_error'] = session['show_error']
 
-    ret['basic_indicators_tick'] = ','.join(indicators_tick)
-    ret['basic_indicators_min'] = ','.join(indicators_min)
+    ret['future_indicators_tick'] = ','.join(future_indicators_tick)
+    ret['future_indicators_min'] = ','.join(future_indicators_min)
 
     return ret
 
