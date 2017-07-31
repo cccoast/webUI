@@ -41,7 +41,7 @@ function startTimer(duration, success_path, fail_path, min_value , max_value) {
 			console.log("backtest successed!");
 			window.location.href = success_path;
 	    }
-        if (--exp_timer < 0) {
+        if (--exp_timer < 0 || parseInt(ret) < 0 ) {
             clearInterval(refresh);
             console.log("backtest Failed!");
             window.location.href = fail_path;
@@ -160,7 +160,7 @@ function set_input_field_value(name,value) {
 };
 		
 function level_event_bind(set_values){
-	console.log(set_values);
+	//console.log(set_values);
 	$('input[name="level"][value="tick"]').click(function (){
 		//alert("tick clicked!");
 		set_input_field_value('indicators',set_values[0]);

@@ -94,7 +94,7 @@ def web_comset_data_to_server_data(web_dict):
     ticker = Ticker()
     for k, v in web_dict.iteritems():
         if len(v) > 0:
-            server_data[str(k)] = map(ticker.get_id, str(v).split())
+            server_data[str(k)] = map(ticker.get_id, str(v).split(','))
     return server_data
 
 
@@ -111,7 +111,7 @@ def generate_block(data_form):
 
 
 def generate_comset(comset_form):
-    #     print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
+#     print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
     cookie = session['comset']
     cookie['1'] = comset_form.comset_1.data
     cookie['2'] = comset_form.comset_2.data
@@ -479,15 +479,15 @@ def backtest():
             loginID = '{0}_{1}'.format(today, tstamp)
 
             argkws = {}
-            argkws['username'], argkws['date'], argkws[
-                'tstamp'] = username, today, tstamp
+            argkws['username'], argkws['date'], argkws['tstamp'] = username, today, tstamp
 
             backtest_pydict = {}
+            backtest_pydict['type'] = data_dict['type']
             backtest_pydict['comset_data'] = comset_dict
             backtest_pydict['config_data'] = global_config
             backtest_pydict['entry_data'] = entry_rules
             backtest_pydict['exit_data'] = exit_rules
-
+            
             backtest_pydict.update(argkws)
 
             os.makedirs(get_server_result_path(argkws))
