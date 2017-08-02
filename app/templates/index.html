@@ -10,9 +10,9 @@
     Welcome {{ current_user.username }}!
     <br><br>
     <ol>
-	&nbsp;<li><a href="{{ url_for('auth.fill') }}">Index Futures HistRun</a></li>
-	&nbsp;<li>Commodity Futures HistRun</li>
-	&nbsp;<li>Stock HistRun</li>
+	&nbsp;<li><a href="{{ url_for('auth.backtest_mode',mode = 0) }}">Index Futures HistRun</a></li>
+	&nbsp;<li><a href="{{ url_for('auth.backtest_mode',mode = 1) }}">Commodity Futures HistRun</a></li>
+	&nbsp;<li><a href="{{ url_for('auth.backtest_mode',mode = 2) }}">Stock HistRun</a></li>
 	&nbsp;<li>Stock Portfolio Run</li>
 	</ol>
     {% else %}

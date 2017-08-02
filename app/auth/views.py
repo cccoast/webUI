@@ -3,9 +3,14 @@ from flask_login import login_user, logout_user, login_required, current_user, f
 from . import auth
 from .. import db
 from ..models import User
-from .forms import LoginForm,SubmitForm,DataForm,ModifyDataForm,ComsetForm,ModifyComsetForm,\
+from .forms import LoginForm,SubmitForm,\
+                    IndexFutureDataForm,CommodityFutureDataForm,StockIndexDataForm,ModifyDataForm,\
+                    IndexFutureComsetForm,CommodityFutureFutureComsetForm,StockComsetForm,ModifyComsetForm,\
                     GlobalConfigForm,ModifyGlobalConfigForm,\
-                    EntryRuleForm, ExitRuleForm
+                    EntryRuleForm, ExitRuleForm  
+comset_forms = [IndexFutureComsetForm,CommodityFutureFutureComsetForm,StockComsetForm]
+data_forms = [IndexFutureDataForm,CommodityFutureDataForm,StockIndexDataForm]
+
 from .. import ufile
 import os
 import json
@@ -24,7 +29,7 @@ from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
 from pta import parser as output_parser
-from data_center_config import future_indicators_tick, future_indicators_min
+from data_center_config import future_indicators_tick, future_indicators_min, stock_all_indicators
 
 keys = ('op', 'fid', 'flip', 'gap1', 'offset1', 'lothr', 'hithr', 'param0',
         'param1', 'param2', 'param3', 'param4')
@@ -82,7 +87,10 @@ def web_datablock_to_server_datablock(block_dict):
         else:
             server_block[str(k)] = str(v)
     if 'type' not in block_dict:
-        server_block['type'] = 'future'
+        if session['mode'] == 0 or session['mode'] == 1:
+            server_block['type'] = 'future'
+        else:
+            server_block['type'] = 'stock'
 
 #     print 'block_dict = ',block_dict
 #     print 'server_dict = ',server_block
@@ -91,11 +99,16 @@ def web_datablock_to_server_datablock(block_dict):
 
 def web_comset_data_to_server_data(web_dict):
     server_data = {}
-    ticker = Ticker()
-    for k, v in web_dict.iteritems():
-        if len(v) > 0:
-            server_data[str(k)] = map(ticker.get_id, str(v).split(','))
-    return server_data
+    if session['mode'] == 0 or session['mode'] == 1:
+        ticker = Ticker()
+        for k, v in web_dict.iteritems():
+            if len(v) > 0:
+                server_data[str(k)] = map(ticker.get_id, str(v).split(','))
+        return server_data
+    else:
+        for k, v in web_dict.iteritems():
+            server_data[str(k)] = str(v).split(',')
+        return server_data
 
 
 def generate_block(data_form):
@@ -111,7 +124,7 @@ def generate_block(data_form):
 
 
 def generate_comset(comset_form):
-#     print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
+    print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
     cookie = session['comset']
     cookie['1'] = comset_form.comset_1.data
     cookie['2'] = comset_form.comset_2.data
@@ -140,6 +153,7 @@ def generate_global_config(global_config_form):
 @auth.context_processor
 def inject_var():
     ret = {}
+    ret['mode'] = session['mode'] if 'mode' in session else 0
     if 'verify' in session:
         ret['verify'] = session['verify']
     if 'data_block' in session:
@@ -184,6 +198,7 @@ def inject_var():
 
     ret['future_indicators_tick'] = ','.join(future_indicators_tick)
     ret['future_indicators_min'] = ','.join(future_indicators_min)
+    ret['stock_indicators_day'] = ','.join(stock_all_indicators)
 
     return ret
 
@@ -198,7 +213,10 @@ def check_backtest(cookie):
 
 
 def init_session(cookie, force_reset=False):
-
+    
+    if 'mode' not in cookie:
+        cookie['mode'] = 0
+    
     if 'verify' not in cookie or force_reset:
         cookie['verify'] = {}
         cookie['verify']['data'] = False
@@ -246,8 +264,9 @@ def init_session(cookie, force_reset=False):
     if 'last_backtest_tstamp' not in cookie:
         cookie['last_backtest_tstamp'] = (-1, -1)
 
-    if ('show_result' not in cookie) or ('show_error' not in cookie):
+    if ('show_result' not in cookie):
         cookie['show_result'] = 0
+    if ('show_error' not in cookie):
         cookie['show_error'] = 0
 
     #for upload instruments files
@@ -267,8 +286,12 @@ def get_main_page_arg_dict(*forms):
 
 
 def get_main_page_form_obj():
+    mode = session['mode'] if 'mode' else 0
+    CommSetForm = comset_forms[mode]
+    DataForm = data_forms[mode]
+#     data_form.instruments = instruments_forms_fields[mode]
     return ( SubmitForm(),DataForm(),ModifyDataForm(),\
-                        ComsetForm(),ModifyComsetForm(),\
+                        CommSetForm(),ModifyComsetForm(),\
                         GlobalConfigForm(),ModifyGlobalConfigForm(),\
                         EntryRuleForm(),ExitRuleForm() )
 
@@ -455,8 +478,7 @@ def backtest():
             session['last_backtest_tstamp'] = now
             data_dict = web_datablock_to_server_datablock(session['data_block'])
             comset_dict = web_comset_data_to_server_data(session['comset'])
-            global_config = web_global_config_to_server_global_config(
-                session['global_config'])
+            global_config = web_global_config_to_server_global_config(session['global_config'])
             entry_rules = web_conditions_to_server_conditions_entry(\
                                 session['entry_conditions'],session['global_config']['direction'],session['global_config']['quant'])
             exit_rules  = web_conditions_to_server_conditions_exit(\
@@ -517,6 +539,23 @@ def backtest():
 ###----------------------------------------------------------------------------
 ''' For basic UI '''
 
+@login_required
+@auth.route('/backtest_mode', methods=['GET'])
+def backtest_mode():
+    try:
+        mode = int(request.args.get("mode"))
+    except:
+        mode = 0
+    #for stock default conditions    
+    if mode == 2:
+        session['entry_conditions']['entry_nconds'] = 1
+        session['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1, 1, 0, 0, 0, 0)
+        session['exit_conditions']['exit_nconds'] = 1
+        session['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 6, 0, 0, 0, 0)
+        
+    session['mode'] = mode
+#     print 'mode = ',mode
+    return redirect(url_for('auth.fill')) 
 
 @login_required
 @auth.route('/fill', methods=['GET', 'POST'])

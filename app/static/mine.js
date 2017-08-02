@@ -158,41 +158,85 @@ function set_input_field_value(name,value) {
 	var selector = "input[name="+name+"]";
 	$(selector).val(value);
 };
-		
-function level_event_bind(set_values){
-	//console.log(set_values);
+				
+function level_event_bind(mode,show_indicator_values){
+
+	var spots_perday_tick = new Array(5);
+	spots_perday_tick[0] = 32402;
+	spots_perday_tick[1] = 27002;
+	spots_perday_tick[2] = 28802;
+	var spots_perday_1min = new Array(5);
+	spots_perday_1min[0] = 270;
+	spots_perday_1min[1] = 225;
+	spots_perday_1min[2] = 240;
+	var spots_perday_day = new Array(5);
+	spots_perday_day[0] = 1;
+	spots_perday_day[1] = 1;
+	spots_perday_day[2] = 1;
+	
+	//var multi_selected = $('#instruments');
+	//console.log(multi_selected.html());
+	
+	//alert($('input[name="level"][value="day"]').attr('checked'));
+	
+	//console.log(show_indicator_values);
 	$('input[name="level"][value="tick"]').click(function (){
 		//alert("tick clicked!");
-		set_input_field_value('indicators',set_values[0]);
-		set_input_field_value('end_spot','32000');
-		set_input_field_value('maxTTL','32000');
+		set_input_field_value('indicators',show_indicator_values[mode][0]);
+		set_input_field_value('end_spot',spots_perday_tick[mode]);
+		set_input_field_value('maxTTL',spots_perday_tick[mode]);
 	});
 	$('input[name="level"][value="1min"]').click(function (){
 		//alert("min clicked!");
-		set_input_field_value('indicators',set_values[1]);
-		set_input_field_value('end_spot','270');
-		set_input_field_value('maxTTL','2700');
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_1min[mode]);
+		set_input_field_value('maxTTL',spots_perday_1min[mode] * 10);
+	});
+	$('input[name="level"][value="day"]').click(function (){
+		//alert("min clicked!");
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_day[mode]);
+		set_input_field_value('maxTTL',spots_perday_day[mode] * 256);
 	});
 	
 	//console.log($('input[name="level"][value="tick"]').attr('checked'));
 	//console.log($('input[name="level"][value="1min"]').attr('checked'));
 	//console.log($('#show_data_config_html h4').html());
 	
-	if( $('input[name="level"][value="tick"]').attr('checked') == true ){
-		set_input_field_value('end_spot','32000');
-		set_input_field_value('maxTTL','32000');
+	//has not been submitted to server, but checkbox value changed,as data comes from server, so this is essential
+	if( $('input[name="level"][value="tick"]').attr('checked') == "checked" ){
+		set_input_field_value('indicators',show_indicator_values[mode][0]);
+		set_input_field_value('end_spot',spots_perday_tick[mode]);
+		set_input_field_value('maxTTL',spots_perday_tick[mode]);
 	}
-	if( $('input[name="level"][value="1min"]').attr('checked') == true ){
-		set_input_field_value('end_spot','270');
-		set_input_field_value('maxTTL','2700');
+	if( $('input[name="level"][value="1min"]').attr('checked') == "checked" ){
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_1min[mode]);
+		set_input_field_value('maxTTL',spots_perday_1min[mode] * 10);
 	}
+	if( $('input[name="level"][value="day"]').attr('checked') == "checked" ){
+		//alert("min clicked 2!");
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_day[mode]);
+		set_input_field_value('maxTTL',spots_perday_day[mode] * 256);
+	}
+	
+	//already submitted to server
 	if($('#show_data_config_html h4').html() == 'tick'){
-		set_input_field_value('end_spot','32000');
-		set_input_field_value('maxTTL','32000');
+		set_input_field_value('indicators',show_indicator_values[mode][0]);
+		set_input_field_value('end_spot',spots_perday_tick[mode]);
+		set_input_field_value('maxTTL',spots_perday_tick[mode]);
 	}
 	if($('#show_data_config_html h4').html() == '1min'){
-		set_input_field_value('end_spot','270');
-		set_input_field_value('maxTTL','2700');
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_1min[mode]);
+		set_input_field_value('maxTTL',spots_perday_1min[mode] * 10);
+	}
+	if($('#show_data_config_html h4').html() == 'day'){
+		//alert("min clicked 3!");
+		set_input_field_value('indicators',show_indicator_values[mode][1]);
+		set_input_field_value('end_spot',spots_perday_day[mode]);
+		set_input_field_value('maxTTL',spots_perday_day[mode] * 256);
 	}
 	
 };

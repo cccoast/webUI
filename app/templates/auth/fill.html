@@ -63,10 +63,13 @@
 {% block scripts %}
 {{ super() }}
 <script>
+var $mode = '{{ mode }}';
 var $future_indicators_tick  = '{{ future_indicators_tick }}';
 var $future_indicators_min = '{{ future_indicators_min  }}';
+var $stock_indicators_day  = '{{ stock_indicators_day }}';
 $(document).ready(function(){	
 	
+	var instruments_values = [(0),(0),(0)];
 	{% if start_timer %}
 		startTimer(60,"/auth/show_backtest_result","/auth/backtest_result_error",0,6);
 	{% else %}
@@ -79,7 +82,9 @@ $(document).ready(function(){
 	    return true;
 	});
 	
-	level_event_bind([$future_indicators_tick,$future_indicators_min]);	
+	level_event_bind($mode,[[$future_indicators_tick,$future_indicators_min],
+							[$future_indicators_tick,$future_indicators_min],
+							[$stock_indicators_day,$stock_indicators_day]],);	
 });
 </script>
 {% endblock %}

@@ -22,7 +22,6 @@ from data_center_config import future_indicators_tick, future_indicators_min
 # print future_indicators_tick
 # print future_indicators_min
 
-
 class LoginForm(FlaskForm):
 
     username = StringField('UserName', validators=[Required(), Length(1, 64)])
@@ -41,28 +40,14 @@ class DataForm(FlaskForm):
         id='start_date',
         validators=[Required()],
         render_kw={'placeholder': '20140101'},
-        default=20140101)
+        default=20150101)
 
     end_date = IntegerField(
         'end_date',
         id='end_date',
         validators=[Required()],
         render_kw={'placeholder': '20141231'},
-        default=20141231)
-
-    level = RadioField(
-        'level',
-        id='level',
-        validators=[Required()],
-        choices=[('tick', 'tick'), ('1min', '1min')],
-        default='tick')
-
-    adjust = RadioField(
-        'adjust',
-        id='adjust',
-        validators=[Required()],
-        choices=[('no', 'no'), ('forward', 'forward')],
-        default='no')
+        default=20151231)
 
     indicators = StringField('indicators',id = 'indicators',validators = [],
                              render_kw={'readOnly': "true",\
@@ -72,19 +57,48 @@ class DataForm(FlaskForm):
                                         },
                             )
 
-    instruments = SelectMultipleField(
-        'instruments',
-        id='instruments',
-        choices=[
-            ('if0001', 'if0001'),
-            ('if0002', 'if0002'),
-        ],
-        default=['if0001', 'if0002'])
 
     #or_upload_file = FileField(validators=[FileAllowed(ufile, 'TXT allowed'),])
     submit2 = SubmitField('generate', id='submit_data')
 
+#for instruments init from server
 
+class IndexFutureDataForm(DataForm):
+    
+    instruments = SelectMultipleField('instruments',id='instruments',
+        choices=[('if0001', 'if0001'),('if0002', 'if0002'),],default=['if0001', 'if0002']
+        )
+    
+    level = RadioField('level', id='level', validators=[Required()], choices=[('tick', 'tick'), ('1min', '1min')], default='tick')
+    
+    adjust = RadioField('adjust',id='adjust',validators=[Required()],choices=[('no', 'no'), ('forward', 'forward')],default='no')
+        
+class CommodityFutureDataForm(DataForm):
+    
+    instruments = SelectMultipleField('instruments',id='instruments',
+        choices=[('au0001', 'au0001'),('au0002', 'au0002'),],default=['au0001', 'au0002']
+        )
+    
+    level = RadioField('level', id='level', validators=[Required()], choices=[('tick', 'tick'), ('1min', '1min')], default='tick')
+    
+    adjust = RadioField('adjust',id='adjust',validators=[Required()],choices=[('no', 'no'), ('forward', 'forward')],default='no')
+    
+    
+class StockIndexDataForm(DataForm):   
+    
+    start_date = IntegerField('start_date',id='start_date',validators=[Required()],render_kw={'placeholder': '20090105'},default=20090105)
+
+    end_date = IntegerField('end_date',id='end_date',validators=[Required()],render_kw={'placeholder': '20151231'},default=20151231)
+    
+    instruments = SelectMultipleField('instruments',id='instruments',
+        choices=[('000906.CSI','000906.CSI')],default=['000906.CSI',]
+        )
+    
+    level = RadioField('level', id='level', validators=[Required()], choices=[('day', 'day')], default='day')
+    
+    adjust = RadioField('adjust',id='adjust',validators=[Required()],choices=[('no', 'no'), ('forward', 'forward'), ('backward', 'backward')],default='forward')
+    
+    
 class ModifyDataForm(FlaskForm):
 
     submit3 = SubmitField('ModifyData', id='modify_data')
@@ -93,31 +107,25 @@ class ModifyDataForm(FlaskForm):
 '''ComSet'''
 
 
-class ComsetForm(FlaskForm):
+class IndexFutureComsetForm(FlaskForm):
 
-    comset_1 = StringField(
-        'CommSet1:',
-        id='comset_1',
-        validators=[Required()],
-        render_kw={'placeholder': ','.join(['if0001']),
-                   'value': 'if0001'})
+    comset_1 = StringField('CommSet1:',id='comset_1',validators=[Required()],render_kw={'placeholder': ','.join(['if0001']),'value': 'if0001'})
+    comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['if0001', 'if0002']),'value': 'if0001,if0002'})
+    comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['if0002']),'value': 'if0002'})
+    submit4 = SubmitField('submit', id='submit_comset')
 
-    comset_2 = StringField(
-        'CommSet2:',
-        id='comset_2',
-        validators=[Required()],
-        render_kw={
-            'placeholder': ','.join(['if0001', 'if0002']),
-            'value': 'if0001,if0002'
-        })
+class CommodityFutureFutureComsetForm(FlaskForm):
 
-    comset_3 = StringField(
-        'CommSet3:',
-        id='comset_3',
-        validators=[Required()],
-        render_kw={'placeholder': ','.join(['if0002']),
-                   'value': 'if0002'})
+    comset_1 = StringField('CommSet1:',id='comset_1',validators=[Required()],render_kw={'placeholder': ','.join(['au0001']),'value': 'au0001'})
+    comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['au0001', 'au0002']),'value': 'au0001,au0002'})
+    comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['au0002']),'value': 'au0002'})
+    submit4 = SubmitField('submit', id='submit_comset')
+    
+class StockComsetForm(FlaskForm):
 
+    comset_1 = StringField('CommSet1:',id='comset_1',validators=[Required()],render_kw={'placeholder': ','.join(['000300.CSI']),'value': '000300.CSI'})
+    comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['000905.CSI']),'value': '000905.CSI'})
+    comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['000906.CSI']),'value': '000906.CSI'})
     submit4 = SubmitField('submit', id='submit_comset')
 
 
@@ -135,52 +143,45 @@ class GlobalConfigForm(FlaskForm):
         'start_spot',
         id='start_spot',
         validators=[],
-        render_kw={'placeholder': 0,
-                   'value': 0},
+        render_kw={'placeholder': 0,'value': 0},
         default=0)
     end_spot = IntegerField(
         'end_spot',
         id='end_spot',
         validators=[],
-        render_kw={'placeholder': 32000,
-                   'value': 32000},
+        render_kw={'placeholder': 32000,'value': 32000},
         default=32000)
     spot_step = IntegerField(
         'spot_step',
         id='spot_step',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
 
     skip_days = IntegerField(
         'skip_days',
         id='skip_days',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
     day_step = IntegerField(
         'day_step',
         id='day_step',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
 
     com_set = IntegerField(
         'comm_set',
         id='comset',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
     slipage = IntegerField(
         'slipage',
         id='slipge',
         validators=[],
-        render_kw={'placeholder': 'N (base point)',
-                   'value': 0},
+        render_kw={'placeholder': 'N (base point)','value': 0},
         default=0)
 
     exec_algo = RadioField(
@@ -198,10 +199,7 @@ class GlobalConfigForm(FlaskForm):
     direction = RadioField(
         'entry_direction',
         id='direction',
-        choices=[
-            ('BUY', 'BUY'),
-            ('SELL', 'SELL'),
-        ],
+        choices=[('BUY', 'BUY'),('SELL', 'SELL'),],
         render_kw={'value': 'BUY'},
         default='BUY')
 
@@ -209,22 +207,19 @@ class GlobalConfigForm(FlaskForm):
         'quantum',
         id='quantum',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
     minTTL = IntegerField(
         'minTTL',
         id='minTTL',
         validators=[],
-        render_kw={'placeholder': 1,
-                   'value': 1},
+        render_kw={'placeholder': 1,'value': 1},
         default=1)
     maxTTL = IntegerField(
         'maxTLL',
         id='maxTTL',
         validators=[],
-        render_kw={'placeholder': 34200,
-                   'value': 34200},
+        render_kw={'placeholder': 34200,'value': 34200},
         default=34200)
 
     submit6 = SubmitField('submit', id='submit_global_config')
@@ -245,74 +240,51 @@ class ResetEntryRules(FlaskForm):
 class RuleForm(FlaskForm):
     logic = StringField(
         'logic',
-        render_kw={'placeholder': 'AND',
-                   'size': 4,
-                   'value': 'AND'},
+        render_kw={'placeholder': 'AND','size': 4,'value': 'AND'},
         default='AND')
     condID = StringField(
         '1500',
-        render_kw={'placeholder': '1500',
-                   'size': 4},
+        render_kw={'placeholder': '1500','size': 4},
         validators=[Required()])
     flip = StringField(
         'flip',
-        render_kw={'placeholder': '0',
-                   'size': 2,
-                   'value': 0},
+        render_kw={'placeholder': '0','size': 2,'value': 0},
         default='0')
     gap = StringField(
         'gap',
-        render_kw={'placeholder': '0',
-                   'size': 3,
-                   'value': 0},
+        render_kw={'placeholder': '0','size': 3,'value': 0},
         default='0')
     offset = StringField(
         'offset',
-        render_kw={'placeholder': '0',
-                   'size': 4,
-                   'value': 0},
+        render_kw={'placeholder': '0','size': 4,'value': 0},
         default='0')
     lowthrs = StringField(
         'lowthrs',
-        render_kw={'placeholder': '0.0',
-                   'size': 6,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 6,'value': 0},
         default='0')
     highthrs = StringField(
         'highthrs',
-        render_kw={'placeholder': '0.0',
-                   'size': 6,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 6,'value': 0},
         default='0')
     para1 = StringField(
         'para1',
-        render_kw={'placeholder': '0.0',
-                   'size': 5,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 5,'value': 0},
         default='0')
     para2 = StringField(
         'para2',
-        render_kw={'placeholder': '0.0',
-                   'size': 5,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 5,'value': 0},
         default='0')
     para3 = StringField(
         'para3',
-        render_kw={'placeholder': '0.0',
-                   'size': 5,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 5,'value': 0},
         default='0')
     para4 = StringField(
         'para4',
-        render_kw={'placeholder': '0.0',
-                   'size': 5,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 5,'value': 0},
         default='0')
     para5 = StringField(
         'para5',
-        render_kw={'placeholder': '0.0',
-                   'size': 5,
-                   'value': 0},
+        render_kw={'placeholder': '0.0','size': 5,'value': 0},
         default='0')
 
 
