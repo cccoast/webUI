@@ -24,7 +24,7 @@ if pkg_path not in sys.path:
     sys.path.append(pkg_path)
 
 from misc import get_today, get_hourminsec, unicode2str
-from ui_misc import diff_seconds
+from ui_misc import diff_seconds,error_code_dict 
 from transfer import get_server_result_path
 from const_vars import Ticker
 from pta import get_summarys
@@ -124,7 +124,7 @@ def generate_block(data_form):
 
 
 def generate_comset(comset_form):
-    print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
+#     print comset_form.comset_1.data,'\t',comset_form.comset_2.data,'\t',comset_form.comset_3.data
     cookie = session['comset']
     cookie['1'] = comset_form.comset_1.data
     cookie['2'] = comset_form.comset_2.data
@@ -166,13 +166,13 @@ def inject_var():
         ret['entry_conditions'] = session['entry_conditions']
         ret['entry_condtion_values'] = [
             session['entry_conditions'][str(i)]
-            for i in range(session['entry_conditions']['entry_nconds'])
+            for i in range(int(session['entry_conditions']['entry_nconds']))
         ]
     if 'exit_conditions' in session:
         ret['exit_conditions'] = session['exit_conditions']
         ret['exit_condtion_values'] = [
             session['exit_conditions'][str(i)]
-            for i in range(session['exit_conditions']['exit_nconds'])
+            for i in range(int(session['exit_conditions']['exit_nconds']))
         ]
 
     if 'entry_conditions' in session and 'exit_conditions' in session:
@@ -268,6 +268,9 @@ def init_session(cookie, force_reset=False):
         cookie['show_result'] = 0
     if ('show_error' not in cookie):
         cookie['show_error'] = 0
+    
+    if 'error_code' not in cookie: 
+        cookie['error_code'] = None
 
     #for upload instruments files
     #     if 'upload_inss_name' not in cookie:
@@ -305,7 +308,7 @@ def get_main_page_form_obj():
 def query_entry_rule_data():
     global keys
     entry_table_data = []
-    nconds = session['entry_conditions']['entry_nconds']
+    nconds = int(session['entry_conditions']['entry_nconds'])
     for i in range(nconds):
         new_condition = dict(zip(keys, session['entry_conditions'][str(i)]))
         new_condition['id'] = i
@@ -344,7 +347,7 @@ def update_entry_rule_data():
 def query_exit_rule_data():
     global keys
     exit_table_data = []
-    nconds = session['exit_conditions']['exit_nconds']
+    nconds = int(session['exit_conditions']['exit_nconds'])
     for i in range(nconds):
         new_condition = dict(zip(keys, session['exit_conditions'][str(i)]))
         new_condition['id'] = i
@@ -388,6 +391,8 @@ def show_backtest_result():
 @login_required
 @auth.route('/backtest_result_error', methods=['GET', 'POST'])
 def backtest_result_error():
+    error_code = int(request.args.get("error_code"))
+    session['error_code'] = error_code
     session['show_error'], session['show_result'] = 1, 0
     return fill()
 
@@ -397,8 +402,8 @@ def backtest_result_error():
 
 
 @login_required
-@auth.route('/qeury_backtest_result', methods=['GET', 'POST'])
-def qeury_backtest_result():
+@auth.route('/query_backtest_result', methods=['GET', 'POST'])
+def query_backtest_result():
     if not hasattr(current_user, 'username'):
         return jsonify(result=-1)
     username = current_user.username
@@ -408,23 +413,24 @@ def qeury_backtest_result():
     key = current_app.ipc_api.get_key(day, username, loginID, \
                 session['last_request_id'], session['last_func_name'], pipeline)
     if not current_app.ipc_api.exists(key):
-        return jsonify(result=-1)
+        print 'no such key, seems like cppServer no respond or respond later than 1 seconds'
+        return jsonify(step = -1,status = -1)
     value = current_app.ipc_api.get_value(key)
     print 'get backtest result query! retValue = ', value['ret']
     if value is not None:
         session['show_backtest'] = 1
         if pipeline == 0:
             if int(value['ret']) >= 0:
-                return jsonify(result=0)
+                return jsonify(step = 0,status = 0)
             else:
-                return jsonify(result=-1)
+                return jsonify(step = 0,status =-1)
         else:
             for k, v in value['ret'].iteritems():
                 if int(v) < 0:
-                    return jsonify(result=-1)
-            return jsonify(result=len(value['ret']))
+                    return jsonify(step = int(k),status = -1)
+            return jsonify(step = len(value['ret']),status = 0)
     else:
-        return jsonify(result=-1)
+        return jsonify(step = -1,status = -1)
 
 
 ###----------------------------------------------------------------------------
@@ -548,8 +554,10 @@ def backtest_mode():
         mode = 0
     #for stock default conditions    
     if mode == 2:
+        session['entry_conditions'] = {}
         session['entry_conditions']['entry_nconds'] = 1
         session['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1, 1, 0, 0, 0, 0)
+        session['exit_conditions'] = {}
         session['exit_conditions']['exit_nconds'] = 1
         session['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 6, 0, 0, 0, 0)
         
@@ -609,6 +617,9 @@ def fill():
             result_args['summary'] = os.path.join(
                 base_path,
                 "{0}_total_summary.csv".format(current_user.username))
+            result_args['backtest_log'] = os.path.join(
+                base_path,
+                "output.txt")
         else:
             session['show_error'] = 1
             session['show_result'] = 0
@@ -622,13 +633,19 @@ def fill():
         #         print errors
         content = []
         if os.path.exists(errors):
-            with open(errors, 'r+') as fin:
-                for line in fin:
-                    content.append(line)
-            error_html = '<br>'.join(content)
+#             with open(errors, 'r+') as fin:
+#                 for line in fin:
+#                     content.append(line)
+#             error_html = '<br>'.join(content)
+            error_html = ''
+            result_args['error_log_path'] = errors
         else:
-            error_html = '<h2>Cpp Server Closed!</h2>'
-            result_args['error_html'] = error_html
+            if session['error_code'] is not None:
+                error_message = error_code_dict[session['error_code']]
+            else:
+                error_message = 'Please Run Again'
+            error_html = '{}'.format(error_message)
+        result_args['error_html'] = error_html
 
     args = get_main_page_arg_dict(*main_page_forms)
     args.update(result_args)
@@ -803,5 +820,6 @@ def fill_exit_rule_data():
 @auth.route('/reset_all', methods=['POST', 'GET'])
 def reset_all():
     init_session(session, force_reset=True)
+    session['show_result'], session['show_error'] = 0, 0
     flash('All parameters have been reset!')
     return redirect(url_for('auth.fill'))

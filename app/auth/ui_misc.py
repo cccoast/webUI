@@ -1,5 +1,9 @@
 from pandas import to_datetime
 
+error_code = ['create_shm_config','create_shm','create_backtest_config','run_backtest','generate_pta','upload_result']
+error_code_dict = dict(zip(range(len(error_code)),error_code))
+error_code_dict[-1] = 'cpp_server_closed'
+error_code_dict[100] = 'backtest_time_limit_exceed'
 
 def diff_seconds(now, last):
     #     print now,last

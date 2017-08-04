@@ -1,3 +1,18 @@
-<div>
-<h3>{{ error_html|safe }} </h3>
+
+<div class="row">
+{% if error_log_path -%}
+<div class="col-md-4 success" id = "error_log">
+<h2><a href= {{ error_log_path }} > error_log </a></h2>
+</div>
+<br><br>
+{{ error_html | safe }} 
+{% else %}
+<div class="col-md-2 success" id = "error_log">
+<h2> reason : </h2>
+</div>
+<div class="col-md-6 success" id = "error_log">
+<h2>{{ error_html | safe }} </h2>
+</div>
+{% endif %}
+
 </div>

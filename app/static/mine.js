@@ -1,16 +1,21 @@
 
 function queryBacktestReady(){
-	var ret = -1;
+	var stp = -1;
+	var status = -1;
     $.ajax({
-	  url: $SCRIPT_ROOT + '/auth/qeury_backtest_result',
+	  url: $SCRIPT_ROOT + '/auth/query_backtest_result',
 	  data: {},
 	  async: false,
 	  dataType: 'json',
 	  success: function (result) {
-	    ret = result.result;
+	    step = result.step;
+	    status = result.status;
 	  }
 	});
-	return ret;
+	var retArray = new Array(2);
+	retArray[0] = step;
+	retArray[1] = status;
+	return retArray;
 };
 
 function setProgressBarValue(percent){
@@ -24,29 +29,33 @@ function setTimerCounter(seconds){
 }
 
 function startTimer(duration, success_path, fail_path, min_value , max_value) {
-    var exp_timer = duration * 2;
+    var exp_timer = duration;
     console.log(min_value + ' ' + max_value);
     var refresh = setInterval(function () {
 	    var ret = queryBacktestReady();
-	    if(exp_timer % 2 == 0)
-	    	setTimerCounter((parseInt(exp_timer))/2);
-	    console.log("exp_timer : " + exp_timer + " : " + ret);
-	    if (ret >= min_value && ret <= max_value){
-			var percent = parseInt( parseFloat(ret) * 100 / max_value );
+	    var step = parseInt(ret[0]);
+	    var status = parseInt(ret[1]);
+	    setTimerCounter((parseInt(exp_timer)));
+	    console.log("exp_timer : " + exp_timer + " : " + step);
+	    if (step >= min_value && step <= max_value){
+			var percent = parseInt( parseFloat(step) * 100 / max_value );
 			console.log(percent);
 			setProgressBarValue(percent);
 	    }
-	    if (ret == max_value){
+	    if (step == max_value){
 			clearInterval(refresh);
 			console.log("backtest successed!");
 			window.location.href = success_path;
 	    }
-        if (--exp_timer < 0 || parseInt(ret) < 0 ) {
+        if (--exp_timer < 0 || status < 0 ) {
             clearInterval(refresh);
             console.log("backtest Failed!");
-            window.location.href = fail_path;
+            if(exp_timer < 0)
+            	window.location.href = fail_path + "?error_code=" + 100;
+            else
+            	window.location.href = fail_path + "?error_code=" + step;
         }
-    }, 500);
+    }, 1000);
 };
 	
 var entry_rule_table = $('#entry_rule_table'),
