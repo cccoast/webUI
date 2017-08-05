@@ -24,6 +24,10 @@ from data_center_config import future_indicators_tick, future_indicators_min
 def index():
     return render_template('index.html')
 
+@main.route('/me')
+def me():
+    return render_template('resume.html')
+
 
 #----------------------------------------------------------------
 #@The below code are all testing code
