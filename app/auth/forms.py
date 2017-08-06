@@ -40,7 +40,7 @@ class DataForm(FlaskForm):
         id='start_date',
         validators=[Required()],
         render_kw={'placeholder': '20140101'},
-        default=20150101)
+        default=20140101)
 
     end_date = IntegerField(
         'end_date',

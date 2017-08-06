@@ -231,22 +231,30 @@ def init_session(cookie, force_reset=False):
         cookie['comset'] = {}
     if 'global_config' not in cookie or force_reset:
         cookie['global_config'] = {}
-
-    if 'entry_conditions' not in cookie or force_reset:
+        
+    if cookie['mode'] == 0 or cookie['mode'] == 1:
+        
         cookie['entry_conditions'] = {}
         cookie['entry_conditions']['entry_nconds'] = 2
         cookie['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1,
                                            120, 0, 0, 0, 0)
-        cookie['entry_conditions']['1'] = ('AND', 1500, 0, 0, 0, 0, 98, 5, 0, 0,
-                                           0, 0)
-
-    if 'exit_conditions' not in cookie or force_reset:
+        cookie['entry_conditions']['1'] = ('AND', 1500, 0, 0, 0, 0, 98, 
+                                           5, 0, 0,0, 0)
         cookie['exit_conditions'] = {}
         cookie['exit_conditions']['exit_nconds'] = 2
-        cookie['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 6,
-                                          0, 0, 0, 0)
-        cookie['exit_conditions']['1'] = ('OR', 1500, 0, 0, 0, '-inf', 119.0, 4,
-                                          0, 0, 0, 0)
+        cookie['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 
+                                          6, 0, 0, 0, 0)
+        cookie['exit_conditions']['1'] = ('OR', 1500, 0, 0, 0, '-inf', 119.0, 
+                                          4, 0, 0, 0, 0)      
+    else:
+        cookie['entry_conditions'] = {}
+        cookie['entry_conditions']['entry_nconds'] = 1
+        cookie['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1, 
+                                            1, 0, 0, 0, 0)
+        cookie['exit_conditions'] = {}
+        cookie['exit_conditions']['exit_nconds'] = 1
+        cookie['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 
+                                            6, 0, 0, 0, 0)
 
     if 'show_tab' not in cookie or force_reset:
         cookie['show_tab'] = ('data',)
@@ -264,12 +272,12 @@ def init_session(cookie, force_reset=False):
     if 'last_backtest_tstamp' not in cookie:
         cookie['last_backtest_tstamp'] = (-1, -1)
 
-    if ('show_result' not in cookie):
+    if ('show_result' not in cookie) or force_reset:
         cookie['show_result'] = 0
-    if ('show_error' not in cookie):
+    if ('show_error' not in cookie) or force_reset:
         cookie['show_error'] = 0
     
-    if 'error_code' not in cookie: 
+    if ('error_code' not in cookie) or force_reset: 
         cookie['error_code'] = None
 
     #for upload instruments files
@@ -445,7 +453,6 @@ def login():
         if user is not None and user.verify_password(form.password.data):
             #             login_user(user, form.remember_me.data)
             login_user(user, False)
-            init_session(session)
             return redirect(url_for('main.index'))
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
@@ -553,16 +560,10 @@ def backtest_mode():
         mode = int(request.args.get("mode"))
     except:
         mode = 0
-    #for stock default conditions    
-    if mode == 2:
-        session['entry_conditions'] = {}
-        session['entry_conditions']['entry_nconds'] = 1
-        session['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1, 1, 0, 0, 0, 0)
-        session['exit_conditions'] = {}
-        session['exit_conditions']['exit_nconds'] = 1
-        session['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 6, 0, 0, 0, 0)
         
     session['mode'] = mode
+    #init all conditions
+    init_session(session,True)
 #     print 'mode = ',mode
     return redirect(url_for('auth.fill')) 
 
