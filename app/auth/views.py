@@ -511,6 +511,7 @@ def backtest():
 
             backtest_pydict = {}
             backtest_pydict['type'] = data_dict['type']
+            backtest_pydict['data_block'] = data_dict
             backtest_pydict['comset_data'] = comset_dict
             backtest_pydict['config_data'] = global_config
             backtest_pydict['entry_data'] = entry_rules
