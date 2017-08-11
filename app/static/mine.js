@@ -32,7 +32,10 @@ function startTimer(duration, success_path, fail_path, min_value , max_value) {
     var exp_timer = duration;
     console.log(min_value + ' ' + max_value);
     var refresh = setInterval(function () {
-	    var ret = queryBacktestReady();
+    	var ret = [0,0];
+    	//wait for two seconds, then query in order to avoid network laging
+    	if( exp_timer + 1 < duration)
+	    	ret = queryBacktestReady();
 	    var step = parseInt(ret[0]);
 	    var status = parseInt(ret[1]);
 	    setTimerCounter((parseInt(exp_timer)));
