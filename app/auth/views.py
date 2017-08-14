@@ -129,6 +129,8 @@ def generate_comset(comset_form):
     cookie['1'] = comset_form.comset_1.data
     cookie['2'] = comset_form.comset_2.data
     cookie['3'] = comset_form.comset_3.data
+    if hasattr(comset_form, 'comset_group'):
+        cookie['-1'] = comset_form.comset_group.data
     return 0
 
 
@@ -597,8 +599,7 @@ def fill():
             all = output_parser(summary_path)
             everyday = all[2][3:-1]
             everyday_performace_values = map(lambda x: map(lambda z: z.strip(),filter(lambda y: len(y.strip())>0,x.split('|')) ),everyday)
-            result_args[
-                'everyday_performace_values'] = everyday_performace_values
+            result_args['everyday_performace_values'] = everyday_performace_values
 
             #3.get charts paths
             base_path = r'/static/upload_results'
@@ -617,11 +618,9 @@ def fill():
             result_args['exit_list'] = os.path.join(
                 base_path, "{0}_exit_list.csv".format(current_user.username))
             result_args['summary'] = os.path.join(
-                base_path,
-                "{0}_total_summary.csv".format(current_user.username))
+                base_path,"{0}_total_summary.csv".format(current_user.username))
             result_args['backtest_log'] = os.path.join(
-                base_path,
-                "output.txt")
+                base_path,"output.txt")
         else:
             session['show_error'] = 1
             session['show_result'] = 0

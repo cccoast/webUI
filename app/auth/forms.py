@@ -112,6 +112,7 @@ class IndexFutureComsetForm(FlaskForm):
     comset_1 = StringField('CommSet1:',id='comset_1',validators=[Required()],render_kw={'placeholder': ','.join(['if0001']),'value': 'if0001'})
     comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['if0001', 'if0002']),'value': 'if0001,if0002'})
     comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['if0002']),'value': 'if0002'})
+    comset_group = StringField('SetGroup-1:',id='comset_group',validators=[Required()],render_kw={'placeholder': ','.join(['if0001', 'if0002']),'value': 'if0001,if0002'})
     submit4 = SubmitField('submit', id='submit_comset')
 
 class CommodityFutureFutureComsetForm(FlaskForm):
@@ -119,6 +120,7 @@ class CommodityFutureFutureComsetForm(FlaskForm):
     comset_1 = StringField('CommSet1:',id='comset_1',validators=[Required()],render_kw={'placeholder': ','.join(['au0001']),'value': 'au0001'})
     comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['au0001', 'au0002']),'value': 'au0001,au0002'})
     comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['au0002']),'value': 'au0002'})
+    comset_group = StringField('SetGroup-1:',id='comset_group',validators=[Required()],render_kw={'placeholder': ','.join(['au0001', 'au0002']),'value': 'au0001,au0002'})
     submit4 = SubmitField('submit', id='submit_comset')
     
 class StockComsetForm(FlaskForm):
@@ -127,7 +129,6 @@ class StockComsetForm(FlaskForm):
     comset_2 = StringField('CommSet2:',id='comset_2',validators=[Required()],render_kw={'placeholder': ','.join(['000905.CSI']),'value': '000905.CSI'})
     comset_3 = StringField('CommSet3:',id='comset_3',validators=[Required()],render_kw={'placeholder': ','.join(['000906.CSI']),'value': '000906.CSI'})
     submit4 = SubmitField('submit', id='submit_comset')
-
 
 class ModifyComsetForm(FlaskForm):
 

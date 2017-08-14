@@ -19,6 +19,12 @@
 	<div class="row">
 	<h3>{{ wtf.form_field(comset_form.comset_3,form_type = 'horizontal') }}</h3>
 	</div>
+	
+	{% if ( mode == 0 ) or ( mode == 1) %}
+	<div class="row">
+	<h3>{{ wtf.form_field(comset_form.comset_group,form_type = 'horizontal') }}</h3>
+	</div>
+	{% endif %}
 
 	<div class="col-md-1 success" id = "submit4_data">
 	<h3>{{ wtf.form_field(comset_form.submit4, button_map={'submit4':'success'}) }}</h3>
@@ -61,6 +67,15 @@
   <div class="col-md-10 value"><h4>{{comset['3']}}</h4></div>
 </div>
 </tr>
+
+{% if mode == 0 or mode == 1%}
+<tr>
+<div class="row">
+  <div class="col-md-2 key">Comset -1:</div>
+  <div class="col-md-10 value"><h4>{{comset['-1']}}</h4></div>
+</div>
+</tr>
+{% endif %}
 
 <tr>
 <div class="row">
