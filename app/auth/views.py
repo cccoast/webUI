@@ -237,17 +237,43 @@ def init_session(cookie, force_reset=False):
     if cookie['mode'] == 0 or cookie['mode'] == 1:
         
         cookie['entry_conditions'] = {}
-        cookie['entry_conditions']['entry_nconds'] = 2
-        cookie['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1,
-                                           120, 0, 0, 0, 0)
-        cookie['entry_conditions']['1'] = ('AND', 1500, 0, 0, 0, 0, 98, 
-                                           5, 0, 0,0, 0)
+        #default
+#         cookie['entry_conditions']['entry_nconds'] = 2
+#         cookie['entry_conditions']['0'] = ('AND', 11000, 0, 0, 0, -0.1, 0.1,
+#                                            120, 0, 0, 0, 0)
+#         cookie['entry_conditions']['1'] = ('AND', 1500, 0, 0, 0, 0, 98, 
+#                                            5, 0, 0,0, 0)
+        #special
+        cookie['entry_conditions']['entry_nconds'] = 7
+        cookie['entry_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.0, 98,
+                                            12, 0, 0, 0, 0)
+        cookie['entry_conditions']['1'] = ('OR', 1500, 0, 0, 0, 1.0, 95,
+                                            13, 0, 0, 0, 0)
+        cookie['entry_conditions']['2'] = ('AND', 1001, 1, 1, 0, '-inf', 0.59,
+                                            0, 0, 0, 0, 0)
+        cookie['entry_conditions']['3'] = ('AND', 1300, 0, 0, 0, 0.0, 0.41,
+                                            0, 0, 0, 0, 0)
+        cookie['entry_conditions']['4'] = ('AND', 3001, 1, 0, 0, -100, -90,
+                                            1, 50, 0, 0, 0)
+        cookie['entry_conditions']['5'] = ('AND', 3003, 1, 1, 0, 0.26, 'inf',
+                                            0, 0, 2.0, 0, 0)
+        cookie['entry_conditions']['6'] = ('AND', 3008, 0, 0, 0, 1.0, 'inf',
+                                            0, 0, 0, 0, 0)
+        
         cookie['exit_conditions'] = {}
+        #default
+#         cookie['exit_conditions']['exit_nconds'] = 2
+#         cookie['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 
+#                                           6, 0, 0, 0, 0)
+#         cookie['exit_conditions']['1'] = ('OR', 1500, 0, 0, 0, '-inf', 119.0, 
+#                                           4, 0, 0, 0, 0)
+        #special
         cookie['exit_conditions']['exit_nconds'] = 2
-        cookie['exit_conditions']['0'] = ('OR', 1500, 0, 0, 0, 1.99, 'inf', 
-                                          6, 0, 0, 0, 0)
-        cookie['exit_conditions']['1'] = ('OR', 1500, 0, 0, 0, '-inf', 119.0, 
-                                          4, 0, 0, 0, 0)      
+        cookie['exit_conditions']['0'] = ('AND', 3001, 1, 0, 0, -50, 'inf',
+                                            1, 100, 0, 0, 0)
+        cookie['exit_conditions']['1'] = ('AND', 1300, 0, 0, 0, 0.0, 0.29,
+                                            0, 0, 0, 0, 0)
+        
     else:
         cookie['entry_conditions'] = {}
         cookie['entry_conditions']['entry_nconds'] = 1
