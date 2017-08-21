@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import db, login_manager
 
-
 class User(UserMixin, db.Model):
     __tablename__ = 'password'
     id = db.Column(db.Integer, primary_key=True)
@@ -31,44 +30,4 @@ def load_user(user_id):
 
 
 if __name__ == '__main__':
-
-    import sys
-    sys.path.append('../../')
-    from future_mysql import dbBase
-    from sqlalchemy import Column, Integer, String, DateTime, Numeric, Index, Float, Boolean
-    from sqlalchemy import Table
-
-    class User(dbBase.DB_BASE):
-
-        def __init__(self):
-            db_name = 'flask'
-            table_name = 'password'
-            super(User, self).__init__(db_name)
-
-            self.table_struct = Table(table_name, self.meta,
-                                      Column(
-                                          'id',
-                                          Integer,
-                                          primary_key=True,
-                                          autoincrement=False),
-                                      Column('username', String(64)),
-                                      Column('password_hash', String(128)))
-
-        def create_table(self):
-            self.user_struct = self.quick_map(self.table_struct)
-
-    user = User()
-    user.create_table()
-
-    indict = {
-        'id': 1,
-        'username': 'xudi',
-        'password_hash': generate_password_hash('123456')
-    }
-    user.insert_dictlike(user.user_struct, indict)
-    indict = {
-        'id': 2,
-        'username': 'lyx',
-        'password_hash': generate_password_hash('123456')
-    }
-    user.insert_dictlike(user.user_struct, indict)
+    pass
